@@ -539,3 +539,48 @@ variables de entorno, accesibilidad y comandos de desarrollo (`npm test`, `npm r
 - Algunas entidades públicas y gremios pueden traer 0 noticias en una semana: es normal y no es error.
 - La primera vez tras una actualización grande, puede hacer falta **Ctrl + F5** una sola vez; las
   versiones marcadas evitan que se repita.
+
+---
+
+## 14. Actualización 1 (reemplaza lo indicado en las secciones 3, 4 y 7)
+
+### Tipografía
+**Atkinson Hyperlegible** (Google Fonts, pesos 400 y 700, normal e itálica; respaldo Verdana) en
+toda la página, **también en los titulares** (ya no se usa Georgia). Como la fuente no tiene
+seminegrita, los elementos de peso 600 se muestran en 700. La escala de tamaños no cambia.
+
+### Paleta: NASA en versión minimalista
+Fondo blanco, pocos colores y contraste AA verificado:
+Space Black `#0E1A2B` (texto y menú, 17,5:1) · Space Gray `#293241` (texto secundario, 12,9:1) ·
+NASA Blue `#0B3D91` (cabecera, títulos H1, botón Buscar, enlaces, sección Internacional, 10:1) ·
+Mission Red `#C91B1B` (sección Nacional, 5,7:1) · NASA Red `#FC3D21` (solo acento gráfico: barra de
+la pestaña activa, franja de noticias, indicador de carga) · Solar Gold `#FDB515` (botón de
+novedades con texto Space Black, 9,8:1) · Earth Green `#0A7C3E` (descargas, normas, 5,3:1) ·
+Science Blue `#1B81A8` (solo franja de papers) · Sky Gray `#9BB4C8` (solo bordes) · cajas en
+`#F2F5F8`. Foco: NASA Blue 4 px (Solar Gold en la cabecera). WhatsApp conserva `#075E54`.
+Etiquetas de tipo con texto Space Black y el color del tipo solo en el borde. Esquinas de 0,5 rem,
+bordes finos, sin emojis en los títulos de los grupos de temas.
+
+### Temas sugeridos: 5 grupos numerados, 22 temas
+Títulos de grupo en Space Black con su número en NASA Blue; un tema por línea; el elegido en
+NASA Blue subrayado 3 px. Lo que va entre paréntesis en la etiqueta se muestra sin negrita.
+Rejilla de 3 columnas en escritorio, 2 en tableta y 1 en teléfono. Cada grupo puede llevar una
+nota y una línea «Siglas: …» con el significado de las siglas.
+
+1. **Planificación:** AWP (Advanced Work Packaging) · Last Planner System (LPS) · PPM (Project
+   Production Management) · Constructabilidad e Ingeniería de Valor · Programación Rítmica y
+   Líneas de Balance.
+2. **Métodos Constructivos y Sistemas de Soporte:** Métodos Constructivos · Sistemas de
+   Encofrados · Andamios · Procesos Constructivos.
+3. **Tecnologías y Metodologías Integradas:** VDC (Virtual Design and Construction) · BIM ·
+   Gestión de la Información para la construcción · IA y Automatización de Procesos ·
+   Construcción e Industrialización Digital.
+4. **Ciclo de Vida y Fases del Proyecto** (en orden, con la nota «Las etapas de un proyecto, de la
+   idea a la operación.»): Ingeniería y Diseño (FEED) · Procura y Contratos · Construcción y
+   Montaje · Puesta en Marcha (Commissioning) · Operación y Mantenimiento (O&M).
+5. **Marcos de Gestión de Proyectos y Gobernanza:** PMBOK y Estándares del PMI · PRINCE2
+   (Gobernanza y Control) · IPMA (Modelo de Competencias ICB4).
+
+Los términos de cada tema (14–25, en español e inglés) están en `public/js/temas.js`. Las siglas
+cortas llevan espacio final para exigir palabra exacta («BIM » no encuentra «bimestre») y se
+evitan siglas ambiguas en inglés (por ejemplo, «ICE»).

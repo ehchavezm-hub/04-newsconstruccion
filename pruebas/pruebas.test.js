@@ -133,10 +133,19 @@ describe('Motor de búsqueda', () => {
 });
 
 describe('Temas sugeridos', () => {
-  test('dos grupos con los 10 temas pedidos', () => {
-    assert.deepEqual(Temas.grupos.map((g) => g.titulo), ['Tendencias e Innovación', 'Ciclo de Vida del Proyecto (IPC)']);
-    assert.deepEqual(Temas.grupos[0].temas.map((t) => t.etiqueta), ['BIM y Construcción Digital', 'IA y Automatización',
-      'Construcción Sostenible', 'Seguridad y Salud en Obra', 'Infraestructura y APP']);
+  test('cinco grupos numerados con los 22 temas pedidos', () => {
+    assert.deepEqual(Temas.grupos.map((g) => `${g.numero}. ${g.titulo}`), [
+      '1. Planificación', '2. Métodos Constructivos y Sistemas de Soporte', '3. Tecnologías y Metodologías Integradas',
+      '4. Ciclo de Vida y Fases del Proyecto', '5. Marcos de Gestión de Proyectos y Gobernanza']);
+    assert.deepEqual(Temas.grupos.map((g) => g.temas.map((t) => t.etiqueta)), [
+      ['AWP (Advanced Work Packaging)', 'Last Planner System (LPS)', 'PPM (Project Production Management)',
+        'Constructabilidad e Ingeniería de Valor', 'Programación Rítmica y Líneas de Balance'],
+      ['Métodos Constructivos', 'Sistemas de Encofrados', 'Andamios', 'Procesos Constructivos'],
+      ['VDC (Virtual Design and Construction)', 'BIM', 'Gestión de la Información para la construcción',
+        'IA y Automatización de Procesos', 'Construcción e Industrialización Digital'],
+      ['Ingeniería y Diseño (FEED)', 'Procura y Contratos', 'Construcción y Montaje',
+        'Puesta en Marcha (Commissioning)', 'Operación y Mantenimiento (O&M)'],
+      ['PMBOK y Estándares del PMI', 'PRINCE2 (Gobernanza y Control)', 'IPMA (Modelo de Competencias ICB4)']]);
   });
 
   test('el ciclo de vida sigue el orden de las etapas, con su nota', () => {
@@ -145,14 +154,26 @@ describe('Temas sugeridos', () => {
     assert.equal(ciclo.nota, 'Las etapas de un proyecto, de la idea a la operación.');
   });
 
-  test('cada tema tiene id, grupo y entre 14 y 25 términos', () => {
+  test('cada tema tiene id único, grupo y entre 14 y 25 términos', () => {
     const temas = Temas.grupos.flatMap((g) => g.temas);
-    assert.equal(new Set(temas.map((t) => t.id)).size, 10);
+    assert.equal(temas.length, 22);
+    assert.equal(new Set(temas.map((t) => t.id)).size, 22);
+    const ids = Temas.grupos.map((g) => g.id);
     temas.forEach((t) => {
       assert.ok(t.terminos.length >= 14 && t.terminos.length <= 25, `${t.id}: ${t.terminos.length}`);
-      assert.ok(['innovacion', 'ciclo'].includes(t.grupo), t.id);
+      assert.ok(ids.includes(t.grupo), t.id);
+      // Los 8 primeros términos (los que van a GDELT) deben dejar al menos uno de 4 letras o más.
+      assert.ok(Gdelt.terminosDeTema(t.terminos).length > 0, t.id);
     });
-    assert.equal(Temas.porId('operacion').etiqueta, 'Operación y Mantenimiento');
+    assert.equal(Temas.porId('operacion').etiqueta, 'Operación y Mantenimiento (O&M)');
+  });
+
+  test('las siglas de cada tema exigen palabra exacta («BIM » no encuentra «bimestre»)', () => {
+    const docs = [doc('a', 'Coordinación BIM del hospital'), doc('b', 'Ventas del bimestre'), doc('c', 'Andamios multidireccionales en altura')];
+    assert.deepEqual(Motor.buscar(docs, { terminos: Temas.porId('bim').terminos }).map((x) => x.id), ['a']);
+    assert.deepEqual(Motor.buscar(docs, { terminos: Temas.porId('andamios').terminos }).map((x) => x.id), ['c']);
+    const awp = [doc('x', 'Advanced Work Packaging en minería'), doc('y', 'Nuevos paquetes de trabajo en planta')];
+    assert.equal(Motor.buscar(awp, { terminos: Temas.porId('awp').terminos }).length, 2);
   });
 
   test('un tema encuentra documentos con cualquiera de sus términos', () => {
@@ -173,7 +194,7 @@ describe('Temas sugeridos', () => {
   });
 
   test('las siglas de 3 letras solo van a GDELT junto a otros términos', () => {
-    const q = new URL(Gdelt.construirUrl('BIM', { terminos: Temas.porId('bim-digital').terminos })).searchParams.get('query');
+    const q = new URL(Gdelt.construirUrl('BIM', { terminos: Temas.porId('bim').terminos })).searchParams.get('query');
     assert.match(q, /^\(BIM OR "building information modeling" OR /);
     assert.deepEqual(Gdelt.terminosDeTema(['BIM ', 'EPC ']), []);
     assert.equal(Gdelt.construirUrl('x', { terminos: ['BIM ', 'ia '] }), null);

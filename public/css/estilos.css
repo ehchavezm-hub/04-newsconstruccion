@@ -1,58 +1,70 @@
 /*
  * ESTILOS PROPIOS (complementan a Tailwind)
- * Paleta de la plantilla editorial de Diplomacia Global (estilo Financial Times), ajustada para
- * cumplir WCAG AA en contraste y con zonas de toque de al menos 44 px de alto.
+ * Paleta oficial de la NASA en versión minimalista: fondo blanco, texto Space Black, NASA Blue
+ * como color de identidad, NASA Red solo como acento gráfico y muy pocos colores más.
+ * Cumple WCAG 2.1 AA en contraste y tiene zonas de toque de al menos 44 px de alto.
+ *
+ * Tipografía: Atkinson Hyperlegible (diseñada para personas con baja visión) en todo el sitio,
+ * también en los títulos. Solo tiene pesos 400 y 700: lo que antes era seminegrita (600) se
+ * muestra en negrita (700).
  *
  * Tamaños de letra (a escala normal; A+ / A− los agrandan o achican todos juntos):
  *   Nombre «Construcción Global» . 25 px, negrita (700)
  *   Encabezado H1 ................ 23 px, negrita (700)
- *   Encabezado H2 ................ 19 px, seminegrita (600)
- *   Botones principales .......... 15 px, seminegrita (600)
+ *   Encabezado H2 ................ 19 px, negrita (700)
+ *   Botones principales .......... 15 px, negrita (700)
  *   Texto de cuerpo .............. 16 px, normal (400)
  *   Subtítulos y notas ........... 14 px, normal (400)
  *
- * Contrastes principales (calculados con la fórmula WCAG 2.1):
- *   Texto Slate #33302E sobre FT Pink #FFF1E5 ........... 11,8 : 1
- *   Blanco sobre FT Claret #990F3D (cabecera) ............ 8,4 : 1
- *   Blanco sobre Oxford Blue #0F5499 (botón principal) ... 7,6 : 1
- *   Slate #33302E sobre Saffron #F2AF26 (botón semana) ... 6,8 : 1
- *   Blanco sobre Slate #33302E (menú) ................... 13,1 : 1
- *   Gray Dark #66605A sobre FT Pink (texto secundario) ... 5,6 : 1
- *   Blanco sobre #007A3D (FT Green oscurecido) ........... 5,5 : 1
- *   Blanco sobre #075E54 (WhatsApp) ...................... 7,7 : 1
- *   Contorno de foco Oxford Blue sobre FT Pink ........... 6,9 : 1 (mínimo exigido: 3 : 1)
- *   Nota: el Gray FT #A8A49D de la plantilla no se usa para texto (2,2 : 1, insuficiente).
+ * Paleta NASA usada y contrastes (fórmula WCAG 2.1, sobre blanco salvo que se indique):
+ *   Space Black  #0E1A2B  texto principal, menú ................. 17,5 : 1
+ *   Space Gray   #293241  texto secundario ...................... 12,9 : 1
+ *   NASA Blue    #0B3D91  cabecera, títulos, botón Buscar, enlaces, Internacional .. 10,0 : 1
+ *   Border       #1A3050  estado «al pasar el cursor» de los botones azules (blanco encima 13,3 : 1)
+ *   Mission Red  #C91B1B  sección Nacional (Perú) ................  5,7 : 1
+ *   NASA Red     #FC3D21  solo acento gráfico (pestaña activa, franja de noticias, carga): 3,6 : 1
+ *   Solar Gold   #FDB515  botón de novedades, con texto Space Black ... 9,8 : 1
+ *   Earth Green  #0A7C3E  descargas, normas y «Acceso libre» ......  5,3 : 1
+ *   Science Blue #1B81A8  solo franja gráfica de los papers .......  4,4 : 1
+ *   Sky Gray     #9BB4C8  solo bordes decorativos (2,2 : 1: nunca para texto)
+ *   Fondo suave  #F2F5F8  tinte muy claro de Sky Gray para cajas (Space Black encima 16,0 : 1)
+ *   Foco de teclado: NASA Blue 4 px (Solar Gold dentro de la cabecera azul: 5,6 : 1)
+ *   WhatsApp #075E54 se mantiene por ser el color que la gente reconoce (blanco encima 7,7 : 1).
  */
 
 :root {
   --escala: 1;             /* La cambian los botones A+ / A− */
-  --papel: #FFF1E5;
-  --papel-suave: #F2E9DC;
-  --papel-palido: #E2D7CA;
-  --clarete: #990F3D;
-  --pizarra: #33302E;
-  --oxford: #0F5499;
-  --azafran: #F2AF26;
-  --gris: #66605A;
-  --verde: #007A3D;
-  --purpura: #593380;
-  --verde-oscuro: #006432; /* normas y guías; grupo «Ciclo de Vida del Proyecto» */
-  --foco: #0F5499;
+  --fondo: #FFFFFF;
+  --suave: #F2F5F8;
+  --borde: #9BB4C8;        /* Sky Gray */
+  --tinta: #0E1A2B;        /* Space Black */
+  --gris: #293241;         /* Space Gray */
+  --marca: #0B3D91;        /* NASA Blue */
+  --marca-oscura: #1A3050; /* Border */
+  --acento: #FC3D21;       /* NASA Red (solo gráfico) */
+  --nacional: #C91B1B;     /* Mission Red */
+  --oro: #FDB515;          /* Solar Gold */
+  --verde: #0A7C3E;        /* Earth Green */
+  --ciencia: #1B81A8;      /* Science Blue (solo gráfico) */
+  --foco: #0B3D91;
+  --radio: 0.5rem;
 }
 
 /* Texto base de 16 px (100 %), multiplicado por la escala elegida. */
 html { font-size: calc(100% * var(--escala)); scroll-behavior: smooth; }
-body { min-height: 100vh; font-size: 1rem; font-weight: 400; }
-.titular { font-family: Georgia, "Times New Roman", serif; }
+body {
+  min-height: 100vh; font-size: 1rem; font-weight: 400;
+  font-family: "Atkinson Hyperlegible", Verdana, "Segoe UI", Arial, sans-serif;
+}
+.titular { font-family: inherit; }
 
 /* ---------- Escala tipográfica ---------- */
-.t-marca  { font-size: 1.5625rem; font-weight: 700; line-height: 1.2; }  /* 25 px */
+.t-marca  { font-size: 1.5625rem; font-weight: 700; line-height: 1.2; letter-spacing: 0.01em; } /* 25 px */
 .t-h1     { font-size: 1.4375rem; font-weight: 700; line-height: 1.25; } /* 23 px */
-.t-h2     { font-size: 1.1875rem; font-weight: 600; line-height: 1.3; }  /* 19 px */
-.t-boton  { font-size: 0.9375rem; font-weight: 600; }                    /* 15 px */
+.t-h2     { font-size: 1.1875rem; font-weight: 700; line-height: 1.3; }  /* 19 px */
+.t-boton  { font-size: 0.9375rem; font-weight: 700; }                    /* 15 px */
 .t-cuerpo { font-size: 1rem;      font-weight: 400; }                    /* 16 px */
 .t-nota   { font-size: 0.875rem;  font-weight: 400; }                    /* 14 px */
-.titular.t-h2 { font-weight: 700; } /* Georgia no tiene seminegrita */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -63,9 +75,9 @@ body { min-height: 100vh; font-size: 1rem; font-weight: 400; }
 :focus-visible {
   outline: 4px solid var(--foco);
   outline-offset: 3px;
-  border-radius: 0.5rem;
+  border-radius: var(--radio);
 }
-header :focus-visible { outline-color: var(--azafran); }
+header :focus-visible { outline-color: var(--oro); }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -74,8 +86,8 @@ header :focus-visible { outline-color: var(--azafran); }
 
 .saltar-enlace {
   position: absolute; left: 1rem; top: -10rem; z-index: 100;
-  background: #fff; color: var(--pizarra); font-weight: 700; padding: 1rem 1.25rem;
-  border: 3px solid var(--clarete); border-radius: 0.75rem;
+  background: #fff; color: var(--tinta); font-weight: 700; padding: 1rem 1.25rem;
+  border: 3px solid var(--marca); border-radius: var(--radio);
 }
 .saltar-enlace:focus { top: 1rem; }
 
@@ -91,70 +103,70 @@ header :focus-visible { outline-color: var(--azafran); }
 .pestana {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem;
   min-height: 4.25rem; padding: 0.6rem; text-align: center;
-  font-size: 0.9375rem; font-weight: 600; line-height: 1.2;
+  font-size: 0.9375rem; font-weight: 700; line-height: 1.2;
   color: #fff; text-decoration: none;
-  border: 3px solid rgba(255, 255, 255, 0.5); border-radius: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.35); border-radius: var(--radio);
 }
-.pestana:hover { background: rgba(255, 255, 255, 0.12); border-color: #fff; }
+.pestana:hover { background: rgba(255, 255, 255, 0.1); border-color: #fff; }
 .pestana[aria-current="page"] {
-  background: var(--papel); color: var(--clarete); border-color: var(--papel);
-  box-shadow: inset 0 -6px 0 var(--clarete);
+  background: #fff; color: var(--marca); border-color: #fff;
+  box-shadow: inset 0 -5px 0 var(--acento);
 }
 
 /* ---------- Botones ---------- */
 .boton, .boton-cabecera {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
   min-height: 2.875rem; padding: 0.6rem 1.15rem;
-  font-size: 0.9375rem; font-weight: 600; line-height: 1.2; text-decoration: none;
-  border-radius: 0.75rem; border: 2px solid transparent; cursor: pointer;
+  font-size: 0.9375rem; font-weight: 700; line-height: 1.2; text-decoration: none;
+  border-radius: var(--radio); border: 2px solid transparent; cursor: pointer;
 }
 .boton-cabecera {
   min-width: 2.875rem; padding-inline: 0.85rem; color: #fff; background: transparent;
-  border-color: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.7);
 }
-.boton-cabecera:hover { background: rgba(255, 255, 255, 0.15); }
+.boton-cabecera:hover { background: rgba(255, 255, 255, 0.12); }
 .boton-cabecera:disabled { opacity: 0.55; cursor: not-allowed; }
 
-.boton-principal { background: var(--oxford); color: #fff; }
-.boton-principal:hover { background: #0b4178; }
+.boton-principal { background: var(--marca); color: #fff; }
+.boton-principal:hover { background: var(--marca-oscura); }
 
-.boton-secundario { background: #fff; color: var(--pizarra); border-color: var(--pizarra); }
-.boton-secundario:hover { background: var(--papel-suave); }
-.boton-secundario[aria-pressed="true"] { background: var(--clarete); color: #fff; border-color: var(--clarete); }
+.boton-secundario { background: #fff; color: var(--tinta); border-color: var(--tinta); }
+.boton-secundario:hover { background: var(--suave); }
+.boton-secundario[aria-pressed="true"] { background: var(--marca); color: #fff; border-color: var(--marca); }
 
 .boton-semana {
-  background: var(--azafran); color: var(--pizarra); border-color: var(--pizarra);
+  background: var(--oro); color: var(--tinta); border-color: var(--oro);
   font-size: 0.9375rem; padding: 0.75rem 1.3rem;
 }
-.boton-semana:hover { background: #f5c04f; }
+.boton-semana:hover { border-color: var(--tinta); }
 
 .boton-descarga { background: var(--verde); color: #fff; }
-.boton-descarga:hover { background: #006432; }
+.boton-descarga:hover { background: var(--tinta); }
 
 .boton-whatsapp { background: #075e54; color: #fff; }
-.boton-whatsapp:hover { background: #064e45; }
+.boton-whatsapp:hover { background: var(--tinta); }
 
 .boton-ver-mas {
   display: flex; width: 100%; margin-top: 1.75rem;
-  background: #fff; color: var(--oxford); border-color: var(--oxford);
+  background: #fff; color: var(--marca); border-color: var(--marca);
 }
-.boton-ver-mas:hover { background: var(--papel-suave); }
+.boton-ver-mas:hover { background: var(--suave); }
 
 /* ---------- Caja de búsqueda ---------- */
 .caja-busqueda {
   min-height: 3.25rem; padding: 0.7rem 1rem;
-  font-size: 1.0625rem; color: var(--pizarra); background: #fff;
-  border: 2px solid var(--pizarra); border-radius: 0.75rem;
+  font-size: 1.0625rem; color: var(--tinta); background: #fff;
+  border: 2px solid var(--tinta); border-radius: var(--radio);
 }
-.caja-busqueda::placeholder { color: var(--gris); opacity: 1; } /* 6,2 : 1 sobre blanco */
+.caja-busqueda::placeholder { color: var(--gris); opacity: 1; } /* 12,9 : 1 sobre blanco */
 .caja-busqueda:focus-visible { outline-offset: 2px; }
 @media (max-width: 480px) { .caja-busqueda { font-size: 1rem; } }
 
 /* ---------- Caja "Novedades de la semana" ---------- */
 .caja-semana {
   display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem;
-  padding: 1.25rem; background: var(--papel-suave);
-  border: 2px solid var(--azafran); border-left-width: 10px; border-radius: 1rem;
+  padding: 1.25rem; background: var(--suave);
+  border-left: 6px solid var(--oro); border-radius: var(--radio);
 }
 @media (max-width: 640px) { .caja-semana .boton-semana { width: 100%; } }
 
@@ -164,102 +176,101 @@ header :focus-visible { outline-color: var(--azafran); }
 .pastilla > span {
   display: inline-flex; align-items: center; gap: 0.5rem;
   min-height: 2.875rem; padding: 0.5rem 1.15rem;
-  font-size: 0.9375rem; font-weight: 600; color: var(--pizarra); background: #fff;
-  border: 2px solid var(--pizarra); border-radius: 999px;
+  font-size: 0.9375rem; font-weight: 700; color: var(--tinta); background: #fff;
+  border: 2px solid var(--tinta); border-radius: 999px;
 }
-.pastilla:hover > span { background: var(--papel-suave); }
-.pastilla input:checked + span { background: var(--pizarra); color: #fff; }
+.pastilla:hover > span { background: var(--suave); }
+.pastilla input:checked + span { background: var(--tinta); color: #fff; }
 .pastilla input:checked + span::before { content: "✓"; line-height: 1; }
 .pastilla input:focus-visible + span { outline: 4px solid var(--foco); outline-offset: 3px; }
 
 /* ---------- Temas sugeridos: solo texto, sin marco ----------
- * Colores de grupo (distintos del rojo = nacional y azul = internacional):
- *   Tendencias e Innovación: Purple Opinion #593380 (8,6 : 1 sobre el fondo)
- *   Ciclo de Vida del Proyecto (IPC): verde FT oscuro #006432 (6,6 : 1 sobre el fondo)
+ * Cinco grupos numerados. Los títulos van en Space Black; el tema elegido o bajo el cursor,
+ * en NASA Blue y subrayado (3 px si está elegido).
  */
-.grupos-temas { display: grid; gap: 1.25rem; }
-@media (min-width: 900px) { .grupos-temas { grid-template-columns: 1fr 1fr; gap: 2rem; } }
-.grupo-temas { --color-grupo: #593380; }
-.grupo-temas[data-grupo="ciclo"] { --color-grupo: var(--verde-oscuro); }
+.grupos-temas { display: grid; gap: 1.5rem; }
+@media (min-width: 700px) { .grupos-temas { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; } }
+@media (min-width: 1000px) { .grupos-temas { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .grupo-temas h3 {
-  display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem; color: var(--color-grupo);
+  display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.25rem; color: var(--tinta);
+  padding-bottom: 0.3rem; border-bottom: 2px solid var(--borde);
 }
-.grupo-temas .nota-grupo { color: var(--gris); margin: -0.1rem 0 0.2rem; }
+.grupo-temas .numero-grupo { color: var(--marca); }
+.grupo-temas .nota-grupo { color: var(--gris); margin: 0.1rem 0 0.2rem; }
 .grupo-temas .siglas-grupo { color: var(--gris); margin-top: 0.35rem; }
 .grupo-temas .lista-temas {
-  /* El margen negativo alinea el texto de los temas con el título del grupo. */
-  display: flex; flex-wrap: wrap; column-gap: 0.25rem; margin-left: -0.55rem;
+  /* Un tema por línea, alineado con el título del grupo (el margen negativo compensa el relleno). */
+  display: flex; flex-direction: column; align-items: flex-start; margin-left: -0.55rem;
 }
 
 .sugerencia {
   /* Sin borde ni fondo: solo el texto. Alto de 44 px para tocar con comodidad. */
   min-height: 2.75rem; padding: 0.4rem 0.55rem;
-  font-size: 0.9375rem; font-weight: 600; color: var(--pizarra); text-align: left;
-  background: none; border: 0; border-radius: 0.5rem; cursor: pointer;
+  font-size: 0.9375rem; font-weight: 700; color: var(--tinta); text-align: left; line-height: 1.3;
+  background: none; border: 0; border-radius: var(--radio); cursor: pointer;
   text-decoration: underline; text-decoration-color: transparent;
   text-decoration-thickness: 2px; text-underline-offset: 4px;
 }
-.sugerencia:hover { color: var(--color-grupo); text-decoration-color: currentColor; }
+.sugerencia .detalle-tema { font-weight: 400; }
+.sugerencia:hover { color: var(--marca); text-decoration-color: currentColor; }
 .sugerencia[aria-pressed="true"] {
-  color: var(--color-grupo); text-decoration-color: currentColor; text-decoration-thickness: 3px;
+  color: var(--marca); text-decoration-color: currentColor; text-decoration-thickness: 3px;
 }
 
-/* En el teléfono: un tema por línea, alineados a la izquierda bajo su título. */
 @media (max-width: 640px) {
-  .grupo-temas .lista-temas { flex-direction: column; align-items: flex-start; }
   .sugerencia { min-height: 2.5rem; padding-block: 0.3rem; }
 }
 
 /* ---------- Resultados ---------- */
-.estado-resultados { font-size: 1.1875rem; font-weight: 600; color: var(--pizarra); margin-bottom: 1rem; }
-.lista-resultados { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1.25rem; }
+.estado-resultados { font-size: 1.1875rem; font-weight: 700; color: var(--tinta); margin-bottom: 1rem; }
+.lista-resultados { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
 
 .tarjeta {
-  background: #fff; border: 2px solid var(--papel-palido); border-left-width: 10px;
-  border-radius: 1rem; padding: 1.25rem;
+  background: #fff; border: 1px solid var(--borde); border-left-width: 6px;
+  border-radius: var(--radio); padding: 1.25rem;
   /* Contenido a la izquierda; botones pequeños arriba a la derecha. */
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 1rem; align-items: start;
 }
 .contenido-tarjeta { min-width: 0; }
-.tarjeta[data-tipo="noticia"] { border-left-color: var(--clarete); }
-.tarjeta[data-tipo="paper"] { border-left-color: var(--purpura); }
-.tarjeta[data-tipo="libro"] { border-left-color: var(--oxford); }
-.tarjeta[data-tipo="norma"] { border-left-color: var(--verde-oscuro); }
+.tarjeta[data-tipo="noticia"] { border-left-color: var(--acento); }
+.tarjeta[data-tipo="paper"] { border-left-color: var(--ciencia); }
+.tarjeta[data-tipo="libro"] { border-left-color: var(--marca); }
+.tarjeta[data-tipo="norma"] { border-left-color: var(--verde); }
 
+/* Etiquetas: texto oscuro siempre legible; el color del tipo va solo en el borde. */
 .etiqueta-tipo, .etiqueta-extra {
   display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.2rem 0.75rem; font-size: 0.875rem; font-weight: 600; border-radius: 999px;
+  padding: 0.15rem 0.7rem; font-size: 0.875rem; font-weight: 700; border-radius: 999px;
+  color: var(--tinta); background: #fff; border: 2px solid var(--borde);
 }
-.etiqueta-tipo[data-tipo="noticia"] { background: var(--papel); color: var(--clarete); }
-.etiqueta-tipo[data-tipo="paper"] { background: var(--papel-suave); color: var(--purpura); }
-.etiqueta-tipo[data-tipo="libro"] { background: #e3edf7; color: var(--oxford); }
-.etiqueta-tipo[data-tipo="norma"] { background: #e3f1e8; color: var(--verde-oscuro); } /* 6,3 : 1 */
-.etiqueta-extra { background: #fff; color: var(--pizarra); border: 2px solid var(--papel-palido); }
+.etiqueta-tipo[data-tipo="noticia"] { border-color: var(--acento); }
+.etiqueta-tipo[data-tipo="paper"] { border-color: var(--ciencia); }
+.etiqueta-tipo[data-tipo="libro"] { border-color: var(--marca); }
+.etiqueta-tipo[data-tipo="norma"] { border-color: var(--verde); }
 .etiqueta-extra[data-clase="libre"] { color: var(--verde); border-color: var(--verde); }
-.etiqueta-extra[data-clase="nuevo"] { background: #fdf3dc; color: #5c3d00; border-color: var(--azafran); }
+.etiqueta-extra[data-clase="nuevo"] { background: var(--suave); border-color: var(--oro); }
 
 .etiqueta-ejemplo {
-  display: inline-block; padding: 0.2rem 0.75rem; font-size: 0.875rem; font-weight: 600;
-  background: #fdf3dc; color: #5c3d00; border: 2px dashed #8a5a00; border-radius: 999px;
+  display: inline-block; padding: 0.15rem 0.7rem; font-size: 0.875rem; font-weight: 700;
+  background: #fff; color: var(--tinta); border: 2px dashed var(--oro); border-radius: 999px;
 }
 
 .titulo-tarjeta {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.1875rem; font-weight: 700; line-height: 1.3; color: var(--pizarra); margin: 0.6rem 0 0.4rem;
+  font-size: 1.1875rem; font-weight: 700; line-height: 1.3; color: var(--tinta); margin: 0.6rem 0 0.4rem;
 }
 .resumen-tarjeta { font-size: 1rem; margin-bottom: 0.75rem; }
 .fragmento {
-  font-size: 1rem; font-style: italic; border-left: 5px solid var(--azafran);
-  background: var(--papel); padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 0.9rem;
+  font-size: 1rem; font-style: italic; border-left: 4px solid var(--oro);
+  background: var(--suave); padding: 0.75rem 1rem; border-radius: var(--radio); margin-bottom: 0.9rem;
 }
 .datos-tarjeta { font-size: 0.875rem; color: var(--gris); display: grid; gap: 0.15rem; margin-bottom: 1rem; }
-.datos-tarjeta dt { display: inline; font-weight: 600; color: var(--pizarra); }
+.datos-tarjeta dt { display: inline; font-weight: 700; color: var(--tinta); }
 .datos-tarjeta dd { display: inline; margin: 0; }
 
 .acciones-tarjeta { display: flex; flex-direction: column; gap: 0.4rem; width: 9.5rem; }
 .acciones-tarjeta .boton {
   justify-content: flex-start; width: 100%; min-height: 2.25rem; padding: 0.35rem 0.7rem;
-  font-size: 0.8125rem; gap: 0.4rem; border-radius: 0.6rem;
+  font-size: 0.8125rem; gap: 0.4rem;
 }
 .acciones-tarjeta .icono { width: 1.2em; height: 1.2em; }
 @media (max-width: 480px) {
@@ -273,56 +284,56 @@ header :focus-visible { outline-color: var(--azafran); }
 .bloque-ambito + .bloque-ambito { margin-top: 2.5rem; }
 .titulo-ambito {
   display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.4rem; margin-bottom: 0.4rem;
-  color: var(--clarete); border-bottom: 3px solid var(--clarete);
+  color: var(--nacional); border-bottom: 3px solid var(--nacional);
 }
-.bloque-ambito[data-ambito="internacional"] .titulo-ambito { color: var(--oxford); border-bottom-color: var(--oxford); }
+.bloque-ambito[data-ambito="internacional"] .titulo-ambito { color: var(--marca); border-bottom-color: var(--marca); }
 .contador-ambito {
-  margin-left: auto; font-family: inherit; font-size: 0.875rem; font-weight: 600;
-  padding: 0.1rem 0.6rem; border-radius: 999px; background: var(--papel-suave); color: var(--pizarra);
+  margin-left: auto; font-family: inherit; font-size: 0.875rem; font-weight: 700;
+  padding: 0.1rem 0.6rem; border-radius: 999px; background: var(--suave); color: var(--tinta);
 }
 .estado-ambito { color: var(--gris); margin-bottom: 0.75rem; }
 .busqueda-respaldo {
   margin-top: 2rem; padding: 0.9rem 1rem; font-size: 0.9375rem;
-  background: var(--papel-suave); border: 2px dashed var(--gris); border-radius: 0.75rem;
+  background: var(--suave); border-left: 4px solid var(--marca); border-radius: var(--radio);
 }
-.busqueda-respaldo a { color: var(--oxford); font-weight: 600; text-decoration: underline; }
+.busqueda-respaldo a { color: var(--marca); font-weight: 700; text-decoration: underline; }
 
 /* ---------- Avisos ---------- */
 .aviso-info {
-  font-size: 0.875rem; padding: 0.75rem 1rem; border-radius: 0.75rem;
-  background: var(--papel-suave); color: var(--pizarra); border: 2px solid var(--pizarra);
+  font-size: 0.875rem; padding: 0.75rem 1rem; border-radius: var(--radio);
+  background: var(--suave); color: var(--tinta); border-left: 4px solid var(--marca);
 }
 
 .aviso-flotante {
   position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); z-index: 50;
   width: min(92vw, 34rem); padding: 0.9rem 1.2rem;
-  font-size: 1rem; font-weight: 600; text-align: center;
-  background: var(--pizarra); color: #fff; border-radius: 1rem; border-top: 6px solid var(--azafran);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  font-size: 1rem; font-weight: 700; text-align: center;
+  background: var(--tinta); color: #fff; border-radius: var(--radio); border-top: 5px solid var(--oro);
+  box-shadow: 0 10px 30px rgba(14, 26, 43, 0.3);
 }
-.aviso-flotante[data-tipo="error"] { background: var(--clarete); }
+.aviso-flotante[data-tipo="error"] { background: var(--nacional); }
 
 /* ---------- Cargando ---------- */
 .cargando { display: inline-flex; align-items: center; gap: 0.75rem; }
 .cargando::before {
   content: ""; width: 1.4rem; height: 1.4rem; border-radius: 50%;
-  border: 4px solid var(--papel-palido); border-top-color: var(--clarete); animation: girar 0.9s linear infinite;
+  border: 4px solid var(--suave); border-top-color: var(--acento); animation: girar 0.9s linear infinite;
 }
 @keyframes girar { to { transform: rotate(360deg); } }
 
 /* ---------- Ventana de ayuda ---------- */
 .dialogo {
   width: min(94vw, 40rem); max-height: 90vh; padding: 1.5rem;
-  border: 3px solid var(--clarete); border-radius: 1.25rem; color: var(--pizarra); background: #fff;
+  border: 2px solid var(--marca); border-radius: var(--radio); color: var(--tinta); background: #fff;
 }
-.dialogo::backdrop { background: rgba(51, 48, 46, 0.65); }
+.dialogo::backdrop { background: rgba(14, 26, 43, 0.65); }
+
+/* ---------- Glosario de la ayuda ---------- */
+.glosario dt { display: inline; font-weight: 700; color: var(--tinta); }
+.glosario dd { display: inline; margin: 0; }
 
 /* Modo de alto contraste de Windows */
 @media (forced-colors: active) {
   .pestana, .boton, .pastilla > span, .tarjeta { border: 2px solid CanvasText; }
   .pastilla input:checked + span { outline: 3px solid Highlight; }
 }
-
-/* ---------- Glosario de la ayuda ---------- */
-.glosario dt { display: inline; font-weight: 700; color: var(--pizarra); }
-.glosario dd { display: inline; margin: 0; }

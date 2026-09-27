@@ -1,25 +1,26 @@
 /**
  * Configuración de Tailwind CSS.
- * Colores de la plantilla editorial compartida con Diplomacia Global (estilo Financial Times).
+ * Paleta oficial de la NASA en versión minimalista (ver public/css/estilos.css).
  */
 module.exports = {
   content: ['./public/**/*.html', './public/js/**/*.js'],
   theme: {
     extend: {
       colors: {
-        papel: { DEFAULT: '#FFF1E5', suave: '#F2E9DC', palido: '#E2D7CA' }, // FT Pink / Pink Light / Pink Pale
-        clarete: '#990F3D',  // FT Claret: identidad, titulares
-        pizarra: '#33302E',  // Slate Black: texto principal
-        oxford: '#0F5499',   // Oxford Blue: enlaces y botón principal
-        azafran: '#F2AF26',  // Saffron: destacados
-        gris: '#66605A',     // Gray Dark FT: texto secundario
-        verde: '#007A3D',    // FT Green (tono oscuro para cumplir contraste)
-        purpura: '#593380',  // Purple Opinion: papers; grupo «Tendencias e Innovación»
-        'verde-oscuro': '#006432' // Normas y guías; grupo «Ciclo de Vida del Proyecto»
+        fondo: '#FFFFFF',
+        suave: '#F2F5F8',    // tinte muy claro de Sky Gray para cajas
+        borde: '#9BB4C8',    // Sky Gray: solo bordes decorativos
+        tinta: '#0E1A2B',    // Space Black: texto principal y menú
+        gris: '#293241',     // Space Gray: texto secundario
+        marca: '#0B3D91',    // NASA Blue: identidad, títulos, enlaces, Internacional
+        acento: '#FC3D21',   // NASA Red: solo acento gráfico
+        nacional: '#C91B1B', // Mission Red: sección Nacional (Perú)
+        oro: '#FDB515',      // Solar Gold: novedades de la semana
+        verde: '#0A7C3E',    // Earth Green: descargas, normas
+        ciencia: '#1B81A8'   // Science Blue: franja de los papers
       },
       fontFamily: {
-        sans: ['"Atkinson Hyperlegible Next"', '"Atkinson Hyperlegible"', 'Verdana', '"Segoe UI"', 'Arial', 'sans-serif'],
-        titular: ['Georgia', '"Times New Roman"', 'serif']
+        sans: ['"Atkinson Hyperlegible"', 'Verdana', '"Segoe UI"', 'Arial', 'sans-serif']
       }
     }
   }

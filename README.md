@@ -9,7 +9,7 @@ Está pensado para personas mayores y para quien no se lleva bien con la tecnolo
 botones grandes, colores con buen contraste y mensajes en lenguaje sencillo.
 
 Es la aplicación hermana de [Diplomacia Global](https://github.com/ehchavezm-hub/03-Diplomacia):
-misma plantilla visual y misma forma de uso, con contenido del sector construcción.
+misma arquitectura y forma de uso, con contenido del sector construcción y paleta de la NASA.
 
 ---
 
@@ -70,15 +70,21 @@ Detalles del buscador:
 - Al final de cada búsqueda hay un enlace para seguir buscando en **Google Noticias**, limitado a
   medios de prestigio.
 
-### Temas sugeridos y glosario del ciclo IPC
+### Temas sugeridos (5 grupos, 22 temas)
 
-| Tendencias e Innovación (púrpura) | Ciclo de Vida del Proyecto — IPC (verde, en orden) |
-|---|---|
-| BIM y Construcción Digital | 1. Ingeniería y Diseño |
-| IA y Automatización | 2. Procura y Contratos |
-| Construcción Sostenible | 3. Construcción y Obra |
-| Seguridad y Salud en Obra | 4. Puesta en Marcha |
-| Infraestructura y APP | 5. Operación y Mantenimiento |
+1. **Planificación:** AWP (Advanced Work Packaging) · Last Planner System (LPS) · PPM (Project
+   Production Management) · Constructabilidad e Ingeniería de Valor · Programación Rítmica y
+   Líneas de Balance.
+2. **Métodos Constructivos y Sistemas de Soporte:** Métodos Constructivos · Sistemas de
+   Encofrados · Andamios · Procesos Constructivos.
+3. **Tecnologías y Metodologías Integradas:** VDC (Virtual Design and Construction) · BIM ·
+   Gestión de la Información para la construcción · IA y Automatización de Procesos ·
+   Construcción e Industrialización Digital.
+4. **Ciclo de Vida y Fases del Proyecto** (en orden): Ingeniería y Diseño (FEED) · Procura y
+   Contratos · Construcción y Montaje · Puesta en Marcha (Commissioning) · Operación y
+   Mantenimiento (O&M).
+5. **Marcos de Gestión de Proyectos y Gobernanza:** PMBOK y Estándares del PMI · PRINCE2
+   (Gobernanza y Control) · IPMA (Modelo de Competencias ICB4).
 
 Glosario en lenguaje sencillo:
 
@@ -169,25 +175,27 @@ Notas de la comprobación:
 
 ## Colores y tamaños
 
-Plantilla editorial estilo Financial Times (la misma de Diplomacia Global), con contraste
+**Paleta oficial de la NASA en versión minimalista** (fondo blanco y pocos colores), con contraste
 verificado según WCAG 2.1 AA:
 
-| Uso | Color |
-|---|---|
-| Fondo | FT Pink `#FFF1E5` |
-| Texto | Slate `#33302E` (11,8 : 1) |
-| Cabecera y títulos | Claret `#990F3D` |
-| Botón Buscar y enlaces | Oxford Blue `#0F5499` |
-| Botón de novedades | Saffron `#F2AF26` con texto Slate |
-| Nacional (Perú) / Internacional | Claret (rojo) / Oxford Blue (azul) |
-| Tendencias e Innovación | Púrpura `#593380` |
-| Ciclo de Vida del Proyecto y Normas | Verde oscuro `#006432` |
-| Descargas / WhatsApp | `#007A3D` / `#075E54` |
+| Uso | Color NASA | Contraste |
+|---|---|---|
+| Fondo | Blanco `#FFFFFF`; cajas en un tinte muy claro de Sky Gray `#F2F5F8` | — |
+| Texto principal y menú | Space Black `#0E1A2B` | 17,5 : 1 |
+| Texto secundario | Space Gray `#293241` | 12,9 : 1 |
+| Cabecera, títulos, botón Buscar, enlaces, sección Internacional | NASA Blue `#0B3D91` | 10,0 : 1 |
+| Sección Nacional (Perú) | Mission Red `#C91B1B` | 5,7 : 1 |
+| Acento (pestaña activa, franja de noticias) | NASA Red `#FC3D21` (solo gráfico: 3,6 : 1 no alcanza para texto) | — |
+| Botón de novedades | Solar Gold `#FDB515` con texto Space Black | 9,8 : 1 |
+| Descargas, normas, «Acceso libre» | Earth Green `#0A7C3E` | 5,3 : 1 |
+| Franja de los papers | Science Blue `#1B81A8` (solo gráfico) | — |
+| Bordes | Sky Gray `#9BB4C8` (solo decorativo) | — |
+| WhatsApp | `#075E54` (se mantiene porque la gente lo reconoce) | 7,7 : 1 |
 
-Tamaños: nombre 25 px, títulos 23 px y 19 px, botones 15 px, texto 16 px, notas 14 px.
+**Tipografía:** Atkinson Hyperlegible en toda la página, títulos incluidos (diseñada por el
+Braille Institute para personas con baja visión). Tamaños: nombre 25 px, títulos 23 px y 19 px,
+botones 15 px, texto 16 px, notas 14 px. La fuente solo tiene pesos normal y negrita.
 Los botones **A−** y **A+** agrandan o achican todo (90 % a 150 %) y la página lo recuerda.
-
----
 
 ## Probar en su computadora (paso a paso)
 

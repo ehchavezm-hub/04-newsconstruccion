@@ -29,11 +29,11 @@
       grupo.setAttribute('data-grupo', g.id);
       grupo.setAttribute('role', 'group');
       var titulo = document.createElement('h3');
-      titulo.className = 'titular t-h2';
-      var icono = document.createElement('span');
-      icono.setAttribute('aria-hidden', 'true');
-      icono.textContent = g.icono;
-      titulo.appendChild(icono);
+      titulo.className = 't-h2';
+      var numero = document.createElement('span');
+      numero.className = 'numero-grupo';
+      numero.textContent = g.numero + '.';
+      titulo.appendChild(numero);
       titulo.appendChild(document.createTextNode(g.titulo));
       titulo.id = 'grupo-' + g.id;
       grupo.setAttribute('aria-labelledby', titulo.id);
@@ -55,7 +55,17 @@
         b.className = 'sugerencia';
         b.setAttribute('data-tema', t.id);
         b.setAttribute('aria-pressed', 'false');
-        b.textContent = t.etiqueta;
+        // "AWP (Advanced Work Packaging)": la sigla en negrita y la explicación en letra normal.
+        var partes = /^(.*?)\s(\(.*\))$/.exec(t.etiqueta);
+        if (partes) {
+          b.appendChild(document.createTextNode(partes[1] + ' '));
+          var detalle = document.createElement('span');
+          detalle.className = 'detalle-tema';
+          detalle.textContent = partes[2];
+          b.appendChild(detalle);
+        } else {
+          b.textContent = t.etiqueta;
+        }
         botones.appendChild(b);
       });
       grupo.appendChild(botones);

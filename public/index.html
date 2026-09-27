@@ -5,29 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Construcción Global — Noticias, estudios y libros sobre obras y proyectos</title>
   <meta name="description" content="Buscador sencillo de noticias, estudios académicos y libros sobre ingeniería, procura, construcción, puesta en marcha y operación de proyectos, solo de fuentes de prestigio del Perú y del mundo.">
-  <meta name="theme-color" content="#990F3D">
+  <meta name="theme-color" content="#0B3D91">
   <link rel="icon" href="img/icono.svg" type="image/svg+xml">
 
   <!-- Tailwind CSS ya compilado (no requiere internet). Ver "npm run css" en el README. -->
   <link rel="stylesheet" href="css/tailwind.css?v=__VERSION__">
-  <!-- Fuente diseñada para personas con baja visión (si no carga, se usa Verdana). -->
+  <!-- Atkinson Hyperlegible: fuente diseñada para personas con baja visión (si no carga, se usa Verdana). -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/estilos.css?v=__VERSION__">
 </head>
-<body class="bg-papel text-pizarra font-sans leading-relaxed">
+<body class="bg-fondo text-tinta font-sans leading-relaxed">
 
   <a href="#contenido" class="saltar-enlace">Saltar al contenido principal</a>
 
   <!-- ======================= ENCABEZADO ======================= -->
-  <header class="bg-clarete text-white">
+  <header class="bg-marca text-white">
     <div class="max-w-5xl mx-auto px-4 py-5 flex flex-wrap items-center justify-between gap-4">
       <a href="#buscar" class="flex items-center gap-3 no-underline text-white rounded-lg">
         <img src="img/icono.svg" alt="" width="56" height="56" class="w-14 h-14">
         <span>
           <span class="block t-marca titular">Construcción Global</span>
-          <span class="block t-nota text-papel">Noticias, estudios y libros sobre cómo se diseñan, construyen y operan las obras</span>
+          <span class="block t-nota text-white">Noticias, estudios y libros sobre cómo se diseñan, construyen y operan las obras</span>
         </span>
       </a>
 
@@ -47,7 +47,7 @@
     </div>
 
     <!-- ======================= MENÚ PRINCIPAL ======================= -->
-    <nav aria-label="Menú principal" class="bg-pizarra">
+    <nav aria-label="Menú principal" class="bg-tinta">
       <ul class="max-w-5xl mx-auto px-4 py-3 grid grid-cols-2 md:grid-cols-4 gap-3">
         <li>
           <a href="#buscar" class="pestana" data-seccion="buscar">
@@ -83,13 +83,13 @@
 
     <!-- ======================= SECCIÓN: BUSCAR ======================= -->
     <section id="seccion-buscar" data-seccion="buscar" aria-labelledby="titulo-buscar">
-      <h1 id="titulo-buscar" class="titular t-h1 text-clarete mb-2" tabindex="-1">¿Qué desea encontrar?</h1>
+      <h1 id="titulo-buscar" class="titular t-h1 text-marca mb-2" tabindex="-1">¿Qué desea encontrar?</h1>
       <p class="t-cuerpo mb-6">Escriba un tema, un proyecto, una empresa o el nombre de un autor y pulse el botón <strong>Buscar</strong>.</p>
 
       <!-- ============ NOVEDADES DE LA ÚLTIMA SEMANA ============ -->
       <div class="caja-semana mb-8">
         <div class="flex-1">
-          <h2 class="titular t-h2 text-pizarra">¿Qué pasó esta semana en la construcción del Perú y el mundo?</h2>
+          <h2 class="titular t-h2 text-tinta">¿Qué pasó esta semana en la construcción del Perú y el mundo?</h2>
           <p class="t-cuerpo mt-1">Lo más importante de los <strong>últimos 7 días</strong>, solo de fuentes de gran prestigio: El Comercio, Gestión, Andina, RPP, CAPECO, ProInversión, ENR, Construction Dive, Global Construction Review, el Banco Mundial, el BID y revistas académicas.</p>
           <p class="t-nota mt-1 text-gris">Si antes escribe un tema en la caja de búsqueda, le mostraremos solo las novedades sobre ese tema.</p>
         </div>
@@ -99,8 +99,8 @@
         </button>
       </div>
 
-      <form id="formulario-busqueda" role="search" class="bg-white border-2 border-pizarra rounded-2xl p-5 md:p-8" novalidate>
-        <label for="caja-busqueda" class="block t-h2 text-pizarra mb-3">Escriba aquí un tema, proyecto, empresa o autor</label>
+      <form id="formulario-busqueda" role="search" class="bg-white border-2 border-tinta rounded-2xl p-5 md:p-8" novalidate>
+        <label for="caja-busqueda" class="block t-h2 text-tinta mb-3">Escriba aquí un tema, proyecto, empresa o autor</label>
         <div class="flex flex-col md:flex-row gap-3">
           <input id="caja-busqueda" name="q" type="search" autocomplete="off" enterkeyhint="search"
                  class="caja-busqueda flex-1"
@@ -122,7 +122,7 @@
         </div>
 
         <fieldset class="mt-6">
-          <legend class="t-h2 text-pizarra mb-3">¿Qué busca?</legend>
+          <legend class="t-h2 text-tinta mb-3">¿Qué busca?</legend>
           <div class="flex flex-wrap gap-3">
             <label class="pastilla"><input type="radio" name="tipo" value="todos" checked><span>Todos</span></label>
             <label class="pastilla"><input type="radio" name="tipo" value="noticia"><span><span aria-hidden="true">📰</span> Noticias</span></label>
@@ -133,7 +133,7 @@
       </form>
 
       <div class="mt-6">
-        <p class="t-cuerpo font-semibold text-pizarra mb-3">¿No sabe por dónde empezar? Pulse un tema:</p>
+        <p class="t-cuerpo font-semibold text-tinta mb-3">¿No sabe por dónde empezar? Pulse un tema:</p>
         <!-- Los botones se crean desde js/temas.js (una sola lista para toda la aplicación). -->
         <div id="sugerencias" class="grupos-temas"></div>
       </div>
@@ -141,7 +141,7 @@
       <div id="zona-resultados-buscar" class="mt-10">
         <div id="filtro-idioma" class="mb-5" hidden>
           <fieldset>
-            <legend class="t-cuerpo font-semibold text-pizarra mb-3">¿En qué idioma?</legend>
+            <legend class="t-cuerpo font-semibold text-tinta mb-3">¿En qué idioma?</legend>
             <div class="flex flex-wrap gap-3">
               <label class="pastilla"><input type="radio" name="idioma" value="todos" checked><span>Todos los idiomas</span></label>
               <label class="pastilla"><input type="radio" name="idioma" value="es"><span>Solo en español</span></label>
@@ -155,7 +155,7 @@
 
     <!-- ======================= SECCIÓN: NOTICIAS ======================= -->
     <section id="seccion-noticias" data-seccion="noticias" aria-labelledby="titulo-noticias" hidden>
-      <h1 id="titulo-noticias" class="titular t-h1 text-clarete mb-2" tabindex="-1">Últimas Noticias</h1>
+      <h1 id="titulo-noticias" class="titular t-h1 text-marca mb-2" tabindex="-1">Últimas Noticias</h1>
       <p class="t-cuerpo mb-6">Noticias de los últimos 7 días sobre obras, proyectos e infraestructura, de la más nueva a la más antigua, en dos secciones: nacional (Perú) e internacional. Solo de medios de referencia, medios especializados, gremios y entidades oficiales.</p>
       <p id="estado-noticias" class="estado-resultados" role="status" aria-live="polite"></p>
       <div id="zona-noticias"></div>
@@ -163,7 +163,7 @@
 
     <!-- ======================= SECCIÓN: PAPERS ======================= -->
     <section id="seccion-papers" data-seccion="papers" aria-labelledby="titulo-papers" hidden>
-      <h1 id="titulo-papers" class="titular t-h1 text-clarete mb-2" tabindex="-1">Papers Académicos</h1>
+      <h1 id="titulo-papers" class="titular t-h1 text-marca mb-2" tabindex="-1">Papers Académicos</h1>
       <p class="t-cuerpo mb-6">Estudios de las revistas académicas más prestigiosas de construcción y gestión de proyectos, y normas y guías oficiales. Algunos se pueden descargar gratis.</p>
       <p id="estado-papers" class="estado-resultados" role="status" aria-live="polite"></p>
       <ol id="lista-papers" class="lista-resultados" aria-labelledby="titulo-papers"></ol>
@@ -171,16 +171,16 @@
 
     <!-- ======================= SECCIÓN: LIBROS ======================= -->
     <section id="seccion-libros" data-seccion="libros" aria-labelledby="titulo-libros" hidden>
-      <h1 id="titulo-libros" class="titular t-h1 text-clarete mb-2" tabindex="-1">Libros Destacados</h1>
+      <h1 id="titulo-libros" class="titular t-h1 text-marca mb-2" tabindex="-1">Libros Destacados</h1>
       <p class="t-cuerpo mb-6">Libros publicados en los últimos años por editoriales de prestigio, y después las obras clásicas. Del más reciente al más antiguo.</p>
       <p id="estado-libros" class="estado-resultados" role="status" aria-live="polite"></p>
       <ol id="lista-libros" class="lista-resultados" aria-labelledby="titulo-libros"></ol>
     </section>
   </main>
 
-  <footer class="bg-papel-suave border-t-4 border-clarete mt-12">
+  <footer class="bg-suave border-t-4 border-marca mt-12">
     <div class="max-w-5xl mx-auto px-4 py-8 t-nota space-y-3">
-      <p class="titular t-h2 text-clarete">Fuentes de prestigio que consultamos</p>
+      <p class="titular t-h2 text-marca">Fuentes de prestigio que consultamos</p>
       <p><strong>Nacionales:</strong> El Comercio, Gestión, La República, RPP, Andina, Semana Económica, El Peruano, Rumbo Minero, Energiminas, Ojo Público y Convoca.</p>
       <p><strong>Entidades públicas y gremios:</strong> ProInversión, Ministerio de Transportes y Comunicaciones, Ministerio de Vivienda, Construcción y Saneamiento, OECE, Autoridad Nacional de Infraestructura, Contraloría, CAPECO y Colegio de Ingenieros del Perú.</p>
       <p><strong>Organismos multilaterales:</strong> Banco Mundial, BID, CAF, Global Infrastructure Hub y OCDE.</p>
@@ -198,7 +198,7 @@
 
   <!-- ======================= VENTANA DE AYUDA ======================= -->
   <dialog id="dialogo-ayuda" class="dialogo" aria-labelledby="titulo-ayuda">
-    <h2 id="titulo-ayuda" class="titular t-h1 text-clarete mb-4">Cómo usar Construcción Global</h2>
+    <h2 id="titulo-ayuda" class="titular t-h1 text-marca mb-4">Cómo usar Construcción Global</h2>
     <ol class="t-cuerpo space-y-3 list-decimal pl-7">
       <li><strong>Escriba</strong> un tema en la caja grande (por ejemplo, «Puerto de Chancay» o «puesta en marcha») o pulse <strong>Buscar hablando</strong> y dígalo en voz alta.</li>
       <li>Si quiere, elija <strong>qué busca</strong>: noticias, papers o libros.</li>
@@ -214,7 +214,7 @@
       <li>¿Letra pequeña? Use los botones <strong>A+</strong> y <strong>A−</strong> de arriba.</li>
     </ol>
 
-    <h3 class="titular t-h2 text-clarete mt-6 mb-2">Pequeño glosario: las etapas de un proyecto</h3>
+    <h3 class="titular t-h2 text-marca mt-6 mb-2">Pequeño glosario: las etapas de un proyecto</h3>
     <p class="t-cuerpo mb-3">Toda obra pasa por estas etapas. Juntas se conocen como <strong>IPC (Ingeniería, Procura y Construcción)</strong>, en inglés <strong>EPC</strong>.</p>
     <dl class="t-cuerpo space-y-2 glosario">
       <div><dt>Ingeniería:</dt> <dd>se estudia la idea y se diseña la obra con planos y cálculos.</dd></div>
@@ -223,7 +223,7 @@
       <div><dt>Puesta en marcha:</dt> <dd>se prueban los equipos y sistemas hasta que funcionan bien, y se entregan al dueño.</dd></div>
       <div><dt>Operación:</dt> <dd>la obra se usa y se mantiene durante toda su vida útil (O&amp;M: Operación y Mantenimiento).</dd></div>
     </dl>
-    <p class="t-nota text-gris mt-3">Otras siglas: BIM (Modelado de Información de la Construcción), APP (Asociación Público-Privada), FEED (ingeniería básica extendida, antes de construir).</p>
+    <p class="t-nota text-gris mt-3">Otras siglas: AWP (Empaquetamiento Avanzado del Trabajo), LPS (Sistema del Último Planificador), VDC (Diseño y Construcción Virtual), BIM (Modelado de Información de la Construcción), FEED (ingeniería básica extendida, antes de construir), APP (Asociación Público-Privada), PMI, PRINCE2 e IPMA (organizaciones y métodos de dirección de proyectos).</p>
 
     <form method="dialog" class="mt-6">
       <button class="boton boton-principal w-full md:w-auto">Entendido, cerrar la ayuda</button>
