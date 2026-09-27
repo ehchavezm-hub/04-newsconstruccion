@@ -107,8 +107,38 @@ async function comprobarCatalogo() {
   }
 }
 
+/** Cuenta lo publicado en la web por tema y ámbito (nacional / internacional). */
+async function resumirPublicado() {
+  const Motor = require('../public/js/motor-busqueda.js');
+  const Temas = require('../public/js/temas.js');
+  const base = 'https://ehchavezm-hub.github.io/04-newsconstruccion/datos/';
+  console.log('\n== Datos publicados (último año / todo), por tema: nacional + internacional ==');
+  const docs = [];
+  for (const c of ['noticias', 'papers', 'libros']) {
+    for (const parte of ['anio', 'historico']) {
+      try {
+        const r = await traer(`${base}${c}-${parte}.json`);
+        const lista = (await r.json()).resultados || [];
+        console.log(`  ${c}-${parte}: ${lista.length}`);
+        docs.push(...lista);
+      } catch (e) {
+        linea(false, `${c}-${parte}: ${e.message}`);
+      }
+    }
+  }
+  for (const tema of Temas.grupos.flatMap((g) => g.temas)) {
+    const del = (anios) => Motor.buscar(Motor.aptos(docs, new Date(), anios), { terminos: tema.terminos });
+    const cuenta = (lista) => `${lista.filter((d) => d.ambito === 'nacional').length} nac + ${lista.filter((d) => d.ambito !== 'nacional').length} int`;
+    console.log(`  ${tema.etiqueta}: último año ${cuenta(del(1))} · todo ${cuenta(del(0))}`);
+  }
+  const bim = Motor.buscar(Motor.aptos(docs, new Date(), 1), { consulta: 'BIM' }).filter((d) => d.ambito === 'nacional');
+  console.log(`\n  Búsqueda «BIM», nacional, último año: ${bim.length}`);
+  bim.slice(0, 8).forEach((d) => console.log(`    - [${d.tipo}] ${d.fecha} · ${d.fuente} · ${d.titulo}`));
+}
+
 (async () => {
   try {
+    await resumirPublicado();
     await comprobarMedios();
     await comprobarRevistas();
     await comprobarCatalogo();
