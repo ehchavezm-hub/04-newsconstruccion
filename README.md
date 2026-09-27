@@ -233,9 +233,10 @@ verificado según WCAG 2.1 AA:
 | WhatsApp | `#075E54` (se mantiene porque la gente lo reconoce) | 7,7 : 1 |
 
 **Tipografía:** Atkinson Hyperlegible en toda la página, títulos incluidos (diseñada por el
-Braille Institute para personas con baja visión). Escala minimalista: nombre 20 px (negrita), títulos 18 px y 15 px, texto y buscador 12 px,
-botones, pestañas, temas, períodos y notas 10 px, botones de las tarjetas 8 px; todo en peso
-normal salvo el nombre. Interlineado 1,4 y líneas de 1 px.
+Braille Institute para personas con baja visión). Tamaños: nombre 22 px, títulos 20 px y 16 px, buscador 14 px (13 px en teléfono), texto
+13 px, botones, pestañas y filtros 13 px, temas y períodos 12 px, notas y etiquetas 11 px,
+botones de las tarjetas 10 px. Negrita en nombre, títulos, botones y pestañas; los títulos de
+los grupos de temas, en normal. Interlineado 1,45 y líneas de 1 px.
 Los botones **A−** y **A+** agrandan o achican todo (90 % a 150 %) y la página lo recuerda.
 
 ## Probar en su computadora (paso a paso)

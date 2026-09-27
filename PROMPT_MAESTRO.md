@@ -669,3 +669,20 @@ El botón «Ver novedades de la última semana» sigue mostrando 7 días.
 - Diseño más minimalista: bordes y líneas de 1 px (bordes laterales de tarjetas 3 px), sin sombras gruesas.
 - Interlineado 1,4 en el texto (1,2–1,3 en títulos).
 - Los botones A− / A+ siguen agrandando todo hasta 150 %.
+
+## 18. Actualización 5: escala tipográfica definitiva (reemplaza la tabla de la sección 17)
+
+| Elemento | Tamaño | Peso |
+|---|---|---|
+| Nombre «Construcción Global» (cabecera) | 22 px | Negrita |
+| Títulos principales (H1) | 20 px | Negrita |
+| Subtítulos (H2), títulos de tarjetas y mensajes de estado | 16 px | Negrita |
+| Títulos de los grupos de temas | 16 px | Normal |
+| Texto de la caja de búsqueda | 14 px (13 px en teléfono) | Normal |
+| Texto de cuerpo y resúmenes | 13 px | Normal |
+| Botones principales, pestañas y filtros | 13 px | Negrita |
+| Temas sugeridos y opciones de período | 12 px | Normal |
+| Notas, fuente, fecha, etiquetas y siglas | 11 px | Normal |
+| Botones pequeños de cada tarjeta | 10 px | Negrita |
+
+Se mantienen las líneas finas (1 px) y el diseño minimalista; interlineado 1,45.
