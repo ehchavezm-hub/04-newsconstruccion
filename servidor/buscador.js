@@ -22,40 +22,42 @@ const noticiasRss = require('./fuentes/noticias-rss');
 const bibliotecaPersonal = require('./fuentes/biblioteca-personal');
 const noticiasGdelt = require('./fuentes/noticias-gdelt');
 const librosRecientes = require('./fuentes/libros-recientes');
+const openalex = require('./fuentes/openalex');
 const Fuentes = require('../public/js/fuentes-prestigio.js');
 
-const FUENTES_EN_VIVO = [noticiasRss, noticiasGdelt, crossref, librosRecientes];
+const FUENTES_EN_VIVO = [noticiasRss, noticiasGdelt, openalex, crossref, librosRecientes];
 const cache = crearCache(config.cacheMinutos);
 
 // Resultados externos recientes, para poder descargarlos por su id.
 const vistos = new Map();
 
-async function consultarFuente(fuente, consulta, terminos) {
-  const clave = `${fuente.nombre}|${consulta}|${(terminos || []).join('|')}`;
+async function consultarFuente(fuente, consulta, terminos, anios) {
+  const clave = `${fuente.nombre}|${consulta}|${(terminos || []).join('|')}|${anios}`;
   const enCache = cache.obtener(clave);
   if (enCache) return enCache;
-  const docs = await fuente.buscar(consulta, terminos);
+  const docs = await fuente.buscar(consulta, terminos, anios);
   cache.guardar(clave, docs);
   return docs;
 }
 
 /**
- * @param {{consulta?: string, tipo?: string, limite?: number}} opciones
+ * @param {{consulta?: string, tipo?: string, terminos?: string[], anios?: number, limite?: number}} opciones
+ *   anios: período en años (1 a 5; 0 = todo el tiempo). Por defecto, el último año.
  * @returns {Promise<{resultados: Array, avisos: string[]}>}
  */
-async function buscar({ consulta = '', tipo = 'todos', terminos = null, limite = 200 } = {}) {
+async function buscar({ consulta = '', tipo = 'todos', terminos = null, anios = Motor.PERIODO_POR_DEFECTO, limite = 300 } = {}) {
   const avisos = [];
   const quiere = (t) => tipo === 'todos' || tipo === t;
 
   // 1) Lo guardado: normas vigentes del catálogo, papers y libros recientes. Como en todas las
   //    fuentes, solo lo vigente a la fecha y relacionado con los temas definidos.
-  const locales = Motor.buscar(Motor.aptos(await catalogoLocal.buscar()), { consulta, tipo, terminos });
+  const locales = Motor.buscar(Motor.aptos(await catalogoLocal.buscar(), new Date(), anios), { consulta, tipo, terminos });
 
   // 2) Biblioteca personal: solo si hay texto que buscar.
   let biblioteca = [];
   if (consulta && quiere('libro')) {
     try {
-      biblioteca = Motor.aptos(await bibliotecaPersonal.buscar(consulta));
+      biblioteca = Motor.aptos(await bibliotecaPersonal.buscar(consulta), new Date(), anios);
     } catch (e) {
       avisos.push('No se pudo leer la biblioteca personal.');
     }
@@ -65,12 +67,12 @@ async function buscar({ consulta = '', tipo = 'todos', terminos = null, limite =
   let externos = [];
   if (config.fuentesEnVivo) {
     const activas = FUENTES_EN_VIVO.filter((f) => f.tipos.some(quiere));
-    const respuestas = await Promise.allSettled(activas.map((f) => consultarFuente(f, consulta, terminos)));
+    const respuestas = await Promise.allSettled(activas.map((f) => consultarFuente(f, consulta, terminos, anios)));
     respuestas.forEach((r, i) => {
       if (r.status === 'fulfilled') {
         // Las noticias RSS llegan todas; se filtran aquí por la consulta.
         const docs = activas[i] === noticiasRss ? Motor.buscar(r.value, { consulta, terminos }) : r.value;
-        externos.push(...Motor.aptos(docs));
+        externos.push(...Motor.aptos(docs, new Date(), anios));
       } else {
         avisos.push(`${activas[i].nombre} no respondió; se muestran datos de respaldo.`);
       }

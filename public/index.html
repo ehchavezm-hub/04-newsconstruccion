@@ -81,6 +81,13 @@
 
     <p id="aviso-modo" class="aviso-info mb-6" hidden></p>
 
+    <!-- ======================= PERÍODO (para las 4 pestañas) ======================= -->
+    <!-- Los botones se crean desde js/app.js con los períodos de js/motor-busqueda.js. -->
+    <fieldset id="periodo" class="barra-periodo mb-8">
+      <legend class="t-cuerpo text-tinta mb-2">¿De qué fecha? <span class="t-nota text-gris">(por defecto, lo publicado en el último año)</span></legend>
+      <div id="opciones-periodo" class="flex flex-wrap gap-2"></div>
+    </fieldset>
+
     <!-- ======================= SECCIÓN: BUSCAR ======================= -->
     <section id="seccion-buscar" data-seccion="buscar" aria-labelledby="titulo-buscar">
       <h1 id="titulo-buscar" class="titular t-h1 text-marca mb-2" tabindex="-1">¿Qué desea encontrar?</h1>
@@ -133,7 +140,7 @@
       </form>
 
       <div class="mt-6">
-        <p class="t-cuerpo font-semibold text-tinta mb-3">¿No sabe por dónde empezar? Pulse un tema:</p>
+        <p class="t-cuerpo text-tinta mb-3">¿No sabe por dónde empezar? Pulse un tema:</p>
         <!-- Los botones se crean desde js/temas.js (una sola lista para toda la aplicación). -->
         <div id="sugerencias" class="grupos-temas"></div>
       </div>
@@ -156,7 +163,7 @@
     <!-- ======================= SECCIÓN: NOTICIAS ======================= -->
     <section id="seccion-noticias" data-seccion="noticias" aria-labelledby="titulo-noticias" hidden>
       <h1 id="titulo-noticias" class="titular t-h1 text-marca mb-2" tabindex="-1">Últimas Noticias</h1>
-      <p class="t-cuerpo mb-6">Noticias de los últimos 7 días sobre los temas de Construcción Global (planificación, métodos constructivos, tecnologías, ciclo de vida del proyecto y marcos de gestión), de la más nueva a la más antigua, en dos secciones: nacional (Perú) e internacional. Solo de medios de referencia, medios especializados, institutos, gremios y entidades oficiales.</p>
+      <p class="t-cuerpo mb-6">Noticias sobre los temas de Construcción Global (planificación, métodos constructivos, tecnologías, ciclo de vida del proyecto y marcos de gestión), por defecto del <strong>último año</strong>, de la más nueva a la más antigua, en dos secciones: nacional (Perú) e internacional. De todo internet, pero solo de fuentes selectas: medios de referencia y especializados, institutos, gremios, entidades oficiales y universidades.</p>
       <p id="estado-noticias" class="estado-resultados" role="status" aria-live="polite"></p>
       <div id="zona-noticias"></div>
     </section>
@@ -164,7 +171,7 @@
     <!-- ======================= SECCIÓN: PAPERS ======================= -->
     <section id="seccion-papers" data-seccion="papers" aria-labelledby="titulo-papers" hidden>
       <h1 id="titulo-papers" class="titular t-h1 text-marca mb-2" tabindex="-1">Papers Académicos</h1>
-      <p class="t-cuerpo mb-6">Estudios publicados en los <strong>últimos 12 meses</strong> sobre los temas, en revistas y congresos de editoriales académicas de prestigio (Elsevier, ASCE, Taylor &amp; Francis, Emerald, Wiley, Springer y otras), y las normas peruanas vigentes. Algunos se pueden descargar gratis.</p>
+      <p class="t-cuerpo mb-6">Estudios sobre los temas, por defecto del <strong>último año</strong>, de revistas y congresos de todo el mundo, pero solo si están indexados (revistas núcleo y DOAJ) o son de editoriales académicas de prestigio (Elsevier, ASCE, Taylor &amp; Francis, Emerald, Wiley, Springer y otras). Los de autores de instituciones peruanas aparecen en «Nacional». También las normas peruanas vigentes. Algunos se pueden descargar gratis.</p>
       <p id="estado-papers" class="estado-resultados" role="status" aria-live="polite"></p>
       <ol id="lista-papers" class="lista-resultados" aria-labelledby="titulo-papers"></ol>
     </section>
@@ -172,7 +179,7 @@
     <!-- ======================= SECCIÓN: LIBROS ======================= -->
     <section id="seccion-libros" data-seccion="libros" aria-labelledby="titulo-libros" hidden>
       <h1 id="titulo-libros" class="titular t-h1 text-marca mb-2" tabindex="-1">Libros Destacados</h1>
-      <p class="t-cuerpo mb-6">Libros publicados en los <strong>últimos 12 meses</strong> sobre los temas, por editoriales de prestigio. Del más reciente al más antiguo.</p>
+      <p class="t-cuerpo mb-6">Libros sobre los temas, por defecto del <strong>último año</strong>, de editoriales de prestigio (Routledge, CRC Press, Springer, Wiley, Elsevier, Emerald, ICE, ASCE y otras). Del más reciente al más antiguo.</p>
       <p id="estado-libros" class="estado-resultados" role="status" aria-live="polite"></p>
       <ol id="lista-libros" class="lista-resultados" aria-labelledby="titulo-libros"></ol>
     </section>
@@ -189,7 +196,7 @@
       <p><strong>Publicaciones académicas:</strong> todas las revistas y congresos de Elsevier, ASCE, Taylor &amp; Francis, Emerald, SAGE, Wiley, Springer, ICE Publishing, IEEE, ACM, Cambridge, Oxford, IGLC (Lean Construction) e ISARC, entre ellas Journal of Construction Engineering and Management, International Journal of Project Management y Automation in Construction.</p>
       <p><strong>Libros:</strong> editoriales académicas y técnicas de prestigio (Wiley, Routledge, McGraw-Hill, Elsevier, Cambridge, ICE Publishing, PMI, FIDIC, Fondo Editorial PUCP y otras) y Proyecto Gutenberg.</p>
       <p><strong>Institutos y empresas:</strong> Construction Industry Institute, Lean Construction Institute, Project Production Institute, PMI, IPMA, PeopleCert (PRINCE2), buildingSMART, ASCE, ICE, RICS, AACE, Dodge Construction Network, Arup, Autodesk, BCG, KPMG, EY y el Foro Económico Mundial.</p>
-      <p class="text-gris">Solo mostramos lo <strong>vigente</strong> (noticias de los últimos 3 meses, papers y libros de los últimos 12 meses, normas en vigor) y relacionado con los temas sugeridos. Cada resultado indica su tema.</p>
+      <p class="text-gris">Por defecto mostramos lo publicado en el <strong>último año</strong> (puede elegir 2, 3, 4, 5 años o todo el tiempo) y solo lo relacionado con los temas sugeridos; cada resultado indica su tema. Buscamos en todo internet, pero solo en fuentes selectas: medios de prestigio, sitios oficiales y académicos, y revistas indexadas (OpenAlex: revistas núcleo y DOAJ).</p>
       <p id="pie-actualizado" class="text-gris"></p>
     </div>
   </footer>
@@ -240,6 +247,7 @@
   <script src="js/crossref.js?v=__VERSION__"></script>
   <script src="js/gdelt.js?v=__VERSION__"></script>
   <script src="js/libros.js?v=__VERSION__"></script>
+  <script src="js/openalex.js?v=__VERSION__"></script>
   <script src="js/temas.js?v=__VERSION__"></script>
   <script src="js/motor-busqueda.js?v=__VERSION__"></script>
   <script src="js/servicio-datos.js?v=__VERSION__"></script>

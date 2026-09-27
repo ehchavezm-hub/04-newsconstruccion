@@ -5,7 +5,8 @@
  * Luego abra:    http://localhost:3000
  *
  * Rutas:
- *   GET /api/buscar?q=texto&tipo=todos|noticia|paper|libro   -> resultados en JSON
+ *   GET /api/buscar?q=texto&tipo=todos|noticia|paper|libro&p=1   -> resultados en JSON
+ *       (p = período en años: 1 a 5, o 0 para todo el tiempo; por defecto 1)
  *   GET /api/descargar/:id                                    -> descarga el documento abierto
  *   GET /api/semana                                           -> novedades de los últimos 7 días
  *   GET /api/estado                                           -> comprobación rápida
@@ -74,8 +75,11 @@ async function manejarBusqueda(res, parametros) {
   const tipo = TIPOS_VALIDOS.includes(parametros.get('tipo')) ? parametros.get('tipo') : 'todos';
   // t = términos de un tema sugerido, separados por "|" (se busca cualquiera de ellos).
   const terminos = (parametros.get('t') || '').split('|').map((x) => x.slice(0, 60)).filter((x) => x.trim()).slice(0, 40);
-  const datos = await buscador.buscar({ consulta, tipo, terminos: terminos.length ? terminos : null });
-  responderJson(res, 200, { consulta, tipo, total: datos.resultados.length, ...datos });
+  // p = período en años (1 a 5; 0 = todo el tiempo). Por defecto, el último año.
+  const p = Number(parametros.get('p'));
+  const anios = [0, 1, 2, 3, 4, 5].includes(p) && parametros.has('p') ? p : 1;
+  const datos = await buscador.buscar({ consulta, tipo, terminos: terminos.length ? terminos : null, anios });
+  responderJson(res, 200, { consulta, tipo, anios, total: datos.resultados.length, ...datos });
 }
 
 /**

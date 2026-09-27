@@ -243,12 +243,72 @@
     'ipma': 'IPMA individual competence baseline project management'
   };
 
-  // Cada tema recuerda a qué grupo pertenece, sus palabras de relación indirecta y su consulta académica.
+  /*
+   * Consultas de noticias de cada tema (Google Noticias): `es` para el Perú (se le añade
+   * «Perú») y `en` para el mundo. Frases entre comillas unidas con OR.
+   */
+  var NOTICIAS = {
+    'awp': { es: '"advanced work packaging" OR "paquetes de trabajo" OR AWP', en: '"advanced work packaging" OR "workface planning"' },
+    'last-planner': { es: '"last planner" OR "último planificador" OR "lean construction"', en: '"last planner" OR "lean construction" OR "pull planning"' },
+    'ppm': { es: '"project production management" OR "gestión de la producción" obra', en: '"project production management" OR "Project Production Institute"' },
+    'constructabilidad': { es: 'constructabilidad OR "ingeniería de valor"', en: 'constructability OR "value engineering" construction' },
+    'lineas-balance': { es: '"línea de balance" OR "takt" OR "programación de obra"', en: '"line of balance" OR "takt planning" OR "location-based scheduling"' },
+    'metodos-constructivos': { es: '"método constructivo" OR "construcción modular" OR prefabricado', en: '"construction methods" OR "modular construction" OR precast' },
+    'encofrados': { es: 'encofrado OR encofrados', en: 'formwork OR falsework OR shoring construction' },
+    'andamios': { es: 'andamios OR "trabajos en altura" obra', en: 'scaffolding OR "working at height" construction' },
+    'procesos-constructivos': { es: '"proceso constructivo" OR "procesos constructivos" OR "productividad en obra"', en: '"construction process" OR "construction productivity"' },
+    'vdc': { es: '"virtual design and construction" OR VDC construcción', en: '"virtual design and construction" OR "integrated project delivery"' },
+    'bim': { es: 'BIM OR "modelado de información"', en: '"building information modeling" OR BIM construction' },
+    'gestion-informacion': { es: '"entorno de datos común" OR "gestión de la información" construcción', en: '"common data environment" OR "construction data" OR "ISO 19650"' },
+    'ia-automatizacion': { es: '"inteligencia artificial" construcción OR obra', en: '"artificial intelligence" construction OR "construction robotics"' },
+    'industrializacion': { es: '"construcción industrializada" OR "construcción modular" OR "construcción digital"', en: '"industrialized construction" OR "offsite construction" OR "construction technology"' },
+    'ingenieria': { es: '"ingeniería de detalle" OR "expediente técnico" OR "estudio de factibilidad"', en: '"front-end engineering design" OR FEED contract OR "detailed engineering"' },
+    'procura': { es: 'licitación obra OR "contratación pública" OR "contrato EPC"', en: '"EPC contract" OR "construction procurement" OR "tender" construction' },
+    'construccion': { es: '"ejecución de obra" OR "montaje electromecánico" OR "construcción de"', en: '"construction project" OR "construction management" OR "steel erection"' },
+    'puesta-marcha': { es: '"puesta en marcha" OR comisionamiento OR "entra en operación"', en: 'commissioning plant OR "mechanical completion" OR "begins operation"' },
+    'operacion': { es: '"operación y mantenimiento" OR "mantenimiento predictivo" OR "gestión de activos"', en: '"operation and maintenance" OR "predictive maintenance" OR "asset management" infrastructure' },
+    'pmbok': { es: 'PMBOK OR "Project Management Institute" OR "dirección de proyectos"', en: 'PMBOK OR "Project Management Institute"' },
+    'prince2': { es: 'PRINCE2 OR "gobernanza de proyectos"', en: 'PRINCE2 OR "project governance"' },
+    'ipma': { es: 'IPMA OR "competencias en dirección de proyectos"', en: 'IPMA OR "International Project Management Association"' }
+  };
+
+  /*
+   * Consulta de OpenAlex (índice académico mundial) para cada tema: frases exactas unidas con
+   * OR, en inglés y español, que se buscan en el título y el resumen de los papers.
+   */
+  var OPENALEX = {
+    'awp': '"advanced work packaging" OR "workface planning" OR "work packaging"',
+    'last-planner': '"last planner" OR "pull planning" OR "último planificador"',
+    'ppm': '"project production management" OR "production system design" OR "operations science" construction',
+    'constructabilidad': 'constructability OR buildability OR "value engineering" OR constructabilidad OR "ingeniería de valor"',
+    'lineas-balance': '"line of balance" OR "takt planning" OR "takt time" OR "location-based scheduling" OR "línea de balance"',
+    'metodos-constructivos': '"construction method" OR "construction methods" OR "construction technique" OR "método constructivo"',
+    'encofrados': 'formwork OR falsework OR encofrado',
+    'andamios': 'scaffold OR scaffolding OR andamio OR andamios',
+    'procesos-constructivos': '"construction process" OR "construction productivity" OR "proceso constructivo"',
+    'vdc': '"virtual design and construction" OR "integrated concurrent engineering" OR "integrated project delivery"',
+    'bim': '"building information modeling" OR "building information modelling" OR "modelado de información"',
+    'gestion-informacion': '"common data environment" OR "construction information management" OR "ISO 19650"',
+    'ia-automatizacion': '"construction automation" OR "construction robotics" OR "artificial intelligence in construction" OR "machine learning in construction"',
+    'industrializacion': '"industrialized construction" OR "offsite construction" OR "modular construction" OR "prefabricated construction" OR "construction 4.0"',
+    'ingenieria': '"front-end engineering" OR "front end loading" OR "front-end planning" OR "detailed engineering design"',
+    'procura': '"construction procurement" OR "EPC contract" OR "EPC project" OR "contratación pública" obras',
+    'construccion': '"construction project management" OR "construction site management" OR "gestión de obras"',
+    'puesta-marcha': '"building commissioning" OR "plant commissioning" OR "project commissioning" OR "mechanical completion"',
+    'operacion': '"operation and maintenance" OR "predictive maintenance" OR "facility management" OR "infrastructure asset management"',
+    'pmbok': 'PMBOK OR "Project Management Body of Knowledge" OR "Project Management Institute"',
+    'prince2': 'PRINCE2 OR "project governance"',
+    'ipma': 'IPMA OR "Individual Competence Baseline" OR "project management competence"'
+  };
+
+  // Cada tema recuerda a qué grupo pertenece, sus palabras de relación indirecta y sus consultas.
   grupos.forEach(function (g) {
     g.temas.forEach(function (t) {
       t.grupo = g.id;
       t.relacionados = RELACIONADOS[t.id] || [];
       t.academica = ACADEMICA[t.id] || t.etiqueta;
+      t.noticias = NOTICIAS[t.id] || { es: t.etiqueta, en: t.academica };
+      t.openalex = OPENALEX[t.id] || t.academica;
     });
   });
 

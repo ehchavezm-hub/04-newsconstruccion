@@ -33,9 +33,9 @@ En cada actualización se generan tres archivos en `public/datos/`:
 | Archivo | Qué contiene |
 |---|---|
 | `ultima-semana.json` | Noticias y papers de los últimos 7 días |
-| `noticias-archivo.json` | Todas las noticias de los últimos 90 días (se van sumando) |
-| `papers-recientes.json` | Papers de los últimos 12 meses de cada uno de los 22 temas |
-| `libros-recientes.json` | Libros de los últimos 12 meses de cada tema (Crossref y Open Library), de editoriales de prestigio |
+| `noticias-anio.json` / `noticias-historico.json` | Noticias por tema (Perú y mundo): último año / anteriores |
+| `papers-anio.json` / `papers-historico.json` | Papers por tema (OpenAlex, fuentes selectas): último año / anteriores |
+| `libros-anio.json` / `libros-historico.json` | Libros por tema (Crossref y Open Library): último año / anteriores |
 
 ### Configuración única (solo la primera vez)
 
@@ -44,24 +44,34 @@ En GitHub, dentro de `ehchavezm-hub/04-newsconstruccion`:
 
 ---
 
-## Qué se muestra: solo lo vigente y relacionado con los temas
+## Qué se muestra: el período elegido y solo lo relacionado con los temas
 
-En las cuatro pestañas (Buscar, Últimas Noticias, Papers Académicos y Libros Destacados) cada
-resultado debe cumplir dos condiciones:
+En las cuatro pestañas (Buscar, Últimas Noticias, Papers Académicos y Libros Destacados):
 
-1. **Estar vigente a la fecha:**
-   - noticias de los últimos 7 días (pestaña Últimas Noticias) o 3 meses (Buscar);
-   - papers y libros publicados en los **últimos 12 meses** (para Crossref se usa la fecha más
-     temprana, impresa o en línea: un artículo publicado en línea en 2024 no aparece aunque salga
-     impreso ahora);
-   - normas solo si están en vigor (Ley 32069 y Norma G.050). Los libros y papers clásicos del
-     catálogo ya no se muestran.
-2. **Relacionarse, directa o indirectamente, con los 22 temas sugeridos:** directa si menciona el
-   tema (por ejemplo «Last Planner»); indirecta si trata de algo ligado a él (una obra que «entra
-   en operación» se relaciona con la Puesta en marcha). Cada tarjeta muestra su **«Tema: …»**.
-   Los términos están en `public/js/temas.js` (`terminos` y `RELACIONADOS`).
+1. **Período:** por defecto, solo lo publicado en el **último año (365 días)**. Arriba de cada
+   pestaña, «¿De qué fecha?» permite elegir **Últimos 2, 3, 4 o 5 años** o **Todo el tiempo**;
+   la página recuerda la elección. Las normas se muestran si están en vigor (Ley 32069 y Norma
+   G.050). Los clásicos del catálogo aparecen solo si el período los abarca.
+2. **Relación con los 22 temas sugeridos**, directa (menciona el tema) o indirecta (trata de
+   algo ligado a él). Cada tarjeta muestra su **«Tema: …»**.
+3. **Sin ruido:** se descartan avisos de empleo, cursos, notas de prensa pagadas y «estudios de
+   mercado».
 
-Los plazos se cambian en `VIGENCIA_DIAS` de `public/js/motor-busqueda.js`.
+## Búsqueda en todo internet, con selectividad
+
+- **Noticias:** para cada tema se busca en Google Noticias del Perú (en español + «Perú») y del
+  mundo (en inglés). Solo se aceptan **fuentes selectas**: medios de referencia y
+  especializados, institutos y gremios, y cualquier sitio **oficial o académico** (.gob.pe,
+  .edu.pe, .gov, .edu…). La lista está en `public/js/fuentes-prestigio.js` (`dominios`,
+  `dominiosAmpliados`, `dominiosExcluidos`).
+- **Papers:** OpenAlex (índice académico mundial) en todas las revistas y congresos, pero solo
+  si la revista es **núcleo** (seleccionada por CWTS, Universidad de Leiden), está en el índice
+  **DOAJ** o es de una **editorial académica de prestigio**. Se busca aparte lo de **autores de
+  instituciones peruanas**, que aparece en «Nacional (Perú)».
+- **Libros:** Crossref (editoriales académicas y técnicas de prestigio) y Open Library.
+- **Archivo histórico:** cada actualización (cada 4 horas) consulta el último año y una ventana
+  más antigua que rota (1-2, 2-3, 3-4, 4-5 años y «antes»), y suma todo a lo ya publicado.
+  Para llenarlo de una vez: pestaña Actions → «Publicar…» → *Run workflow* con `ventanas: todas`.
 
 ## Cómo busca
 

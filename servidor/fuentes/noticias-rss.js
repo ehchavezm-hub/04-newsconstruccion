@@ -80,6 +80,7 @@ function interpretarRss(xml, medio) {
   })
     .filter((n) => n.titulo && /^https?:\/\//.test(n.enlace))
     .filter((n) => medio.especializado || Fuentes.esRelevante(n.titulo, n.resumen))
+    .filter((n) => !Fuentes.esDescartable(n))
     .slice(0, MAX_POR_MEDIO);
 }
 
@@ -108,6 +109,8 @@ module.exports = {
   interpretarRss,
   leerTodos,
   urlDe,
+  etiqueta,
+  aFecha,
 
   async buscar() {
     const { noticias, informe } = await leerTodos();

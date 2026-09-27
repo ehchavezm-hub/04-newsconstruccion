@@ -236,34 +236,62 @@
     return temasDe(doc).length > 0;
   }
 
-  // Cuánto tiempo se considera vigente cada tipo de resultado (en días).
-  var VIGENCIA_DIAS = { noticia: 90, paper: 365, libro: 365 };
+  /*
+   * PERÍODO DE BÚSQUEDA
+   * Por defecto, solo lo del ÚLTIMO AÑO (365 días) en las cuatro pestañas. La persona puede
+   * elegir 2, 3, 4 o 5 años, o «Todo el tiempo» (0).
+   */
+  var PERIODOS = [
+    { anios: 1, etiqueta: 'Último año' },
+    { anios: 2, etiqueta: 'Últimos 2 años' },
+    { anios: 3, etiqueta: 'Últimos 3 años' },
+    { anios: 4, etiqueta: 'Últimos 4 años' },
+    { anios: 5, etiqueta: 'Últimos 5 años' },
+    { anios: 0, etiqueta: 'Todo el tiempo' }
+  ];
+  var PERIODO_POR_DEFECTO = 1;
+
+  /** Días que abarca un período en años (0 = todo el tiempo = sin límite). */
+  function diasDePeriodo(anios) {
+    return anios ? anios * 365 : Infinity;
+  }
+
+  /** "AAAA-MM-DD" del comienzo del período (null si es todo el tiempo). */
+  function inicioDePeriodo(anios, ahora) {
+    if (!anios) return null;
+    return new Date((ahora || new Date()).getTime() - diasDePeriodo(anios) * 86400000).toISOString().slice(0, 10);
+  }
 
   /**
-   * ¿El documento está vigente a la fecha?
-   *   - Noticias: de los últimos 90 días (las de la semana, de los últimos 7).
-   *   - Papers y libros: publicados en los últimos 12 meses. Si solo se conoce el año,
-   *     basta con que sea el año del límite o posterior.
-   *   - Normas: solo las que están en vigor (vigente: true en el catálogo).
-   *   - El contenido de ejemplo nunca se considera vigente.
+   * ¿El documento está dentro del período elegido (por defecto, el último año)?
+   *   - Si solo se conoce el año, basta con que sea el año del límite o posterior.
+   *   - Normas: solo las que están en vigor (vigente: true en el catálogo), sin importar su fecha.
+   *   - El contenido de ejemplo nunca se muestra; nada con fecha futura.
+   * @param {number} [anios]  1 a 5, o 0 = todo el tiempo. Por defecto, 1.
    */
-  function vigente(doc, ahora) {
+  function vigente(doc, ahora, anios) {
     if (doc.ejemplo) return false;
     if (doc.tipo === 'norma') return doc.vigente === true;
     if (doc.fragmento) return true; // párrafos de la biblioteca personal
-    var dias = VIGENCIA_DIAS[doc.tipo];
-    if (!dias) return false;
+    if (anios === undefined || anios === null) anios = PERIODO_POR_DEFECTO;
     var hoy = (ahora || new Date()).getTime();
-    var limite = hoy - dias * 86400000;
+    var limite = hoy - diasDePeriodo(anios) * 86400000;
     var fecha = String(doc.fecha || '');
-    if (/^\d{4}$/.test(fecha)) return Number(fecha) >= new Date(limite).getUTCFullYear() && Number(fecha) <= new Date(hoy).getUTCFullYear();
+    if (/^-?\d{1,4}$/.test(fecha)) {
+      var anio = Number(fecha);
+      return anio <= new Date(hoy).getUTCFullYear() && (!isFinite(limite) || anio >= new Date(limite).getUTCFullYear());
+    }
     var t = valorFecha(fecha);
-    return t >= limite && t <= hoy + 86400000;
+    if (t === -Infinity) return false;
+    return t <= hoy + 86400000 && (!isFinite(limite) || t >= limite);
   }
 
-  /** Solo lo vigente y relacionado con los temas. */
-  function aptos(documentos, ahora) {
-    return documentos.filter(function (d) { return vigente(d, ahora) && esDeLosTemas(d); });
+  /** Solo lo que está en el período, se relaciona con los temas y no es ruido (empleo, publicidad). */
+  function aptos(documentos, ahora, anios) {
+    var Fuentes = typeof module !== 'undefined' && module.exports ? require('./fuentes-prestigio.js') : raiz.FuentesPrestigio;
+    return documentos.filter(function (d) {
+      return vigente(d, ahora, anios) && esDeLosTemas(d) && !Fuentes.esDescartable(d);
+    });
   }
 
   var MotorBusqueda = {
@@ -277,7 +305,10 @@
     esDeLosTemas: esDeLosTemas,
     vigente: vigente,
     aptos: aptos,
-    VIGENCIA_DIAS: VIGENCIA_DIAS,
+    PERIODOS: PERIODOS,
+    PERIODO_POR_DEFECTO: PERIODO_POR_DEFECTO,
+    diasDePeriodo: diasDePeriodo,
+    inicioDePeriodo: inicioDePeriodo,
     SINONIMOS: SINONIMOS
   };
 

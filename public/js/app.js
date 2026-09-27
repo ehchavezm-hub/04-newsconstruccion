@@ -143,23 +143,23 @@
       var n = resultados.length;
       var mensaje;
       if (!n && buscandoMas) {
-        mensaje = 'Buscando «' + consulta + '» en medios especializados y agencias de prestigio… puede tardar unos segundos.';
+        mensaje = 'Buscando «' + consulta + '» en medios, revistas indexadas y editoriales de prestigio… puede tardar unos segundos.';
       } else if (!n) {
-        mensaje = 'No encontramos resultados para «' + consulta + '»' + NOMBRE_TIPO[tipo] +
-                  '. Pruebe con otras palabras, elija «Todos» o pulse uno de los temas sugeridos.';
+        mensaje = 'No encontramos resultados ' + textoPeriodo() + ' para «' + consulta + '»' + NOMBRE_TIPO[tipo] +
+                  '. Pruebe con otras palabras, un período mayor o uno de los temas sugeridos.';
       } else if (consulta) {
-        mensaje = 'Encontramos ' + plural(n, 'resultado', 'resultados') + ' para «' + consulta + '»' + NOMBRE_TIPO[tipo] + '.';
+        mensaje = 'Encontramos ' + plural(n, 'resultado', 'resultados') + ' ' + textoPeriodo() + ' para «' + consulta + '»' + NOMBRE_TIPO[tipo] + '.';
       } else {
-        mensaje = plural(n, 'publicación', 'publicaciones') + NOMBRE_TIPO[tipo] +
-                  '. Escriba un tema para buscar algo concreto.';
+        mensaje = plural(n, 'publicación', 'publicaciones') + ' ' + textoPeriodo() + NOMBRE_TIPO[tipo] +
+                  ' sobre los temas. Escriba un tema para buscar algo concreto.';
       }
       var sobre = consulta ? ' sobre «' + consulta + '»' : '';
       CG.Interfaz.mostrarPorAmbito(zona, estado, resultados, mensaje, acciones, {
-        vacioNacional: 'No encontramos publicaciones nacionales' + sobre + '.',
-        vacioInternacional: 'No encontramos publicaciones internacionales' + sobre + '.'
+        vacioNacional: 'No encontramos publicaciones nacionales' + sobre + ' ' + textoPeriodo() + '.',
+        vacioInternacional: 'No encontramos publicaciones internacionales' + sobre + ' ' + textoPeriodo() + '.'
       });
       if (buscandoMas) {
-        if (n) estado.textContent += ' Seguimos buscando más en medios especializados y agencias de prestigio…';
+        if (n) estado.textContent += ' Seguimos buscando más en medios, revistas indexadas y editoriales de prestigio…';
         estado.classList.add('cargando');
       }
       if (consulta && !buscandoMas && (tipo === 'todos' || tipo === 'noticia')) {
@@ -266,22 +266,60 @@
     });
   }
 
+  /* ------------------------------ Período ------------------------------ */
+  /** Texto del período elegido, para los mensajes: «del último año», «de los últimos 3 años»… */
+  function textoPeriodo() {
+    var anios = CG.Datos.periodo();
+    if (anios === 0) return 'de todo el tiempo';
+    return anios === 1 ? 'del último año' : 'de los últimos ' + anios + ' años';
+  }
+
+  /** Dibuja los botones de período (desde js/motor-busqueda.js). */
+  function dibujarPeriodos() {
+    var contenedor = $('opciones-periodo');
+    window.MotorBusqueda.PERIODOS.forEach(function (p) {
+      var etiqueta = document.createElement('label');
+      etiqueta.className = 'pastilla';
+      var radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'periodo';
+      radio.value = String(p.anios);
+      radio.checked = p.anios === CG.Datos.periodo();
+      radio.addEventListener('change', function () { cambiarPeriodo(p.anios); });
+      var texto = document.createElement('span');
+      texto.textContent = p.etiqueta;
+      etiqueta.appendChild(radio);
+      etiqueta.appendChild(texto);
+      contenedor.appendChild(etiqueta);
+    });
+  }
+
+  /** Cambia el período y vuelve a mostrar lo que se estaba viendo. */
+  function cambiarPeriodo(anios) {
+    CG.Datos.fijarPeriodo(anios);
+    try { localStorage.setItem('cg-periodo', String(anios)); } catch (e) { /* sin almacenamiento */ }
+    cargadas = {};
+    var actual = seccionActual();
+    if (actual === 'buscar') { if (vista === 'semana') verSemana(); else buscar(); }
+    else cargarSeccion(actual);
+  }
+
   /* ------------------------------ Secciones ------------------------------ */
   function cargarNoticias() {
     var zona = $('zona-noticias');
     var estado = $('estado-noticias');
     CG.Interfaz.mostrarCargandoZona(zona, estado);
-    CG.Datos.semana().then(function (r) {
-      var noticias = r.resultados.filter(function (d) { return d.tipo === 'noticia'; });
+    CG.Datos.noticias().then(function (r) {
+      var noticias = r.resultados;
       if (noticias.length) {
         CG.Interfaz.mostrarPorAmbito(zona, estado, noticias,
-          plural(noticias.length, 'noticia', 'noticias') + ' de los últimos ' + r.dias + ' días.', acciones);
+          plural(noticias.length, 'noticia', 'noticias') + ' ' + textoPeriodo() + ' sobre los temas, de la más reciente a la más antigua.', acciones);
         return;
       }
-      // Solo se muestran noticias vigentes y de los temas: si no hay, se dice con claridad.
+      // Solo se muestran noticias del período y de los temas: si no hay, se dice con claridad.
       CG.Interfaz.mostrarPorAmbito(zona, estado, [], r.generado
-        ? 'Esta semana no hay noticias sobre los temas de Construcción Global. Pruebe en la pestaña «Buscar», que revisa los últimos 3 meses.'
-        : 'En este momento no podemos traer las noticias del día. Por favor, inténtelo de nuevo en unos minutos.', acciones);
+        ? 'No encontramos noticias ' + textoPeriodo() + ' sobre los temas. Pruebe con un período mayor.'
+        : 'En este momento no podemos traer las noticias. Por favor, inténtelo de nuevo en unos minutos.', acciones);
     });
   }
 
@@ -295,10 +333,10 @@
     CG.Interfaz.mostrarCargando(lista, estado);
     CG.Datos.buscar({ consulta: '', tipo: TIPO_DE_SECCION[seccion] }).then(function (r) {
       var resultados = r.resultados; // de lo más reciente a lo más antiguo
-      var que = seccion === 'papers' ? 'publicados en los últimos 12 meses (y normas vigentes)' : 'publicados en los últimos 12 meses';
+      var que = (seccion === 'papers' ? 'papers y normas vigentes ' : 'libros ') + textoPeriodo() + ' sobre los temas';
       CG.Interfaz.mostrarResultados(lista, estado, resultados, resultados.length
-        ? plural(resultados.length, 'documento', 'documentos') + ' ' + que + ', del más reciente al más antiguo.'
-        : 'En este momento no hay documentos ' + que + ' sobre los temas. Pruebe en la pestaña «Buscar» con un tema.', acciones);
+        ? plural(resultados.length, 'documento', 'documentos') + ': ' + que + ', del más reciente al más antiguo.'
+        : 'No encontramos ' + que + '. Pruebe con un período mayor.', acciones);
     });
   }
 
@@ -345,6 +383,13 @@
       if (!isNaN(guardado) && ESCALAS[guardado]) nivel = guardado;
     } catch (e) { /* sin almacenamiento */ }
     aplicarEscala();
+
+    // Período: por defecto el último año; se recuerda el que eligió la persona.
+    try {
+      var periodoGuardado = parseInt(localStorage.getItem('cg-periodo'), 10);
+      if (window.MotorBusqueda.PERIODOS.some(function (p) { return p.anios === periodoGuardado; })) CG.Datos.fijarPeriodo(periodoGuardado);
+    } catch (e) { /* sin almacenamiento */ }
+    dibujarPeriodos();
 
     $('formulario-busqueda').addEventListener('submit', function (e) {
       e.preventDefault();

@@ -432,29 +432,43 @@ describe('Nacional o internacional', () => {
   });
 });
 
-describe('Vigencia y relación con los temas', () => {
+describe('Período y relación con los temas', () => {
   const ahora = new Date('2026-09-27T12:00:00Z');
 
-  test('papers y libros: solo los últimos 12 meses (un paper de 2024 ya no está vigente)', () => {
+  test('por defecto, solo el último año (365 días), también para noticias', () => {
+    assert.equal(Motor.PERIODO_POR_DEFECTO, 1);
     assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2024-11-03' }, ahora), false);
     assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2025-08-01' }, ahora), false);
     assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2025-10-15' }, ahora), true);
-    assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2026-09' }, ahora), true);
+    assert.equal(Motor.vigente({ tipo: 'noticia', fecha: '2026-01-10T00:00:00Z' }, ahora), true);
+    assert.equal(Motor.vigente({ tipo: 'noticia', fecha: '2025-06-01T00:00:00Z' }, ahora), false);
     assert.equal(Motor.vigente({ tipo: 'libro', fecha: '2025' }, ahora), true);
     assert.equal(Motor.vigente({ tipo: 'libro', fecha: '2024' }, ahora), false);
     assert.equal(Motor.vigente({ tipo: 'libro', fecha: '2027' }, ahora), false);
   });
 
-  test('noticias: 90 días; normas: solo las que están en vigor; nunca el contenido de ejemplo', () => {
-    assert.equal(Motor.vigente({ tipo: 'noticia', fecha: '2026-07-10T00:00:00Z' }, ahora), true);
-    assert.equal(Motor.vigente({ tipo: 'noticia', fecha: '2026-06-01T00:00:00Z' }, ahora), false);
-    assert.equal(Motor.vigente(catalogo.find((d) => d.id === 'norma-ley-32069'), ahora), true);
-    assert.equal(Motor.vigente(catalogo.find((d) => d.id === 'norma-guia-app-banco-mundial'), ahora), false);
-    assert.equal(Motor.vigente(catalogo.find((d) => d.tipo === 'noticia'), ahora), false);
+  test('se puede elegir 2, 3, 4, 5 años o todo el tiempo', () => {
+    assert.deepEqual(Motor.PERIODOS.map((p) => p.anios), [1, 2, 3, 4, 5, 0]);
+    const paper2024 = { tipo: 'paper', fecha: '2024-11-03' };
+    assert.equal(Motor.vigente(paper2024, ahora, 2), true);
+    assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2022-01-01' }, ahora, 3), false);
+    assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2022-01-01' }, ahora, 5), true);
+    assert.equal(Motor.vigente({ tipo: 'libro', fecha: '-0015' }, ahora, 0), true);
+    assert.equal(Motor.inicioDePeriodo(1, ahora), '2025-09-27');
+    assert.equal(Motor.inicioDePeriodo(0, ahora), null);
   });
 
-  test('los clásicos del catálogo no se muestran; las normas vigentes sí', () => {
+  test('normas: solo las que están en vigor; nunca el contenido de ejemplo', () => {
+    assert.equal(Motor.vigente(catalogo.find((d) => d.id === 'norma-ley-32069'), ahora), true);
+    assert.equal(Motor.vigente(catalogo.find((d) => d.id === 'norma-guia-app-banco-mundial'), ahora, 0), false);
+    assert.equal(Motor.vigente(catalogo.find((d) => d.tipo === 'noticia'), ahora, 0), false);
+  });
+
+  test('los clásicos del catálogo solo aparecen si el período los abarca', () => {
     assert.deepEqual(Motor.aptos(catalogo, ahora).map((d) => d.id).sort(), ['norma-g050', 'norma-ley-32069']);
+    const todo = Motor.aptos(catalogo, ahora, 0).map((d) => d.id);
+    assert.ok(todo.includes('paper-ballard-2000'));
+    assert.ok(todo.includes('libro-bim-handbook'));
   });
 
   test('relación directa, indirecta o ninguna con los temas', () => {
@@ -467,27 +481,15 @@ describe('Vigencia y relación con los temas', () => {
     assert.equal(Motor.esDeLosTemas(doc('d', 'Housing prices fall', '2026-09-20', { fuente: 'Construction Dive' })), false);
   });
 
-  test('los papers por tema se piden en todas las editoriales y quedan solo los vigentes y relacionados', async () => {
-    const crossref = require('../servidor/fuentes/crossref');
-    const pedidos = [];
-    const fetchOriginal = global.fetch;
-    const item = (doi, titulo, fecha) => ({ DOI: doi, title: [titulo], issued: { 'date-parts': [fecha] }, 'container-title': ['Automation in Construction'] });
-    global.fetch = async (url) => {
-      pedidos.push(String(url));
-      return new Response(JSON.stringify({ message: { items: [
-        item('10.1/a', 'Last Planner System adoption in Peru', [2026, 8, 2]),
-        item('10.1/b', 'Last Planner System in 2024 projects', [2024, 5, 1]),
-        item('10.1/c', 'Protein folding with deep networks', [2026, 7, 1])
-      ] } }), { status: 200 });
-    };
-    try {
-      const { papers } = await crossref.obtenerRecientes({ ahora, esperaMs: 1000, filas: 5 });
-      assert.deepEqual(papers.map((d) => d.titulo), ['Last Planner System adoption in Peru']);
-      assert.equal(pedidos.length, Temas.grupos.flatMap((g) => g.temas).length);
-      assert.ok(pedidos.every((u) => u.includes('prefix%3A10.1016') && u.includes('from-pub-date%3A2025-09-27')));
-    } finally {
-      global.fetch = fetchOriginal;
-    }
+  test('se descartan avisos de empleo, cursos y sitios no selectos', () => {
+    const empleo = doc('e', 'Assistant BIM Designer in Cardiff, Glamorgan, United Kingdom', '2026-09-25');
+    assert.equal(Fuentes.esDescartable(empleo), true);
+    assert.equal(Fuentes.esDescartable(doc('f', 'Analista BIM', '2026-09-25', { enlace: 'https://www.bumeran.com.pe/x' })), true);
+    assert.equal(Fuentes.esDescartable(doc('g', 'Obras en curso en Lima con BIM')), false);
+    assert.deepEqual(Motor.aptos([empleo], new Date('2026-09-27')), []);
+    assert.equal(Fuentes.esFuenteSelecta('https://noticias.upc.edu.pe'), true);
+    assert.equal(Fuentes.esFuenteSelecta('https://www.mef.gob.pe'), true);
+    assert.equal(Fuentes.esFuenteSelecta('https://blog-cualquiera.com'), false);
   });
 
   test('la tarjeta indica el tema de cada resultado (código de la interfaz)', () => {
@@ -496,25 +498,95 @@ describe('Vigencia y relación con los temas', () => {
   });
 });
 
-describe('Archivo de noticias (90 días)', () => {
+describe('Búsqueda abierta con selectividad', () => {
+  const OpenAlex = require('../public/js/openalex.js');
+  const google = require('../servidor/fuentes/noticias-google');
+  const { ventanas, ventanasDeHoy } = require('../servidor/ventanas');
+
+  test('OpenAlex: busca en título y resumen, por período y, si se pide, autores del Perú', () => {
+    const url = new URL(OpenAlex.construirUrl({ consulta: '"building information modeling", BIM', desde: '2025-09-27', pais: 'PE' }));
+    assert.equal(url.hostname, 'api.openalex.org');
+    const filtro = url.searchParams.get('filter');
+    assert.match(filtro, /^title_and_abstract\.search:"building information modeling"  BIM,/);
+    assert.match(filtro, /from_publication_date:2025-09-27/);
+    assert.match(filtro, /authorships\.countries:PE/);
+    assert.equal(url.searchParams.get('sort'), 'publication_date:desc');
+    assert.equal(OpenAlex.construirUrl({ consulta: '' }), null);
+  });
+
+  test('OpenAlex: solo revistas indexadas o de editoriales de prestigio; autores peruanos = nacional', () => {
+    const obra = (titulo, fuente, extra = {}) => ({ id: 'W' + titulo, title: titulo, publication_date: '2026-06-01',
+      primary_location: { source: { display_name: 'Revista', ...fuente } }, authorships: [], ...extra });
+    const docs = OpenAlex.interpretar({ results: [
+      obra('BIM adoption in Peruvian public works', { is_core: true }, { authorships: [{ author: { display_name: 'Ana Q.' }, countries: ['PE'] }],
+        abstract_inverted_index: { Building: [0], information: [1], modeling: [2] } }),
+      obra('BIM in small firms', { is_core: false, is_in_doaj: true }),
+      obra('Last Planner in IGLC', { is_core: false }, { doi: 'https://doi.org/10.24928/2026/0001' }),
+      obra('BIM blog post', { is_core: false, is_in_doaj: false })
+    ] });
+    assert.deepEqual(docs.map((d) => d.titulo), ['BIM adoption in Peruvian public works', 'BIM in small firms', 'Last Planner in IGLC']);
+    assert.equal(docs[0].ambito, 'nacional');
+    assert.equal(docs[0].resumen, 'Building information modeling');
+    assert.match(docs[0].tipoFuente, /indexada/);
+  });
+
+  test('Google Noticias: consultas del Perú y del mundo por ventana de tiempo', () => {
+    const bim = Temas.porId('bim');
+    const [anio, dosAnios] = ventanas(new Date('2026-09-27T12:00:00Z'));
+    const nac = new URL(google.urlTema(bim, 'nacional', anio));
+    assert.match(nac.searchParams.get('q'), /Perú when:1y$/);
+    assert.equal(nac.searchParams.get('gl'), 'PE');
+    const int = new URL(google.urlTema(bim, 'internacional', dosAnios));
+    assert.match(int.searchParams.get('q'), /after:2024-09-27 before:2025-09-27$/);
+    assert.equal(int.searchParams.get('gl'), 'US');
+  });
+
+  test('Google Noticias: solo fuentes selectas, sin empleos; lo peruano es nacional', () => {
+    const item = (titulo, url, fecha = 'Fri, 25 Sep 2026 10:00:00 GMT') =>
+      `<item><title>${titulo}</title><link>https://news.google.com/rss/articles/${encodeURIComponent(titulo)}</link><pubDate>${fecha}</pubDate><source url="${url}">Fuente</source></item>`;
+    const xml = '<rss>' + [
+      item('MEF confirma: uso del BIM es obligatorio - Gestión', 'https://gestion.pe'),
+      item('UPC realizará evento sobre BIM en Arequipa - Noticias UPC', 'https://noticias.upc.edu.pe'),
+      item('Analista BIM - Bumeran', 'https://www.bumeran.com.pe'),
+      item('BIM market worth $5 billion - Markets', 'https://www.marketsandmarkets.com'),
+      item('Uso de BIM en obras - Blog', 'https://blog-cualquiera.com')
+    ].join('') + '</rss>';
+    const docs = google.interpretar(xml, 'nacional');
+    assert.deepEqual(docs.map((d) => d.titulo), ['MEF confirma: uso del BIM es obligatorio', 'UPC realizará evento sobre BIM en Arequipa']);
+    assert.ok(docs.every((d) => d.ambito === 'nacional'));
+    assert.equal(docs[0].fuente, 'Gestión');
+  });
+
+  test('ventanas: siempre el último año y una más antigua que rota', () => {
+    const lista = ventanas(new Date('2026-09-27T12:00:00Z'));
+    assert.deepEqual(lista.map((v) => v.id), ['anio-1', 'anio-2', 'anio-3', 'anio-4', 'anio-5', 'antes']);
+    const hoy = ventanasDeHoy(new Date('2026-09-27T12:00:00Z'), false);
+    assert.equal(hoy.length, 2);
+    assert.equal(hoy[0].id, 'anio-1');
+    assert.equal(ventanasDeHoy(new Date(), true).length, 6);
+  });
+});
+
+describe('Archivo histórico', () => {
   const archivo = require('../servidor/archivo');
-  test('suma lo nuevo, quita repetidos y lo que pasa de 90 días', () => {
+  test('suma lo nuevo, quita repetidos y lo que no es de los temas; conserva lo antiguo', () => {
     const ahora = new Date('2026-09-26T12:00:00Z');
     const n = (id, fecha, enlace = 'https://x.pe/' + id) => ({ id, tipo: 'noticia', titulo: 'Avance de obra ' + id, resumen: 'r', fecha, enlace });
-    const anteriores = [n('a', '2026-09-01T00:00:00Z'), n('viejo', '2026-05-01T00:00:00Z'), n('b', '2026-09-20T00:00:00Z')];
+    const anteriores = [n('a', '2026-09-01T00:00:00Z'), n('viejo', '2021-05-01T00:00:00Z'), n('b', '2026-09-20T00:00:00Z')];
     const nuevas = [n('c', '2026-09-26T08:00:00Z'), n('b', '2026-09-20T00:00:00Z')];
-    assert.deepEqual(archivo.unir(anteriores, nuevas, ahora).map((d) => d.id), ['c', 'b', 'a']);
-    // Lo que no se relaciona con los temas se quita (también lo guardado antes).
+    assert.deepEqual(archivo.unir(anteriores, nuevas, ahora).map((d) => d.id), ['c', 'b', 'a', 'viejo']);
     const ajena = { id: 'x', tipo: 'noticia', titulo: 'Gana el equipo local', resumen: '', fecha: '2026-09-25T00:00:00Z', enlace: 'https://x.pe/x' };
     assert.deepEqual(archivo.unir([ajena], [], ahora), []);
   });
 
-  test('guarda una versión compacta (resumen de 200 caracteres como máximo)', () => {
-    const archivo = require('../servidor/archivo');
-    const largo = 'Palabra '.repeat(80);
-    const [d] = archivo.unir([], [{ id: 'x', tipo: 'noticia', titulo: 'Nueva obra vial', resumen: largo, fecha: '2026-09-25T00:00:00Z', enlace: 'https://x.pe/1' }],
-      new Date('2026-09-26T00:00:00Z'));
-    assert.ok(d.resumen.length <= 201);
+  test('se divide en último año e histórico, con un máximo de elementos', () => {
+    const ahora = new Date('2026-09-26T12:00:00Z');
+    const n = (id, fecha) => ({ id, tipo: 'noticia', titulo: 'Obra vial ' + id, resumen: 'Palabra '.repeat(80), fecha, enlace: 'https://x.pe/' + id });
+    const lista = archivo.unir([], [n('1', '2026-09-20T00:00:00Z'), n('2', '2023-01-01T00:00:00Z'), n('3', '2019-01-01T00:00:00Z')], ahora, 2);
+    assert.equal(lista.length, 2);
+    assert.ok(lista[0].resumen.length <= 201);
+    const { anio, historico } = archivo.dividir(lista, ahora);
+    assert.deepEqual([anio.length, historico.length], [1, 1]);
   });
 });
 
@@ -567,9 +639,11 @@ describe('Novedades de la última semana', () => {
   test('los archivos de datos publicados tienen el formato esperado', () => {
     const semana = require('../public/datos/ultima-semana.json');
     assert.ok('generado' in semana && Array.isArray(semana.resultados) && semana.dias === 7);
-    const archivo = require('../public/datos/noticias-archivo.json');
-    assert.ok(Array.isArray(archivo.resultados) && archivo.dias === 90);
-    assert.ok(Array.isArray(require('../public/datos/libros-recientes.json').resultados));
+    for (const c of ['noticias', 'papers', 'libros']) {
+      for (const parte of ['anio', 'historico']) {
+        assert.ok(Array.isArray(require(`../public/datos/${c}-${parte}.json`).resultados), `${c}-${parte}`);
+      }
+    }
   });
 });
 
@@ -615,6 +689,15 @@ describe('Servidor', () => {
     // Los clásicos del catálogo (Flyvbjerg 2003, 2023…) ya no se muestran: no son de los últimos 12 meses.
     const clasicos = await (await fetch(base + '/api/buscar?q=Flyvbjerg')).json();
     assert.equal(clasicos.total, 0);
+  });
+
+  test('el período se elige con p= (0 = todo el tiempo)', async () => {
+    const anio = await (await fetch(base + '/api/buscar?q=Last%20Planner')).json();
+    assert.equal(anio.anios, 1);
+    assert.ok(!anio.resultados.some((d) => d.id === 'paper-ballard-2000'));
+    const todo = await (await fetch(base + '/api/buscar?q=Last%20Planner&p=0')).json();
+    assert.equal(todo.anios, 0);
+    assert.ok(todo.resultados.some((d) => d.id === 'paper-ballard-2000'));
   });
 
   test('busca un tema por sus términos (t=)', async () => {

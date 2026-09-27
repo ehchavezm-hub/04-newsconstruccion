@@ -1,7 +1,8 @@
 /*
  * FUENTE: CATÁLOGO LOCAL
- * El catálogo del navegador (public/datos/catalogo.js) más los papers y libros recientes
- * guardados por "npm run actualizar". El buscador deja solo lo vigente y relacionado con los temas.
+ * El catálogo del navegador (public/datos/catalogo.js) más el archivo de noticias, papers y
+ * libros guardado por "npm run actualizar". El buscador deja solo lo del período elegido y
+ * relacionado con los temas.
  */
 'use strict';
 
@@ -11,7 +12,7 @@ const catalogo = require('../../public/datos/catalogo.js');
 
 const DATOS = path.join(__dirname, '..', '..', 'public', 'datos');
 
-/** Papers o libros recientes guardados por "npm run actualizar" (si existen). */
+/** Datos guardados por "npm run actualizar" (si existen). */
 function guardados(archivo) {
   try {
     return JSON.parse(fs.readFileSync(path.join(DATOS, archivo), 'utf8')).resultados || [];
@@ -25,7 +26,7 @@ module.exports = {
   tipos: ['noticia', 'paper', 'libro', 'norma'],
 
   async buscar() {
-    return [...catalogo, ...guardados('papers-recientes.json'), ...guardados('libros-recientes.json')];
+    return [catalogo, ...['noticias', 'papers', 'libros'].flatMap((c) => [guardados(`${c}-anio.json`), guardados(`${c}-historico.json`)])].flat();
   },
 
   obtenerPorId(id) {

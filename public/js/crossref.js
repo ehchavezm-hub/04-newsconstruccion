@@ -50,11 +50,21 @@
   }
 
   /**
-   * @param {{consulta?: string, desde?: string, filas?: number, correo?: string}} op
+   * Fechas de la búsqueda: sin `desde`, el último año; `desde: null`, sin límite (todo el
+   * tiempo); `hasta`, fecha final (para las ventanas del archivo histórico).
+   */
+  function agregarFechas(filtros, op) {
+    var desde = op.desde === undefined ? haceDias(365) : op.desde;
+    if (desde) filtros.push('from-pub-date:' + desde);
+    if (op.hasta) filtros.push('until-pub-date:' + op.hasta);
+  }
+
+  /**
+   * @param {{consulta?: string, desde?: string|null, hasta?: string, filas?: number, correo?: string, libros?: boolean}} op
    *   desde: "AAAA-MM-DD" para traer solo lo publicado desde esa fecha.
    *   - Con consulta (un tema o lo que escribió la persona): busca en TODAS las revistas y
    *     congresos de las editoriales académicas de prestigio (por prefijo de DOI). Si no se
-   *     indica `desde`, solo lo de los últimos 12 meses (lo vigente).
+   *     indica `desde`, solo lo del último año.
    *   - Con `libros: true`: libros de esas editoriales y de las editoriales de libros de
    *     prestigio (Routledge, CRC Press…), también de los últimos 12 meses.
    *   - Sin consulta (novedades de la semana): las revistas núcleo, de lo más nuevo a lo más antiguo.
@@ -65,12 +75,12 @@
       filtros = TIPOS_LIBRO.map(function (t) { return 'type:' + t; }).concat(
         Fuentes.editorialesAcademicas.concat(Fuentes.editorialesDeLibros).map(function (e) { return 'prefix:' + e.prefijo; })
       );
-      filtros.push('from-pub-date:' + (op.desde || haceDias(365)));
+      agregarFechas(filtros, op);
     } else if (op.consulta) {
       filtros = ['type:journal-article', 'type:proceedings-article'].concat(
         Fuentes.editorialesAcademicas.map(function (e) { return 'prefix:' + e.prefijo; })
       );
-      filtros.push('from-pub-date:' + (op.desde || haceDias(365)));
+      agregarFechas(filtros, op);
     } else {
       filtros = ['type:journal-article'].concat(
         Fuentes.revistas.map(function (r) { return 'issn:' + r.issn; })

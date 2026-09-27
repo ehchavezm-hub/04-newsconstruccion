@@ -6,7 +6,13 @@ on:
     branches:
       - main
   # Permite lanzar la publicación a mano desde la pestaña Actions.
+  # Con «ventanas: todas» se llena el archivo histórico completo (5 años y más) de una vez.
   workflow_dispatch:
+    inputs:
+      ventanas:
+        description: "Ventanas de tiempo a consultar: hoy (último año + una más antigua) o todas"
+        required: false
+        default: "hoy"
   # Cada 4 horas: actualiza las "Novedades de la última semana" y vuelve a publicar.
   schedule:
     - cron: "23 */4 * * *"
@@ -39,7 +45,9 @@ jobs:
       - name: Actualizar novedades de la última semana
         # Si alguna fuente de noticias falla, se omite; nunca detiene la publicación.
         continue-on-error: true
-        timeout-minutes: 12
+        timeout-minutes: 35
+        env:
+          VENTANAS: ${{ github.event.inputs.ventanas || 'hoy' }}
         run: npm run actualizar
 
       - name: Marcar la versión publicada (evita que el navegador mezcle archivos viejos y nuevos)

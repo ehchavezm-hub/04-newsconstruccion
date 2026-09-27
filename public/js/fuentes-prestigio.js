@@ -223,6 +223,102 @@
     { dominio: 'mckinsey.com', nombre: 'McKinsey', ambito: 'internacional' }
   ];
 
+  /*
+   * BÚSQUEDA ABIERTA A TODO INTERNET, CON SELECTIVIDAD
+   * Las noticias por tema (Google Noticias) pueden venir de cualquier sitio, pero solo se
+   * aceptan si el sitio es selecto:
+   *   - está en `dominios` (arriba) o en `dominiosAmpliados` (abajo), o
+   *   - es oficial o académico: .gob.pe, .edu.pe, .gov, .gob.xx, .edu, .edu.xx, .ac.uk, un.org…
+   * y nunca si está en `dominiosExcluidos` (empleo, notas de prensa pagadas, «estudios de
+   * mercado», tiendas). Además se descartan avisos de empleo y cursos por su titular.
+   */
+  var dominiosAmpliados = [
+    // Nacional (Perú): medios de referencia, especializados y gremios
+    { dominio: 'infobae.com', nombre: 'Infobae', ambito: 'internacional' },
+    { dominio: 'peru21.pe', nombre: 'Perú21', ambito: 'nacional' },
+    { dominio: 'diariocorreo.pe', nombre: 'Correo', ambito: 'nacional' },
+    { dominio: 'exitosanoticias.pe', nombre: 'Exitosa', ambito: 'nacional' },
+    { dominio: 'forbes.pe', nombre: 'Forbes Perú', ambito: 'nacional' },
+    { dominio: 'caretas.pe', nombre: 'Caretas', ambito: 'nacional' },
+    { dominio: 'rcrperu.com', nombre: 'Radio Cadena Nacional (RCR)', ambito: 'nacional' },
+    { dominio: 'construir.com.pe', nombre: 'Construir', ambito: 'nacional' },
+    { dominio: 'proactivo.com.pe', nombre: 'Proactivo', ambito: 'nacional' },
+    { dominio: 'mineriaenergia.com', nombre: 'Minería & Energía', ambito: 'nacional' },
+    { dominio: 'lacamara.pe', nombre: 'Cámara de Comercio de Lima', ambito: 'nacional' },
+    { dominio: 'stakeholders.com.pe', nombre: 'Stakeholders', ambito: 'nacional' },
+    { dominio: 'lpderecho.pe', nombre: 'LP Derecho', ambito: 'nacional' },
+    { dominio: 'costosperu.com', nombre: 'Revista Costos', ambito: 'nacional' },
+    { dominio: 'constructivo.com', nombre: 'Constructivo', ambito: 'nacional' },
+    { dominio: 'elbuho.pe', nombre: 'El Búho', ambito: 'nacional' },
+    { dominio: 'mercadonegro.pe', nombre: 'Mercado Negro', ambito: 'nacional' },
+    // Internacional: especializados, académicos, institutos y empresas de referencia
+    { dominio: 'nature.com', nombre: 'Nature', ambito: 'internacional' },
+    { dominio: 'frontiersin.org', nombre: 'Frontiers', ambito: 'internacional' },
+    { dominio: 'sciencedirect.com', nombre: 'ScienceDirect (Elsevier)', ambito: 'internacional' },
+    { dominio: 'springer.com', nombre: 'Springer', ambito: 'internacional' },
+    { dominio: 'tandfonline.com', nombre: 'Taylor & Francis', ambito: 'internacional' },
+    { dominio: 'ascelibrary.org', nombre: 'ASCE Library', ambito: 'internacional' },
+    { dominio: 'emerald.com', nombre: 'Emerald', ambito: 'internacional' },
+    { dominio: 'facilitiesdive.com', nombre: 'Facilities Dive', ambito: 'internacional' },
+    { dominio: 'constructionspecifier.com', nombre: 'The Construction Specifier', ambito: 'internacional' },
+    { dominio: 'forconstructionpros.com', nombre: 'For Construction Pros', ambito: 'internacional' },
+    { dominio: 'bdcnetwork.com', nombre: 'Building Design + Construction', ambito: 'internacional' },
+    { dominio: 'constructconnect.com', nombre: 'ConstructConnect', ambito: 'internacional' },
+    { dominio: 'building.co.uk', nombre: 'Building', ambito: 'internacional' },
+    { dominio: 'bimplus.co.uk', nombre: 'BIMplus', ambito: 'internacional' },
+    { dominio: 'theconstructionindex.co.uk', nombre: 'The Construction Index', ambito: 'internacional' },
+    { dominio: 'pbctoday.co.uk', nombre: 'PBC Today', ambito: 'internacional' },
+    { dominio: 'constructionbriefing.com', nombre: 'Construction Briefing', ambito: 'internacional' },
+    { dominio: 'aecmagazine.com', nombre: 'AEC Magazine', ambito: 'internacional' },
+    { dominio: 'archdaily.com', nombre: 'ArchDaily', ambito: 'internacional' },
+    { dominio: 'construction-institute.org', nombre: 'Construction Industry Institute', ambito: 'internacional' },
+    { dominio: 'leanconstruction.org', nombre: 'Lean Construction Institute', ambito: 'internacional' },
+    { dominio: 'projectproduction.org', nombre: 'Project Production Institute', ambito: 'internacional' },
+    { dominio: 'pmi.org', nombre: 'Project Management Institute', ambito: 'internacional' },
+    { dominio: 'ipma.world', nombre: 'IPMA', ambito: 'internacional' },
+    { dominio: 'peoplecert.org', nombre: 'PeopleCert', ambito: 'internacional' },
+    { dominio: 'axelos.com', nombre: 'AXELOS', ambito: 'internacional' },
+    { dominio: 'buildingsmart.org', nombre: 'buildingSMART', ambito: 'internacional' },
+    { dominio: 'asce.org', nombre: 'ASCE', ambito: 'internacional' },
+    { dominio: 'ice.org.uk', nombre: 'ICE', ambito: 'internacional' },
+    { dominio: 'rics.org', nombre: 'RICS', ambito: 'internacional' },
+    { dominio: 'aacei.org', nombre: 'AACE International', ambito: 'internacional' },
+    { dominio: 'construction.com', nombre: 'Dodge Construction Network', ambito: 'internacional' },
+    { dominio: 'arup.com', nombre: 'Arup', ambito: 'internacional' },
+    { dominio: 'autodesk.com', nombre: 'Autodesk', ambito: 'internacional' },
+    { dominio: 'bentley.com', nombre: 'Bentley Systems', ambito: 'internacional' },
+    { dominio: 'bcg.com', nombre: 'Boston Consulting Group', ambito: 'internacional' },
+    { dominio: 'kpmg.com', nombre: 'KPMG', ambito: 'internacional' },
+    { dominio: 'ey.com', nombre: 'EY', ambito: 'internacional' },
+    { dominio: 'deloitte.com', nombre: 'Deloitte', ambito: 'internacional' },
+    { dominio: 'pwc.com', nombre: 'PwC', ambito: 'internacional' },
+    { dominio: 'weforum.org', nombre: 'Foro Económico Mundial', ambito: 'internacional' },
+    { dominio: 'unops.org', nombre: 'UNOPS', ambito: 'internacional' },
+    { dominio: 'un.org', nombre: 'Naciones Unidas', ambito: 'internacional' },
+    { dominio: 'wsj.com', nombre: 'The Wall Street Journal', ambito: 'internacional' },
+    { dominio: 'nytimes.com', nombre: 'The New York Times', ambito: 'internacional' },
+    { dominio: 'cnbc.com', nombre: 'CNBC', ambito: 'internacional' },
+    { dominio: 'forbes.com', nombre: 'Forbes', ambito: 'internacional' },
+    { dominio: 'bizjournals.com', nombre: 'The Business Journals', ambito: 'internacional' },
+    { dominio: 'eleconomista.es', nombre: 'El Economista', ambito: 'internacional' },
+    { dominio: 'expansion.com', nombre: 'Expansión', ambito: 'internacional' }
+  ];
+
+  // Sitios oficiales y académicos (Perú y el mundo): se aceptan siempre.
+  var DOMINIO_OFICIAL_O_ACADEMICO = /(\.gob\.pe|\.edu\.pe|\.gov|\.gov\.[a-z]{2}|\.gob\.[a-z]{2}|\.edu|\.edu\.[a-z]{2}|\.ac\.uk|\.ac\.[a-z]{2})$/;
+
+  // Sitios que nunca se aceptan: empleo, notas de prensa pagadas, «estudios de mercado», tiendas.
+  var dominiosExcluidos = [
+    'bumeran.com.pe', 'computrabajo.com', 'computrabajo.com.pe', 'indeed.com', 'linkedin.com', 'glassdoor.com',
+    'marketsandmarkets.com', 'precedenceresearch.com', 'snsinsider.com', 'einnews.com', 'openpr.com',
+    'getlatka.com', 'tradingview.com', 'barchart.com', 'tipranks.com', 'vocal.media', 'newswire.com',
+    'globenewswire.com', 'prnewswire.com', 'businesswire.com', 'medium.com', 'coursera.org', 'udemy.com',
+    'mercadolibre.com.pe', 'amazon.com', 'compumarket.pe', 'cuantoestaeldolar.pe'
+  ];
+
+  // Titulares que no son noticias del sector: avisos de empleo, cursos, ofertas.
+  var TITULAR_DESCARTABLE = /\b(empleo|empleos|vacante|vacantes|se busca|se requiere|convocatoria cas|oferta laboral|trabaja con nosotros|job|jobs|hiring|vacancy|vacancies|career|careers|internship|diplomado|diplomados|webinar|matr[ií]cula|inscr[ií]bete|descuento|market size|market share|market worth|cagr)\b|\bin [A-Z][a-z]+, [A-Z][A-Za-z ]+, (United Kingdom|United States|Canada|Australia)\b/i;
+
   // Revistas académicas (ISSN impreso o electrónico registrado en Crossref).
   var revistas = [
     { nombre: 'Journal of Construction Engineering and Management', issn: '0733-9364' },
@@ -306,7 +402,7 @@
   var SIGLAS_CLAVE = /(^|[^A-Za-z])(EPC|BIM|APP|PPP)([^A-Za-z]|$)/;
 
   // Palabras que indican que un paper, libro o noticia sin ámbito trata del Perú.
-  var SENALES_PERU = / (peru|peruan|lima |callao|chancay|proinversion|capeco|oece |anin |mtc )/;
+  var SENALES_PERU = / (peru|peruan|lima |callao|chancay|arequipa|cusco|trujillo|piura|chiclayo|huancayo|iquitos|ayacucho|puno|tacna|cajamarca|ica |proinversion|capeco|oece |osce |anin |mtc |mef |mvcs |sencico|sedapal|plan bim|obras por impuestos|reconstruccion con cambios)/;
 
   function sinTildes(texto) {
     return String(texto || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -337,14 +433,44 @@
     return !!e && editoriales.some(function (p) { return e.indexOf(p) > -1; });
   }
 
-  /** Datos del sitio (nombre y ámbito) a partir de una dirección web o dominio. */
-  function sitioDe(urlODominio) {
-    var host = sinTildes(urlODominio).replace(/^https?:\/\//, '').split('/')[0].replace(/^www\./, '');
-    for (var i = 0; i < dominios.length; i++) {
-      var d = dominios[i].dominio;
-      if (host === d || host.slice(-(d.length + 1)) === '.' + d) return dominios[i];
+  function hostDe(urlODominio) {
+    return sinTildes(urlODominio).replace(/^https?:\/\//, '').split('/')[0].split(':')[0].replace(/^www\./, '');
+  }
+
+  function buscarDominio(lista, host) {
+    for (var i = 0; i < lista.length; i++) {
+      var d = lista[i].dominio || lista[i];
+      if (host === d || host.slice(-(d.length + 1)) === '.' + d) return lista[i];
     }
     return null;
+  }
+
+  /**
+   * Datos del sitio (nombre y ámbito) a partir de una dirección web o dominio.
+   * Busca en `dominios` y en `dominiosAmpliados`; un sitio .pe se considera nacional.
+   */
+  function sitioDe(urlODominio) {
+    var host = hostDe(urlODominio);
+    if (!host) return null;
+    var conocido = buscarDominio(dominios, host) || buscarDominio(dominiosAmpliados, host);
+    if (conocido) return conocido;
+    if (/\.pe$/.test(host) && esFuenteSelecta(host)) return { dominio: host, nombre: host, ambito: 'nacional' };
+    return null;
+  }
+
+  /** ¿El sitio cumple el criterio de selectividad? (lista de prestigio u oficial/académico, y no excluido) */
+  function esFuenteSelecta(urlODominio) {
+    var host = hostDe(urlODominio);
+    if (!host || buscarDominio(dominiosExcluidos, host)) return false;
+    return !!(buscarDominio(dominios, host) || buscarDominio(dominiosAmpliados, host) || DOMINIO_OFICIAL_O_ACADEMICO.test(host));
+  }
+
+  /** ¿Es un aviso de empleo, un curso, publicidad o viene de un sitio excluido? */
+  function esDescartable(doc) {
+    if (doc.tipo !== 'noticia') return false;
+    if (TITULAR_DESCARTABLE.test(doc.titulo || '')) return true;
+    var sitio = doc.sitio || doc.enlace || '';
+    return !!buscarDominio(dominiosExcluidos, hostDe(sitio));
   }
 
   /**
@@ -371,6 +497,9 @@
     esPaperRelevante: esPaperRelevante,
     esEditorialPrestigio: esEditorialPrestigio,
     sitioDe: sitioDe,
+    dominiosAmpliados: dominiosAmpliados,
+    esFuenteSelecta: esFuenteSelecta,
+    esDescartable: esDescartable,
     ambitoDe: ambitoDe
   };
 

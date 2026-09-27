@@ -1,37 +1,43 @@
 /*
  * ACTUALIZAR LOS DATOS DE LA WEB PUBLICADA
- * Consulta las fuentes de prestigio y guarda:
- *   - public/datos/ultima-semana.json     novedades de los últimos 7 días (nacional e internacional)
- *   - public/datos/papers-recientes.json  papers de los últimos 12 meses de cada tema, en todas las
- *                                        revistas y congresos de las editoriales académicas de prestigio
- *   - public/datos/libros-recientes.json  libros de los últimos 12 meses de cada tema, de editoriales de prestigio
+ * Consulta las fuentes y guarda en public/datos/:
+ *   - ultima-semana.json                  novedades de los últimos 7 días
+ *   - noticias-anio.json / -historico.json  noticias por tema (Perú y mundo) de todo internet,
+ *                                         solo de fuentes selectas
+ *   - papers-anio.json / -historico.json    papers de todo el mundo (OpenAlex), solo de revistas
+ *                                         indexadas o editoriales de prestigio, y de autores peruanos
+ *   - libros-anio.json / -historico.json    libros de editoriales de prestigio (Crossref, Open Library)
  * Todo se limita a lo relacionado, directa o indirectamente, con los temas de public/js/temas.js.
- *   - public/datos/noticias-archivo.json  todas las noticias de los últimos 90 días (para el buscador).
- *     Se construye sumando las noticias nuevas al archivo ya publicado en la web.
  *
- * Lo ejecuta GitHub Actions automáticamente varias veces al día
- * (.github/workflows/publicar.yml). También puede ejecutarse a mano:
- *     npm run actualizar
+ * Archivo histórico: cada actualización suma lo nuevo a lo ya publicado en la web. Se consulta
+ * siempre el último año y, además, una ventana más antigua que rota (servidor/ventanas.js).
+ * Para llenarlo todo de una vez:   VENTANAS=todas npm run actualizar
  *
+ * Lo ejecuta GitHub Actions cada 4 horas (.github/workflows/publicar.yml).
  * Nunca termina con error: si una fuente falla, se omite y se informa.
  */
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
+const Temas = require('../public/js/temas.js');
 const { obtenerSemana } = require('../servidor/semana');
-const { obtenerRecientes } = require('../servidor/fuentes/libros-recientes');
-const crossref = require('../servidor/fuentes/crossref');
+const { ventanasDeHoy } = require('../servidor/ventanas');
+const noticiasGoogle = require('../servidor/fuentes/noticias-google');
+const openalex = require('../servidor/fuentes/openalex');
+const libros = require('../servidor/fuentes/libros-recientes');
 const archivo = require('../servidor/archivo');
 
 const CARPETA = path.join(__dirname, '..', 'public', 'datos');
 const SEMANA = path.join(CARPETA, 'ultima-semana.json');
-const LIBROS = path.join(CARPETA, 'libros-recientes.json');
-const PAPERS = path.join(CARPETA, 'papers-recientes.json');
-const ARCHIVO = path.join(CARPETA, 'noticias-archivo.json');
-// Archivo ya publicado, al que se suman las noticias nuevas.
-const ARCHIVO_PUBLICADO = process.env.ARCHIVO_PUBLICADO ||
-  'https://ehchavezm-hub.github.io/04-newsconstruccion/datos/noticias-archivo.json';
+// Dirección de la web publicada, de donde se descarga el archivo anterior.
+const PUBLICADO = process.env.DATOS_PUBLICADOS || 'https://ehchavezm-hub.github.io/04-newsconstruccion/datos/';
+// Archivos de versiones anteriores de la aplicación (se leen una vez para no perder nada).
+const ANTIGUOS = { noticias: 'noticias-archivo.json', papers: 'papers-recientes.json', libros: 'libros-recientes.json' };
+const TIPO = { noticias: 'noticia', papers: 'paper', libros: 'libro' };
+const ESPERA_MS = 20000;
+const esperar = (ms) => new Promise((ok) => setTimeout(ok, ms));
+const temas = Temas.grupos.flatMap((g) => g.temas);
 
 function informar(fuentes) {
   for (const f of fuentes) {
@@ -45,48 +51,76 @@ function guardar(destino, datos, cantidad) {
     try {
       const anterior = JSON.parse(fs.readFileSync(destino, 'utf8'));
       if ((anterior.resultados || []).length) {
-        console.log('  Sin resultados nuevos: se conservan los datos anteriores.');
+        console.log('  Sin resultados nuevos: se conservan los datos anteriores de', path.basename(destino));
         return;
       }
     } catch { /* archivo dañado: se reemplaza */ }
   }
-  fs.writeFileSync(destino, JSON.stringify(datos, null, 1) + '\n');
-  console.log('  Guardado en', path.relative(process.cwd(), destino));
+  fs.writeFileSync(destino, JSON.stringify(datos) + '\n');
+  console.log(`  Guardado ${path.basename(destino)} (${cantidad})`);
 }
 
-async function archivoAnterior() {
+async function leerJson(nombre) {
   const listas = [];
   try {
-    const r = await fetch(ARCHIVO_PUBLICADO, { signal: AbortSignal.timeout(20000) });
+    const r = await fetch(PUBLICADO + nombre, { signal: AbortSignal.timeout(30000) });
     if (r.ok) listas.push(...((await r.json()).resultados || []));
   } catch { /* primera vez o sin conexión */ }
   try {
-    listas.push(...(JSON.parse(fs.readFileSync(ARCHIVO, 'utf8')).resultados || []));
+    listas.push(...(JSON.parse(fs.readFileSync(path.join(CARPETA, nombre), 'utf8')).resultados || []));
   } catch { /* sin archivo local */ }
   return listas;
 }
 
-(async () => {
-  let papers = [];
-  try {
-    const r = await crossref.obtenerRecientes({ esperaMs: 20000 });
-    papers = r.papers;
-    console.log(`Papers de los últimos 12 meses sobre los temas: ${papers.length}.`);
-    informar(r.informe);
-    guardar(PAPERS, { generado: new Date().toISOString(), meses: 12, fuentes: r.informe, resultados: papers }, papers.length);
-  } catch (e) {
-    console.error('No se pudieron actualizar los papers recientes:', e.message);
+/** Lo ya publicado de una colección (último año + histórico + archivos antiguos). */
+async function anteriores(coleccion) {
+  const partes = await Promise.all([
+    leerJson(`${coleccion}-anio.json`), leerJson(`${coleccion}-historico.json`), leerJson(ANTIGUOS[coleccion])
+  ]);
+  return partes.flat();
+}
+
+/** Une lo anterior con lo nuevo y guarda las dos partes. */
+async function guardarColeccion(coleccion, nuevas, fuentes) {
+  const previas = await anteriores(coleccion);
+  const todas = archivo.unir(previas, nuevas, new Date(), archivo.MAXIMOS[TIPO[coleccion]]);
+  const { anio, historico } = archivo.dividir(todas);
+  const nacionales = todas.filter((d) => d.ambito === 'nacional').length;
+  console.log(`${coleccion}: ${previas.length} anteriores + ${nuevas.length} nuevas = ${todas.length} ` +
+    `(${anio.length} del último año, ${historico.length} anteriores; ${nacionales} nacionales).`);
+  const generado = new Date().toISOString();
+  guardar(path.join(CARPETA, `${coleccion}-anio.json`), { generado, parte: 'anio', fuentes, resultados: anio }, anio.length);
+  guardar(path.join(CARPETA, `${coleccion}-historico.json`), { generado, parte: 'historico', resultados: historico }, historico.length);
+}
+
+/** Consulta una función para cada tema y ventana, de una en una. */
+async function porTemas(ventanas, pausaMs, consulta) {
+  const docs = [];
+  let ok = 0;
+  let total = 0;
+  for (const ventana of ventanas) {
+    for (const tema of temas) {
+      total++;
+      try {
+        docs.push(...await consulta(tema, ventana));
+        ok++;
+      } catch { /* se omite la que falla */ }
+      await esperar(pausaMs);
+    }
   }
+  return { docs, ok, total };
+}
 
+(async () => {
+  const ventanas = ventanasDeHoy();
+  console.log('Ventanas de esta actualización:', ventanas.map((v) => v.etiqueta).join(', '));
+
+  // 1) Novedades de la semana (RSS de medios, instituciones y revistas núcleo).
+  let semana = { resultados: [] };
   try {
-    const semana = await obtenerSemana({ esperaMs: 20000, papersExtra: papers });
-    const anteriores = await archivoAnterior();
-    const unidas = archivo.unir(anteriores, semana.resultados.filter((d) => d.tipo === 'noticia'));
-    console.log(`Archivo de noticias (${archivo.DIAS_ARCHIVO} días): ${anteriores.length} anteriores + nuevas = ${unidas.length}.`);
-    guardar(ARCHIVO, { generado: new Date().toISOString(), dias: archivo.DIAS_ARCHIVO, resultados: unidas }, unidas.length);
-
+    semana = await obtenerSemana({ esperaMs: ESPERA_MS });
     const nacionales = semana.resultados.filter((d) => d.ambito === 'nacional').length;
-    console.log(`Novedades de los últimos ${semana.dias} días: ${semana.resultados.length} publicaciones ` +
+    console.log(`Novedades de los últimos ${semana.dias} días: ${semana.resultados.length} ` +
       `(${nacionales} nacionales, ${semana.resultados.length - nacionales} internacionales).`);
     informar(semana.fuentes);
     guardar(SEMANA, semana, semana.resultados.length);
@@ -94,12 +128,42 @@ async function archivoAnterior() {
     console.error('No se pudieron actualizar las novedades:', e.message);
   }
 
+  // 2) Noticias por tema en todo internet (fuentes selectas), del Perú y del mundo.
   try {
-    const { libros, informe } = await obtenerRecientes({ esperaMs: 20000 });
-    console.log(`Libros de los últimos 12 meses sobre los temas, de editoriales de prestigio: ${libros.length}.`);
-    informar(informe);
-    guardar(LIBROS, { generado: new Date().toISOString(), meses: 12, fuentes: informe, resultados: libros }, libros.length);
+    const nac = await porTemas(ventanas, 1200, (t, v) => noticiasGoogle.buscarTema(t, 'nacional', v, ESPERA_MS));
+    const int = await porTemas(ventanas, 1200, (t, v) => noticiasGoogle.buscarTema(t, 'internacional', v, ESPERA_MS));
+    const fuentes = [
+      { fuente: `Noticias por tema — Perú (${nac.ok} de ${nac.total} consultas)`, ok: nac.ok > 0, cantidad: nac.docs.length },
+      { fuente: `Noticias por tema — mundo (${int.ok} de ${int.total} consultas)`, ok: int.ok > 0, cantidad: int.docs.length }
+    ];
+    informar(fuentes);
+    const deLaSemana = semana.resultados.filter((d) => d.tipo === 'noticia');
+    await guardarColeccion('noticias', [...deLaSemana, ...nac.docs, ...int.docs], fuentes);
   } catch (e) {
-    console.error('No se pudieron actualizar los libros recientes:', e.message);
+    console.error('No se pudieron actualizar las noticias por tema:', e.message);
+  }
+
+  // 3) Papers de todo el mundo (OpenAlex, solo fuentes selectas) y de autores peruanos.
+  try {
+    const mundo = await porTemas(ventanas, 300, (t, v) => openalex.buscarTema(t, v, null, ESPERA_MS));
+    const peru = await porTemas(ventanas, 300, (t, v) => openalex.buscarTema(t, v, 'PE', ESPERA_MS));
+    const fuentes = [
+      { fuente: `Papers — OpenAlex, mundo (${mundo.ok} de ${mundo.total} consultas)`, ok: mundo.ok > 0, cantidad: mundo.docs.length },
+      { fuente: `Papers — OpenAlex, autores del Perú (${peru.ok} de ${peru.total} consultas)`, ok: peru.ok > 0, cantidad: peru.docs.length }
+    ];
+    informar(fuentes);
+    const deLaSemana = semana.resultados.filter((d) => d.tipo === 'paper');
+    await guardarColeccion('papers', [...deLaSemana, ...mundo.docs, ...peru.docs], fuentes);
+  } catch (e) {
+    console.error('No se pudieron actualizar los papers:', e.message);
+  }
+
+  // 4) Libros de editoriales de prestigio.
+  try {
+    const r = await libros.obtenerPorVentanas(ventanas, { esperaMs: ESPERA_MS });
+    informar(r.informe);
+    await guardarColeccion('libros', r.libros, r.informe);
+  } catch (e) {
+    console.error('No se pudieron actualizar los libros:', e.message);
   }
 })();

@@ -622,3 +622,34 @@ los 22 temas de la sección 14:
   edited-book, reference-book) de las editoriales académicas y de libros de prestigio: Routledge
   (10.4324), CRC Press (10.1201), McGraw-Hill (10.1036), De Gruyter (10.1515), Palgrave (10.1057)
   y las de la lista de papers.
+
+---
+
+## 16. Actualización 3: período elegible, búsqueda abierta con selectividad y sin negritas en los temas
+
+### Temas sin negritas
+Títulos de grupo y temas en peso normal (400); la jerarquía la dan el tamaño y la línea bajo el
+título. El tema elegido va en NASA Blue con subrayado de 3 px.
+
+### Período (obligatorio en las 4 pestañas)
+Por defecto, **último año (365 días)** en Buscar, Últimas Noticias, Papers Académicos y Libros
+Destacados. Control «¿De qué fecha?» (pastillas) arriba de las pestañas: Último año · Últimos 2 ·
+3 · 4 · 5 años · Todo el tiempo; se recuerda en `localStorage` (`cg-periodo`). `Motor.PERIODOS`,
+`Motor.vigente(doc, ahora, anios)` y `Motor.aptos(docs, ahora, anios)`; servidor: `/api/buscar?p=`.
+El botón «Ver novedades de la última semana» sigue mostrando 7 días.
+
+### Búsqueda abierta con selectividad
+- **Noticias por tema (Google Noticias, solo al generar datos):** consulta del Perú
+  (`temas.js → noticias.es` + «Perú», edición PE) y del mundo (`noticias.en`, edición US), con
+  `when:1y` o `after:/before:`. Se usa la fuente real (`<source url>`) y solo se aceptan fuentes
+  selectas (`esFuenteSelecta`: listas de prestigio o sitios oficiales/académicos) que no estén en
+  `dominiosExcluidos`; se descartan titulares de empleo, cursos y «estudios de mercado»
+  (`esDescartable`). Lo peruano (sitio .pe o texto sobre el Perú) es «Nacional».
+- **Papers (OpenAlex, navegador y datos):** `title_and_abstract.search` con `temas.js → openalex`,
+  por fechas; solo fuentes `is_core`, `is_in_doaj` o de editoriales de prestigio; consulta aparte
+  con `authorships.countries:PE` → «Nacional».
+- **Archivo histórico** (`servidor/ventanas.js`, `servidor/archivo.js`): noticias, papers y libros
+  en `*-anio.json` (último año) y `*-historico.json` (anterior, solo se descarga si el período es
+  mayor). Cada actualización consulta el último año y una ventana antigua rotativa; con
+  `VENTANAS=todas` (entrada del flujo manual) se llenan todas. Máximos: 6000 noticias, 5000 papers,
+  3000 libros.
