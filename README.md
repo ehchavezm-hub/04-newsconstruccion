@@ -235,7 +235,7 @@ verificado según WCAG 2.1 AA:
 **Tipografía:** Atkinson Hyperlegible en toda la página, títulos incluidos (diseñada por el
 Braille Institute para personas con baja visión). Tamaños: nombre 23 px, títulos 21 px y 19 px, buscador 17 px (16 px en teléfono), texto
 16 px, botones, pestañas y filtros 15 px, temas y períodos 15 px, notas y etiquetas 14 px,
-botones de las tarjetas 13 px. Negrita en nombre, títulos, botones y pestañas; los títulos de
+títulos de las tarjetas 16 px, botones de las tarjetas 12 px. Negrita en nombre, títulos, botones y pestañas; los títulos de
 los grupos de temas, en normal. Interlineado 1,45 y líneas de 1 px.
 Los botones **A−** y **A+** agrandan o achican todo (90 % a 150 %) y la página lo recuerda.
 

@@ -701,3 +701,13 @@ Se mantienen las líneas finas (1 px) y el diseño minimalista; interlineado 1,4
 | Temas sugeridos y opciones de período | 15 px | Normal |
 | Notas, fuente, fecha, etiquetas y siglas | 14 px | Normal |
 | Botones pequeños de cada tarjeta | 13 px | Negrita |
+
+## 20. Actualización 7: tarjetas
+
+| Parte de la tarjeta | Tamaño | Peso |
+|---|---|---|
+| Etiqueta de tipo, etiqueta «nuevo», etiqueta de tema | 14 px | Normal |
+| Título de la tarjeta | 16 px | Negrita |
+| Resumen de la tarjeta | 16 px | Normal |
+| Datos de la tarjeta y sus rótulos («Fuente:», «Fecha:») | 14 px | Normal |
+| Botones de la tarjeta | 12 px | Negrita |

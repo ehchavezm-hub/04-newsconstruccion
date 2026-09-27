@@ -11,14 +11,15 @@
  * Tamaños de letra (a escala normal; A+ / A− los agrandan o achican todos juntos):
  *   Nombre «Construcción Global» ............................ 23 px, negrita (700)
  *   Títulos principales (H1) ................................ 21 px, negrita
- *   Subtítulos (H2), títulos de tarjetas, mensajes de estado  19 px, negrita
+ *   Subtítulos (H2) y mensajes de estado .................... 19 px, negrita
+ *   Títulos de las tarjetas ................................. 16 px, negrita
  *   Títulos de los grupos de temas .......................... 19 px, normal (400)
  *   Caja de búsqueda ........................................ 17 px (16 px en teléfono), normal
  *   Texto de cuerpo y resúmenes ............................. 16 px, normal
  *   Botones principales, pestañas y filtros ................. 15 px, negrita
  *   Temas sugeridos y opciones de período ................... 15 px, normal
  *   Notas, fuente, fecha, etiquetas y siglas ................ 14 px, normal
- *   Botones pequeños de cada tarjeta ........................ 13 px, negrita
+ *   Botones pequeños de cada tarjeta ........................ 12 px, negrita
  *
  * Diseño minimalista: líneas de 1 px (2-3 px solo en acentos), interlineado de 1,45.
  *
@@ -261,7 +262,7 @@ header :focus-visible { outline-color: var(--oro); }
 }
 
 .titulo-tarjeta {
-  font-size: 1.1875rem; font-weight: 700; line-height: 1.3; color: var(--tinta); margin: 0.45rem 0 0.3rem;
+  font-size: 1rem; font-weight: 700; line-height: 1.3; color: var(--tinta); margin: 0.45rem 0 0.3rem;
 }
 .resumen-tarjeta { font-size: 1rem; line-height: 1.45; margin-bottom: 0.5rem; }
 .fragmento {
@@ -272,15 +273,15 @@ header :focus-visible { outline-color: var(--oro); }
 .datos-tarjeta dt { display: inline; font-weight: 400; color: var(--tinta); }
 .datos-tarjeta dd { display: inline; margin: 0; }
 
-.acciones-tarjeta { display: flex; flex-direction: column; gap: 0.3rem; width: 10.5rem; }
+.acciones-tarjeta { display: flex; flex-direction: column; gap: 0.3rem; width: 9.75rem; }
 .acciones-tarjeta .boton {
   justify-content: flex-start; width: 100%; min-height: 1.5rem; padding: 0.2rem 0.45rem;
-  font-size: 0.8125rem; font-weight: 700; gap: 0.3rem;
+  font-size: 0.75rem; font-weight: 700; gap: 0.3rem;
 }
 .acciones-tarjeta .icono { width: 1.3em; height: 1.3em; }
 @media (max-width: 480px) {
   .tarjeta { padding: 0.75rem; gap: 0 0.5rem; }
-  .acciones-tarjeta { width: 9.25rem; }
+  .acciones-tarjeta { width: 8.75rem; }
   .acciones-tarjeta .boton { padding: 0.2rem 0.35rem; }
 }
 
