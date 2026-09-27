@@ -653,3 +653,19 @@ El botón «Ver novedades de la última semana» sigue mostrando 7 días.
   mayor). Cada actualización consulta el último año y una ventana antigua rotativa; con
   `VENTANAS=todas` (entrada del flujo manual) se llenan todas. Máximos: 6000 noticias, 5000 papers,
   3000 libros.
+
+## 17. Actualización 4: escala tipográfica minimalista
+
+| Elemento | Tamaño | Peso |
+|---|---|---|
+| Nombre «Construcción Global» | 20 px | Negrita |
+| Títulos H1 | 18 px | Normal |
+| H2, títulos de tarjetas, mensajes de estado, títulos de grupos de temas | 15 px | Normal |
+| Texto del buscador, texto y resúmenes | 12 px | Normal |
+| Botones, pestañas, filtros, temas sugeridos, opciones de período | 10 px | Normal |
+| Notas, fuente, fecha, etiquetas, siglas | 10 px | Normal |
+| Botones pequeños de las tarjetas | 8 px | Normal |
+
+- Diseño más minimalista: bordes y líneas de 1 px (bordes laterales de tarjetas 3 px), sin sombras gruesas.
+- Interlineado 1,4 en el texto (1,2–1,3 en títulos).
+- Los botones A− / A+ siguen agrandando todo hasta 150 %.
