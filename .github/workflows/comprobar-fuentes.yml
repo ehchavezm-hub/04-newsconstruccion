@@ -1,0 +1,30 @@
+name: Comprobar fuentes
+
+# Revisa que respondan los canales RSS, los ISSN de las revistas y los enlaces del catálogo.
+# Se lanza a mano desde la pestaña Actions, o solo cuando cambian las fuentes o el catálogo.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - public/js/fuentes-prestigio.js
+      - public/datos/catalogo.js
+      - herramientas/comprobar-fuentes.js
+
+permissions:
+  contents: read
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Comprobar fuentes y enlaces
+        timeout-minutes: 15
+        run: node herramientas/comprobar-fuentes.js

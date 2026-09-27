@@ -1,0 +1,62 @@
+name: Publicar Construcción Global en GitHub Pages
+
+# Publica la carpeta public/ en https://ehchavezm-hub.github.io/04-newsconstruccion/
+on:
+  push:
+    branches:
+      - main
+  # Permite lanzar la publicación a mano desde la pestaña Actions.
+  workflow_dispatch:
+  # Cada 4 horas: actualiza las "Novedades de la última semana" y vuelve a publicar.
+  schedule:
+    - cron: "23 */4 * * *"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Solo una publicación a la vez; si llega un cambio nuevo, se cancela la anterior.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Comprobar que todo funciona (pruebas automáticas)
+        run: npm test
+
+      - name: Actualizar novedades de la última semana
+        # Si alguna fuente de noticias falla, se omite; nunca detiene la publicación.
+        continue-on-error: true
+        timeout-minutes: 5
+        run: npm run actualizar
+
+      - name: Marcar la versión publicada (evita que el navegador mezcle archivos viejos y nuevos)
+        run: sed -i "s/__VERSION__/${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}/g" public/index.html
+
+      - name: Preparar la web para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: despliegue
+        uses: actions/deploy-pages@v4
