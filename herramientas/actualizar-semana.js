@@ -93,22 +93,39 @@ async function guardarColeccion(coleccion, nuevas, fuentes) {
   guardar(path.join(CARPETA, `${coleccion}-historico.json`), { generado, parte: 'historico', resultados: historico }, historico.length);
 }
 
-/** Consulta una función para cada tema y ventana, de una en una. */
-async function porTemas(ventanas, pausaMs, consulta) {
+/**
+ * Consulta una función para cada tema y ventana, de una en una, con dos protecciones:
+ *   - un tiempo máximo (lo reunido hasta entonces se guarda igual), y
+ *   - si la fuente falla varias veces seguidas (por ejemplo, porque limita las consultas),
+ *     se deja de consultar para no perder el tiempo.
+ */
+async function porTemas(ventanas, pausaMs, consulta, { maximoMs = 8 * 60000, fallosSeguidos = 6 } = {}) {
   const docs = [];
+  const inicio = Date.now();
   let ok = 0;
   let total = 0;
+  let fallos = 0;
   for (const ventana of ventanas) {
     for (const tema of temas) {
+      if (Date.now() - inicio > maximoMs || fallos >= fallosSeguidos) {
+        return { docs, ok, total, cortado: fallos >= fallosSeguidos ? 'la fuente dejó de responder' : 'se agotó el tiempo' };
+      }
       total++;
       try {
         docs.push(...await consulta(tema, ventana));
         ok++;
-      } catch { /* se omite la que falla */ }
+        fallos = 0;
+      } catch {
+        fallos++;
+      }
       await esperar(pausaMs);
     }
   }
   return { docs, ok, total };
+}
+
+function textoConsultas(r) {
+  return `${r.ok} de ${r.total} consultas${r.cortado ? `; se detuvo porque ${r.cortado}` : ''}`;
 }
 
 (async () => {
@@ -128,28 +145,13 @@ async function porTemas(ventanas, pausaMs, consulta) {
     console.error('No se pudieron actualizar las novedades:', e.message);
   }
 
-  // 2) Noticias por tema en todo internet (fuentes selectas), del Perú y del mundo.
+  // 2) Papers de todo el mundo (OpenAlex, solo fuentes selectas) y de autores peruanos.
   try {
-    const nac = await porTemas(ventanas, 1200, (t, v) => noticiasGoogle.buscarTema(t, 'nacional', v, ESPERA_MS));
-    const int = await porTemas(ventanas, 1200, (t, v) => noticiasGoogle.buscarTema(t, 'internacional', v, ESPERA_MS));
+    const mundo = await porTemas(ventanas, 300, (t, v) => openalex.buscarTema(t, v, null, 15000), { maximoMs: 6 * 60000 });
+    const peru = await porTemas(ventanas, 300, (t, v) => openalex.buscarTema(t, v, 'PE', 15000), { maximoMs: 5 * 60000 });
     const fuentes = [
-      { fuente: `Noticias por tema — Perú (${nac.ok} de ${nac.total} consultas)`, ok: nac.ok > 0, cantidad: nac.docs.length },
-      { fuente: `Noticias por tema — mundo (${int.ok} de ${int.total} consultas)`, ok: int.ok > 0, cantidad: int.docs.length }
-    ];
-    informar(fuentes);
-    const deLaSemana = semana.resultados.filter((d) => d.tipo === 'noticia');
-    await guardarColeccion('noticias', [...deLaSemana, ...nac.docs, ...int.docs], fuentes);
-  } catch (e) {
-    console.error('No se pudieron actualizar las noticias por tema:', e.message);
-  }
-
-  // 3) Papers de todo el mundo (OpenAlex, solo fuentes selectas) y de autores peruanos.
-  try {
-    const mundo = await porTemas(ventanas, 300, (t, v) => openalex.buscarTema(t, v, null, ESPERA_MS));
-    const peru = await porTemas(ventanas, 300, (t, v) => openalex.buscarTema(t, v, 'PE', ESPERA_MS));
-    const fuentes = [
-      { fuente: `Papers — OpenAlex, mundo (${mundo.ok} de ${mundo.total} consultas)`, ok: mundo.ok > 0, cantidad: mundo.docs.length },
-      { fuente: `Papers — OpenAlex, autores del Perú (${peru.ok} de ${peru.total} consultas)`, ok: peru.ok > 0, cantidad: peru.docs.length }
+      { fuente: `Papers — OpenAlex, mundo (${textoConsultas(mundo)})`, ok: mundo.ok > 0, cantidad: mundo.docs.length },
+      { fuente: `Papers — OpenAlex, autores del Perú (${textoConsultas(peru)})`, ok: peru.ok > 0, cantidad: peru.docs.length }
     ];
     informar(fuentes);
     const deLaSemana = semana.resultados.filter((d) => d.tipo === 'paper');
@@ -158,12 +160,28 @@ async function porTemas(ventanas, pausaMs, consulta) {
     console.error('No se pudieron actualizar los papers:', e.message);
   }
 
-  // 4) Libros de editoriales de prestigio.
+  // 3) Libros de editoriales de prestigio.
   try {
-    const r = await libros.obtenerPorVentanas(ventanas, { esperaMs: ESPERA_MS });
+    const r = await libros.obtenerPorVentanas(ventanas, { esperaMs: 15000, maximoMs: 5 * 60000 });
     informar(r.informe);
     await guardarColeccion('libros', r.libros, r.informe);
   } catch (e) {
     console.error('No se pudieron actualizar los libros:', e.message);
+  }
+
+  // 4) Noticias por tema en todo internet (fuentes selectas), del Perú y del mundo.
+  //    Google Noticias limita las consultas seguidas: pausas largas, espera corta y corte si falla.
+  try {
+    const nac = await porTemas(ventanas, 2000, (t, v) => noticiasGoogle.buscarTema(t, 'nacional', v, 8000), { maximoMs: 6 * 60000, fallosSeguidos: 4 });
+    const int = await porTemas(ventanas, 2000, (t, v) => noticiasGoogle.buscarTema(t, 'internacional', v, 8000), { maximoMs: 5 * 60000, fallosSeguidos: 4 });
+    const fuentes = [
+      { fuente: `Noticias por tema — Perú (${textoConsultas(nac)})`, ok: nac.ok > 0, cantidad: nac.docs.length },
+      { fuente: `Noticias por tema — mundo (${textoConsultas(int)})`, ok: int.ok > 0, cantidad: int.docs.length }
+    ];
+    informar(fuentes);
+    const deLaSemana = semana.resultados.filter((d) => d.tipo === 'noticia');
+    await guardarColeccion('noticias', [...deLaSemana, ...nac.docs, ...int.docs], fuentes);
+  } catch (e) {
+    console.error('No se pudieron actualizar las noticias por tema:', e.message);
   }
 })();

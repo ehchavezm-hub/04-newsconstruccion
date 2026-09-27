@@ -27,12 +27,14 @@ const esperar = (ms) => new Promise((ok) => setTimeout(ok, ms));
  * Libros de todos los temas en las ventanas indicadas.
  * @returns {Promise<{libros: Array, informe: Array}>}
  */
-async function obtenerPorVentanas(ventanas, { esperaMs = config.tiempoEsperaMs } = {}) {
+async function obtenerPorVentanas(ventanas, { esperaMs = config.tiempoEsperaMs, maximoMs = Infinity } = {}) {
   const temas = Temas.grupos.flatMap((g) => g.temas);
   const deCrossref = [];
+  const inicio = Date.now();
   let respondieron = 0;
   for (const ventana of ventanas) {
     for (const t of temas) {
+      if (Date.now() - inicio > maximoMs) break;
       try {
         const url = Crossref.construirUrl({ consulta: t.academica, libros: true, desde: ventana.desde, hasta: ventana.hasta, filas: 30 });
         deCrossref.push(...Crossref.interpretar(await traerJson(url, esperaMs)).filter((d) => d.tipo === 'libro'));
@@ -43,6 +45,7 @@ async function obtenerPorVentanas(ventanas, { esperaMs = config.tiempoEsperaMs }
   }
   const deOL = [];
   for (const t of temas) {
+    if (Date.now() - inicio > maximoMs) break;
     try {
       deOL.push(...Libros.interpretarOpenLibrary(await traerJson(Libros.urlOpenLibrary(t.academica), esperaMs)));
     } catch { /* se omite */ }
