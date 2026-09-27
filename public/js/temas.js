@@ -177,9 +177,79 @@
     }
   ];
 
-  // Cada tema recuerda a qué grupo pertenece.
+  /*
+   * Relación INDIRECTA: palabras que no nombran el tema pero indican que un resultado
+   * trata de él (por ejemplo, una obra que «entra en operación» se relaciona con la
+   * puesta en marcha). Solo sirven para decidir si un resultado se muestra; no se envían
+   * al buscador de noticias. Mismas reglas: comienzo de palabra; espacio final = palabra exacta.
+   */
+  var RELACIONADOS = {
+    'awp': ['planificación de obra', 'construction planning', 'workface', 'frente de trabajo'],
+    'last-planner': ['lean ', 'planificación semanal', 'compromisos de obra'],
+    'ppm': ['producción en obra', 'production control', 'control de producción', 'lean production'],
+    'constructabilidad': ['diseño para la construcción', 'design for construction', 'revisión del diseño'],
+    'lineas-balance': ['programación de obra', 'construction scheduling', 'cronograma de obra', 'scheduling'],
+    'metodos-constructivos': ['concreto', 'hormigón', 'concrete', 'estructura metálica', 'steel structure',
+      'cimentación', 'foundation', 'pilotes', 'tunnel boring', 'TBM '],
+    'encofrados': ['vaciado de concreto', 'losa ', 'losas ', 'slab '],
+    'andamios': ['seguridad en obra', 'construction safety', 'accidente en obra', 'caída de altura'],
+    'procesos-constructivos': ['proceso de construcción', 'building process', 'mano de obra', 'workforce'],
+    'vdc': ['modelo digital', 'digital model', 'coordinación digital', 'realidad virtual', 'virtual reality'],
+    'bim': ['modelado 3D', '3D model', 'modelo 3D'],
+    'gestion-informacion': ['software de construcción', 'construction software', 'plataforma digital', 'digital platform'],
+    'ia-automatizacion': ['robot', 'dron', 'drone', 'algoritmo', 'algorithm', 'deep learning'],
+    'industrializacion': ['modular', 'prefabric', 'industrializ', 'transformación digital', 'digital transformation',
+      'tecnología de construcción'],
+    'ingenieria': ['ingeniería', 'engineering', 'estudio definitivo', 'estudios de ingeniería', 'diseño de la obra'],
+    'procura': ['contrato', 'contract', 'adjudica', 'awarded', 'award ', 'concesión', 'concession', 'licita',
+      'compras públicas', 'proveedor', 'supplier'],
+    'construccion': ['obra ', 'obras ', 'construcción', 'construction', 'constructora', 'contratista', 'contractor',
+      'infraestructura', 'infrastructure', 'megaproyecto', 'megaproject', 'proyecto de inversión'],
+    'puesta-marcha': ['inaugura', 'entra en operación', 'entrará en operación', 'comienza a operar',
+      'begins operation', 'entrega de obra', 'entrega de la obra'],
+    'operacion': ['mantenimiento', 'maintenance', 'operación comercial', 'commercial operation', 'operación de la planta'],
+    'pmbok': ['director de proyecto', 'directora de proyecto', 'project manager', 'gerencia de proyectos',
+      'gerente de proyecto'],
+    'prince2': ['gobernanza', 'governance', 'oficina de proyectos', 'PMO '],
+    'ipma': ['competencias profesionales', 'professional competence', 'certificación profesional']
+  };
+
+  /*
+   * Consulta académica de cada tema (en inglés, el idioma de casi todas las revistas).
+   * La usan Crossref y Open Library para traer los papers y libros recientes de cada tema.
+   */
+  var ACADEMICA = {
+    'awp': 'advanced work packaging construction',
+    'last-planner': 'last planner system construction',
+    'ppm': 'project production management construction',
+    'constructabilidad': 'constructability value engineering construction',
+    'lineas-balance': 'line of balance takt planning construction',
+    'metodos-constructivos': 'construction methods',
+    'encofrados': 'formwork construction',
+    'andamios': 'scaffolding construction safety',
+    'procesos-constructivos': 'construction process productivity',
+    'vdc': 'virtual design and construction',
+    'bim': 'building information modeling',
+    'gestion-informacion': 'construction information management common data environment',
+    'ia-automatizacion': 'artificial intelligence construction automation',
+    'industrializacion': 'industrialized construction modular prefabrication',
+    'ingenieria': 'front-end engineering design construction projects',
+    'procura': 'construction procurement contracts',
+    'construccion': 'construction project management site',
+    'puesta-marcha': 'commissioning construction projects',
+    'operacion': 'operation and maintenance asset management facilities',
+    'pmbok': 'PMBOK project management standard',
+    'prince2': 'PRINCE2 project governance',
+    'ipma': 'IPMA individual competence baseline project management'
+  };
+
+  // Cada tema recuerda a qué grupo pertenece, sus palabras de relación indirecta y su consulta académica.
   grupos.forEach(function (g) {
-    g.temas.forEach(function (t) { t.grupo = g.id; });
+    g.temas.forEach(function (t) {
+      t.grupo = g.id;
+      t.relacionados = RELACIONADOS[t.id] || [];
+      t.academica = ACADEMICA[t.id] || t.etiqueta;
+    });
   });
 
   /** Busca un tema por su id. */

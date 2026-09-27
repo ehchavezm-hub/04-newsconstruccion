@@ -44,15 +44,32 @@
     return prefijo + '-' + (h >>> 0).toString(36);
   }
 
+  /** "AAAA-MM-DD" de hace `dias` días. */
+  function haceDias(dias, ahora) {
+    return new Date((ahora || new Date()).getTime() - dias * 86400000).toISOString().slice(0, 10);
+  }
+
   /**
    * @param {{consulta?: string, desde?: string, filas?: number, correo?: string}} op
-   *   desde: "AAAA-MM-DD" para traer solo lo publicado desde esa fecha (más reciente primero).
+   *   desde: "AAAA-MM-DD" para traer solo lo publicado desde esa fecha.
+   *   - Con consulta (un tema o lo que escribió la persona): busca en TODAS las revistas y
+   *     congresos de las editoriales académicas de prestigio (por prefijo de DOI). Si no se
+   *     indica `desde`, solo lo de los últimos 12 meses (lo vigente).
+   *   - Sin consulta (novedades de la semana): las revistas núcleo, de lo más nuevo a lo más antiguo.
    */
   function construirUrl(op) {
-    var filtros = ['type:journal-article'].concat(
-      Fuentes.revistas.map(function (r) { return 'issn:' + r.issn; })
-    );
-    if (op.desde) filtros.push('from-pub-date:' + op.desde);
+    var filtros;
+    if (op.consulta) {
+      filtros = ['type:journal-article', 'type:proceedings-article'].concat(
+        Fuentes.editorialesAcademicas.map(function (e) { return 'prefix:' + e.prefijo; })
+      );
+      filtros.push('from-pub-date:' + (op.desde || haceDias(365)));
+    } else {
+      filtros = ['type:journal-article'].concat(
+        Fuentes.revistas.map(function (r) { return 'issn:' + r.issn; })
+      );
+      if (op.desde) filtros.push('from-pub-date:' + op.desde);
+    }
     var params = new URLSearchParams({
       rows: String(op.filas || 10),
       filter: filtros.join(','),
@@ -109,6 +126,7 @@
 
   var Crossref = {
     construirUrl: construirUrl,
+    haceDias: haceDias,
     convertir: convertir,
     interpretar: interpretar,
     limpiarTexto: limpiarTexto,

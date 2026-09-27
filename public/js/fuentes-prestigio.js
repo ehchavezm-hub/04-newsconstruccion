@@ -63,6 +63,10 @@
       googleNoticias: 'site:gob.pe OECE' },
     { id: 'anin', nombre: 'Autoridad Nacional de Infraestructura', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: true,
       googleNoticias: 'site:gob.pe "Autoridad Nacional de Infraestructura"' },
+    { id: 'sencico', nombre: 'SENCICO', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: true,
+      googleNoticias: 'site:gob.pe SENCICO' },
+    { id: 'plan-bim', nombre: 'Plan BIM Perú (MEF)', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: true,
+      googleNoticias: 'site:gob.pe "Plan BIM"' },
     { id: 'contraloria', nombre: 'Contraloría — Obras', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: false,
       googleNoticias: 'site:gob.pe Contraloría' },
     { id: 'el-peruano', nombre: 'El Peruano (diario oficial)', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: false,
@@ -118,6 +122,46 @@
       googleNoticias: 'site:deloitte.com' },
     { id: 'pwc', nombre: 'PwC', tipoFuente: 'Consultora y análisis', idioma: 'en', ambito: 'internacional', especializado: false,
       googleNoticias: 'site:pwc.com' },
+
+    // Institutos, asociaciones profesionales y centros de conocimiento de la industria
+    // (academia y empresas). Sus noticias se relacionan con los temas (AWP, Last Planner,
+    // PPM, BIM, PMBOK, PRINCE2, IPMA…); el filtro de temas descarta lo demás.
+    { id: 'cii', nombre: 'Construction Industry Institute (CII)', tipoFuente: 'Instituto de investigación', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:construction-institute.org' },
+    { id: 'lci', nombre: 'Lean Construction Institute', tipoFuente: 'Instituto de investigación', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:leanconstruction.org' },
+    { id: 'ppi', nombre: 'Project Production Institute', tipoFuente: 'Instituto de investigación', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:projectproduction.org' },
+    { id: 'pmi', nombre: 'Project Management Institute (PMI)', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:pmi.org' },
+    { id: 'ipma', nombre: 'IPMA — International Project Management Association', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:ipma.world' },
+    { id: 'peoplecert', nombre: 'PeopleCert (PRINCE2)', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:peoplecert.org' },
+    { id: 'buildingsmart', nombre: 'buildingSMART International', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:buildingsmart.org' },
+    { id: 'asce', nombre: 'ASCE — American Society of Civil Engineers', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:asce.org' },
+    { id: 'ice', nombre: 'ICE — Institution of Civil Engineers', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:ice.org.uk' },
+    { id: 'rics', nombre: 'RICS', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:rics.org' },
+    { id: 'aace', nombre: 'AACE International', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:aacei.org' },
+    { id: 'dodge', nombre: 'Dodge Construction Network', tipoFuente: 'Análisis del sector', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:construction.com' },
+    { id: 'arup', nombre: 'Arup', tipoFuente: 'Empresa de ingeniería', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:arup.com' },
+    { id: 'autodesk', nombre: 'Autodesk — Construction Blog', tipoFuente: 'Empresa de tecnología', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:construction.autodesk.com' },
+    { id: 'bcg', nombre: 'Boston Consulting Group', tipoFuente: 'Consultora y análisis', idioma: 'en', ambito: 'internacional', especializado: false,
+      googleNoticias: 'site:bcg.com' },
+    { id: 'kpmg', nombre: 'KPMG', tipoFuente: 'Consultora y análisis', idioma: 'en', ambito: 'internacional', especializado: false,
+      googleNoticias: 'site:kpmg.com' },
+    { id: 'ey', nombre: 'EY', tipoFuente: 'Consultora y análisis', idioma: 'en', ambito: 'internacional', especializado: false,
+      googleNoticias: 'site:ey.com' },
+    { id: 'wef', nombre: 'Foro Económico Mundial', tipoFuente: 'Organismo internacional', idioma: 'en', ambito: 'internacional', especializado: false,
+      googleNoticias: 'site:weforum.org' },
 
     // Periódicos y cadenas de referencia mundial.
     { id: 'bbc-mundo', nombre: 'BBC Mundo', tipoFuente: 'Medio de referencia', idioma: 'es', ambito: 'internacional', especializado: false,
@@ -197,6 +241,30 @@
     { nombre: 'Reliability Engineering & System Safety', issn: '0951-8320' },
     // Revista amplia: solo se aceptan los artículos que tratan de construcción.
     { nombre: 'Journal of Cleaner Production', issn: '0959-6526', filtrado: true }
+  ];
+
+  /*
+   * Editoriales y congresos académicos de prestigio, por su prefijo de DOI en Crossref.
+   * La búsqueda por tema abarca TODAS sus revistas y actas de congresos (no solo las revistas
+   * de arriba); después el filtro de temas deja solo lo que trata de los temas definidos.
+   */
+  var editorialesAcademicas = [
+    { prefijo: '10.1016', nombre: 'Elsevier' },
+    { prefijo: '10.1061', nombre: 'ASCE — American Society of Civil Engineers' },
+    { prefijo: '10.1080', nombre: 'Taylor & Francis' },
+    { prefijo: '10.1108', nombre: 'Emerald' },
+    { prefijo: '10.1177', nombre: 'SAGE' },
+    { prefijo: '10.1002', nombre: 'Wiley' },
+    { prefijo: '10.1111', nombre: 'Wiley-Blackwell' },
+    { prefijo: '10.1007', nombre: 'Springer' },
+    { prefijo: '10.1680', nombre: 'ICE Publishing' },
+    { prefijo: '10.1139', nombre: 'Canadian Science Publishing' },
+    { prefijo: '10.1109', nombre: 'IEEE' },
+    { prefijo: '10.1145', nombre: 'ACM' },
+    { prefijo: '10.1017', nombre: 'Cambridge University Press' },
+    { prefijo: '10.1093', nombre: 'Oxford University Press' },
+    { prefijo: '10.24928', nombre: 'IGLC — International Group for Lean Construction' },
+    { prefijo: '10.22260', nombre: 'ISARC — Automation and Robotics in Construction' }
   ];
 
   // Editoriales de prestigio (se compara sin tildes ni mayúsculas, por coincidencia parcial).
@@ -286,6 +354,7 @@
     medios: medios,
     dominios: dominios,
     revistas: revistas,
+    editorialesAcademicas: editorialesAcademicas,
     editoriales: editoriales,
     PALABRAS_CLAVE: PALABRAS_CLAVE,
     esRelevante: esRelevante,

@@ -186,6 +186,86 @@
     return documentos.slice().sort(function (a, b) { return valorFecha(b.fecha) - valorFecha(a.fecha); });
   }
 
+  /* ------------------ Relación con los temas y vigencia ------------------ */
+
+  var indiceTemas = null;
+
+  /** Términos de todos los temas, ya normalizados (directos e indirectos). */
+  function temasNormalizados() {
+    if (indiceTemas) return indiceTemas;
+    var Temas = typeof module !== 'undefined' && module.exports ? require('./temas.js') : raiz.Temas;
+    var aVariantes = function (lista) {
+      return (lista || []).map(function (t) {
+        return normalizar(t) + (/\s$/.test(t) ? ' ' : '');
+      }).filter(function (v) { return v.trim(); });
+    };
+    indiceTemas = [];
+    Temas.grupos.forEach(function (g) {
+      g.temas.forEach(function (t) {
+        indiceTemas.push({ id: t.id, etiqueta: t.etiqueta, directos: aVariantes(t.terminos), indirectos: aVariantes(t.relacionados) });
+      });
+    });
+    return indiceTemas;
+  }
+
+  /**
+   * Temas con los que se relaciona un documento: primero los de relación directa (nombra el
+   * tema) y después los de relación indirecta. Se mira el título, el resumen y las etiquetas
+   * (no la fuente: «Construction Dive» no hace que todo trate de construcción).
+   * @returns {Array<{id: string, etiqueta: string, directo: boolean}>}
+   */
+  // Resúmenes genéricos que escribe la aplicación («Publicado por CAPECO — Cámara Peruana de la
+  // Construcción. Pulse…»): nombran la fuente, no el contenido, así que no cuentan.
+  var RESUMEN_GENERICO = /(^|\. )(Publicado por|Noticia de|Libro publicado por) .*Pulse «Visitar enlace»|^Artículo académico\. Pulse/;
+
+  function temasDe(doc) {
+    var resumen = RESUMEN_GENERICO.test(doc.resumen || '') ? '' : doc.resumen;
+    var texto = normalizar([doc.titulo, resumen, (doc.etiquetas || []).join(' '), doc.capitulo].join(' '));
+    var coincide = function (v) { return contiene(texto, v); };
+    var directos = [];
+    var indirectos = [];
+    temasNormalizados().forEach(function (t) {
+      if (t.directos.some(coincide)) directos.push({ id: t.id, etiqueta: t.etiqueta, directo: true });
+      else if (t.indirectos.some(coincide)) indirectos.push({ id: t.id, etiqueta: t.etiqueta, directo: false });
+    });
+    return directos.concat(indirectos);
+  }
+
+  /** ¿El documento se relaciona, directa o indirectamente, con alguno de los temas? */
+  function esDeLosTemas(doc) {
+    return temasDe(doc).length > 0;
+  }
+
+  // Cuánto tiempo se considera vigente cada tipo de resultado (en días).
+  var VIGENCIA_DIAS = { noticia: 90, paper: 365, libro: 365 };
+
+  /**
+   * ¿El documento está vigente a la fecha?
+   *   - Noticias: de los últimos 90 días (las de la semana, de los últimos 7).
+   *   - Papers y libros: publicados en los últimos 12 meses. Si solo se conoce el año,
+   *     basta con que sea el año del límite o posterior.
+   *   - Normas: solo las que están en vigor (vigente: true en el catálogo).
+   *   - El contenido de ejemplo nunca se considera vigente.
+   */
+  function vigente(doc, ahora) {
+    if (doc.ejemplo) return false;
+    if (doc.tipo === 'norma') return doc.vigente === true;
+    if (doc.fragmento) return true; // párrafos de la biblioteca personal
+    var dias = VIGENCIA_DIAS[doc.tipo];
+    if (!dias) return false;
+    var hoy = (ahora || new Date()).getTime();
+    var limite = hoy - dias * 86400000;
+    var fecha = String(doc.fecha || '');
+    if (/^\d{4}$/.test(fecha)) return Number(fecha) >= new Date(limite).getUTCFullYear() && Number(fecha) <= new Date(hoy).getUTCFullYear();
+    var t = valorFecha(fecha);
+    return t >= limite && t <= hoy + 86400000;
+  }
+
+  /** Solo lo vigente y relacionado con los temas. */
+  function aptos(documentos, ahora) {
+    return documentos.filter(function (d) { return vigente(d, ahora) && esDeLosTemas(d); });
+  }
+
   var MotorBusqueda = {
     normalizar: normalizar,
     ordenarPorFecha: ordenarPorFecha,
@@ -193,6 +273,11 @@
     coincideTipo: coincideTipo,
     buscar: buscar,
     valorFecha: valorFecha,
+    temasDe: temasDe,
+    esDeLosTemas: esDeLosTemas,
+    vigente: vigente,
+    aptos: aptos,
+    VIGENCIA_DIAS: VIGENCIA_DIAS,
     SINONIMOS: SINONIMOS
   };
 

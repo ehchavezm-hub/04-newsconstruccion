@@ -278,10 +278,10 @@
           plural(noticias.length, 'noticia', 'noticias') + ' de los últimos ' + r.dias + ' días.', acciones);
         return;
       }
-      // Sin conexión con las fuentes: se muestran textos explicativos de ejemplo.
-      var ejemplos = window.CATALOGO_CONSTRUCCION.filter(function (d) { return d.tipo === 'noticia'; });
-      CG.Interfaz.mostrarPorAmbito(zona, estado, ejemplos,
-        'En este momento no podemos traer las noticias del día. Mientras tanto, le dejamos estos textos que explican temas del sector.', acciones);
+      // Solo se muestran noticias vigentes y de los temas: si no hay, se dice con claridad.
+      CG.Interfaz.mostrarPorAmbito(zona, estado, [], r.generado
+        ? 'Esta semana no hay noticias sobre los temas de Construcción Global. Pruebe en la pestaña «Buscar», que revisa los últimos 3 meses.'
+        : 'En este momento no podemos traer las noticias del día. Por favor, inténtelo de nuevo en unos minutos.', acciones);
     });
   }
 
@@ -295,8 +295,10 @@
     CG.Interfaz.mostrarCargando(lista, estado);
     CG.Datos.buscar({ consulta: '', tipo: TIPO_DE_SECCION[seccion] }).then(function (r) {
       var resultados = r.resultados; // de lo más reciente a lo más antiguo
-      CG.Interfaz.mostrarResultados(lista, estado, resultados,
-        plural(resultados.length, 'documento', 'documentos') + ', del más reciente al más antiguo.', acciones);
+      var que = seccion === 'papers' ? 'publicados en los últimos 12 meses (y normas vigentes)' : 'publicados en los últimos 12 meses';
+      CG.Interfaz.mostrarResultados(lista, estado, resultados, resultados.length
+        ? plural(resultados.length, 'documento', 'documentos') + ' ' + que + ', del más reciente al más antiguo.'
+        : 'En este momento no hay documentos ' + que + ' sobre los temas. Pruebe en la pestaña «Buscar» con un tema.', acciones);
     });
   }
 

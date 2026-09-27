@@ -23,7 +23,8 @@ function compacta(d) {
 
 /**
  * Une el archivo anterior con las noticias nuevas: sin repetidos (por enlace o título),
- * solo los últimos 90 días y de lo más reciente a lo más antiguo.
+ * solo los últimos 90 días, solo lo relacionado con los temas definidos (así también se
+ * limpia lo que se guardó antes con otros criterios) y de lo más reciente a lo más antiguo.
  */
 function unir(anteriores, nuevas, ahora = new Date()) {
   const limite = ahora.getTime() - DIAS_ARCHIVO * 86400000;
@@ -32,6 +33,7 @@ function unir(anteriores, nuevas, ahora = new Date()) {
   for (const d of [...nuevas, ...anteriores]) {
     const t = Date.parse(d.fecha);
     if (!d.enlace || isNaN(t) || t < limite || t > ahora.getTime() + 86400000) continue;
+    if (!Motor.esDeLosTemas(d)) continue;
     const claves = [d.enlace, Motor.normalizar(d.titulo)];
     if (claves.some((c) => vistos.has(c))) continue;
     claves.forEach((c) => vistos.add(c));

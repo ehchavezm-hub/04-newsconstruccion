@@ -223,13 +223,23 @@ describe('Fuente Crossref', () => {
     assert.equal(abierto.descarga.url, 'https://ejemplo.org/a.pdf');
   });
 
-  test('solo consulta revistas de prestigio y puede limitar por fecha', () => {
-    const url = new URL(Crossref.construirUrl({ consulta: 'lean construction', desde: '2026-09-19' }));
+  test('con un tema busca en todas las editoriales de prestigio, solo en los últimos 12 meses', () => {
+    const url = new URL(Crossref.construirUrl({ consulta: 'last planner system' }));
     assert.equal(url.hostname, 'api.crossref.org');
-    assert.equal(url.searchParams.get('query'), 'lean construction');
+    assert.equal(url.searchParams.get('query'), 'last planner system');
     const filtro = url.searchParams.get('filter');
+    assert.match(filtro, /prefix:10\.1061/); // ASCE
+    assert.match(filtro, /prefix:10\.24928/); // IGLC (Lean Construction)
+    assert.match(filtro, /type:proceedings-article/);
+    assert.equal((filtro.match(/prefix:/g) || []).length, Fuentes.editorialesAcademicas.length);
+    const desde = /from-pub-date:(\d{4}-\d{2}-\d{2})/.exec(filtro)[1];
+    const dias = (Date.now() - Date.parse(desde)) / 86400000;
+    assert.ok(dias > 363 && dias < 367, `desde ${desde}`);
+  });
+
+  test('sin tema (novedades) consulta las revistas núcleo desde una fecha', () => {
+    const filtro = new URL(Crossref.construirUrl({ desde: '2026-09-19' })).searchParams.get('filter');
     assert.match(filtro, /issn:0733-9364/); // Journal of Construction Engineering and Management
-    assert.match(filtro, /issn:0263-7863/); // International Journal of Project Management
     assert.match(filtro, /from-pub-date:2026-09-19/);
     assert.equal((filtro.match(/issn:/g) || []).length, Fuentes.revistas.length);
   });
@@ -409,20 +419,87 @@ describe('Nacional o internacional', () => {
   });
 });
 
+describe('Vigencia y relación con los temas', () => {
+  const ahora = new Date('2026-09-27T12:00:00Z');
+
+  test('papers y libros: solo los últimos 12 meses (un paper de 2024 ya no está vigente)', () => {
+    assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2024-11-03' }, ahora), false);
+    assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2025-08-01' }, ahora), false);
+    assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2025-10-15' }, ahora), true);
+    assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2026-09' }, ahora), true);
+    assert.equal(Motor.vigente({ tipo: 'libro', fecha: '2025' }, ahora), true);
+    assert.equal(Motor.vigente({ tipo: 'libro', fecha: '2024' }, ahora), false);
+    assert.equal(Motor.vigente({ tipo: 'libro', fecha: '2027' }, ahora), false);
+  });
+
+  test('noticias: 90 días; normas: solo las que están en vigor; nunca el contenido de ejemplo', () => {
+    assert.equal(Motor.vigente({ tipo: 'noticia', fecha: '2026-07-10T00:00:00Z' }, ahora), true);
+    assert.equal(Motor.vigente({ tipo: 'noticia', fecha: '2026-06-01T00:00:00Z' }, ahora), false);
+    assert.equal(Motor.vigente(catalogo.find((d) => d.id === 'norma-ley-32069'), ahora), true);
+    assert.equal(Motor.vigente(catalogo.find((d) => d.id === 'norma-guia-app-banco-mundial'), ahora), false);
+    assert.equal(Motor.vigente(catalogo.find((d) => d.tipo === 'noticia'), ahora), false);
+  });
+
+  test('los clásicos del catálogo no se muestran; las normas vigentes sí', () => {
+    assert.deepEqual(Motor.aptos(catalogo, ahora).map((d) => d.id).sort(), ['norma-g050', 'norma-ley-32069']);
+  });
+
+  test('relación directa, indirecta o ninguna con los temas', () => {
+    const [directo] = Motor.temasDe(doc('a', 'Lessons from Advanced Work Packaging in mining'));
+    assert.deepEqual([directo.id, directo.directo], ['awp', true]);
+    const indirecto = Motor.temasDe(doc('b', 'La nueva planta de agua entra en operación en Piura'));
+    assert.ok(indirecto.some((t) => t.id === 'puesta-marcha' && !t.directo));
+    assert.equal(Motor.esDeLosTemas(doc('c', 'Gana el equipo local')), false);
+    // La fuente no cuenta: que el medio se llame «Construction Dive» no basta.
+    assert.equal(Motor.esDeLosTemas(doc('d', 'Housing prices fall', '2026-09-20', { fuente: 'Construction Dive' })), false);
+  });
+
+  test('los papers por tema se piden en todas las editoriales y quedan solo los vigentes y relacionados', async () => {
+    const crossref = require('../servidor/fuentes/crossref');
+    const pedidos = [];
+    const fetchOriginal = global.fetch;
+    const item = (doi, titulo, fecha) => ({ DOI: doi, title: [titulo], issued: { 'date-parts': [fecha] }, 'container-title': ['Automation in Construction'] });
+    global.fetch = async (url) => {
+      pedidos.push(String(url));
+      return new Response(JSON.stringify({ message: { items: [
+        item('10.1/a', 'Last Planner System adoption in Peru', [2026, 8, 2]),
+        item('10.1/b', 'Last Planner System in 2024 projects', [2024, 5, 1]),
+        item('10.1/c', 'Protein folding with deep networks', [2026, 7, 1])
+      ] } }), { status: 200 });
+    };
+    try {
+      const { papers } = await crossref.obtenerRecientes({ ahora, esperaMs: 1000, filas: 5 });
+      assert.deepEqual(papers.map((d) => d.titulo), ['Last Planner System adoption in Peru']);
+      assert.equal(pedidos.length, Temas.grupos.flatMap((g) => g.temas).length);
+      assert.ok(pedidos.every((u) => u.includes('prefix%3A10.1016') && u.includes('from-pub-date%3A2025-09-27')));
+    } finally {
+      global.fetch = fetchOriginal;
+    }
+  });
+
+  test('la tarjeta indica el tema de cada resultado (código de la interfaz)', () => {
+    const codigo = require('fs').readFileSync(require('path').join(__dirname, '..', 'public', 'js', 'interfaz.js'), 'utf8');
+    assert.match(codigo, /'Tema: ' \+ temas\[0\]\.etiqueta/);
+  });
+});
+
 describe('Archivo de noticias (90 días)', () => {
   const archivo = require('../servidor/archivo');
   test('suma lo nuevo, quita repetidos y lo que pasa de 90 días', () => {
     const ahora = new Date('2026-09-26T12:00:00Z');
-    const n = (id, fecha, enlace = 'https://x.pe/' + id) => ({ id, tipo: 'noticia', titulo: 'Titular ' + id, resumen: 'r', fecha, enlace });
+    const n = (id, fecha, enlace = 'https://x.pe/' + id) => ({ id, tipo: 'noticia', titulo: 'Avance de obra ' + id, resumen: 'r', fecha, enlace });
     const anteriores = [n('a', '2026-09-01T00:00:00Z'), n('viejo', '2026-05-01T00:00:00Z'), n('b', '2026-09-20T00:00:00Z')];
     const nuevas = [n('c', '2026-09-26T08:00:00Z'), n('b', '2026-09-20T00:00:00Z')];
     assert.deepEqual(archivo.unir(anteriores, nuevas, ahora).map((d) => d.id), ['c', 'b', 'a']);
+    // Lo que no se relaciona con los temas se quita (también lo guardado antes).
+    const ajena = { id: 'x', tipo: 'noticia', titulo: 'Gana el equipo local', resumen: '', fecha: '2026-09-25T00:00:00Z', enlace: 'https://x.pe/x' };
+    assert.deepEqual(archivo.unir([ajena], [], ahora), []);
   });
 
   test('guarda una versión compacta (resumen de 200 caracteres como máximo)', () => {
     const archivo = require('../servidor/archivo');
     const largo = 'Palabra '.repeat(80);
-    const [d] = archivo.unir([], [{ id: 'x', tipo: 'noticia', titulo: 'T', resumen: largo, fecha: '2026-09-25T00:00:00Z', enlace: 'https://x.pe/1' }],
+    const [d] = archivo.unir([], [{ id: 'x', tipo: 'noticia', titulo: 'Nueva obra vial', resumen: largo, fecha: '2026-09-25T00:00:00Z', enlace: 'https://x.pe/1' }],
       new Date('2026-09-26T00:00:00Z'));
     assert.ok(d.resumen.length <= 201);
   });
@@ -435,6 +512,7 @@ describe('Novedades de la última semana', () => {
       <item><title>Nueva licitación del puerto de Chancay</title><link>https://ejemplo.org/1</link><pubDate>Thu, 24 Sep 2026 10:00:00 GMT</pubDate></item>
       <item><title>Firman contrato EPC para planta de agua</title><link>https://ejemplo.org/2</link><pubDate>Fri, 25 Sep 2026 10:00:00 GMT</pubDate></item>
       <item><title>Obra antigua inaugurada</title><link>https://ejemplo.org/3</link><pubDate>Mon, 07 Sep 2026 10:00:00 GMT</pubDate></item>
+      <item><title>Gana el equipo local</title><link>https://ejemplo.org/4</link><pubDate>Fri, 25 Sep 2026 11:00:00 GMT</pubDate></item>
     </channel></rss>`;
     const crossrefFalso = { message: { items: [{
       DOI: '10.1/x', title: ['Digital twins for construction sites'], issued: { 'date-parts': [[2026, 9, 23]] },
@@ -517,16 +595,19 @@ describe('Servidor', () => {
     assert.equal(datos.fuentesEnVivo, false);
   });
 
-  test('busca por API y respeta el filtro', async () => {
-    const datos = await (await fetch(base + '/api/buscar?q=Flyvbjerg&tipo=libro')).json();
-    assert.ok(datos.total > 0);
-    assert.ok(datos.resultados.every((d) => d.tipo === 'libro'));
+  test('busca por API, respeta el filtro y solo muestra lo vigente', async () => {
+    const datos = await (await fetch(base + '/api/buscar?q=contrataciones&tipo=paper')).json();
+    assert.ok(datos.resultados.some((d) => d.id === 'norma-ley-32069'));
+    assert.ok(datos.resultados.every((d) => d.tipo === 'paper' || d.tipo === 'norma'));
+    // Los clásicos del catálogo (Flyvbjerg 2003, 2023…) ya no se muestran: no son de los últimos 12 meses.
+    const clasicos = await (await fetch(base + '/api/buscar?q=Flyvbjerg')).json();
+    assert.equal(clasicos.total, 0);
   });
 
   test('busca un tema por sus términos (t=)', async () => {
-    const t = encodeURIComponent(Temas.porId('operacion').terminos.join('|'));
-    const datos = await (await fetch(base + '/api/buscar?q=Operaci%C3%B3n&t=' + t)).json();
-    assert.ok(datos.resultados.some((d) => d.id === 'libro-moubray-rcm'));
+    const t = encodeURIComponent(Temas.porId('andamios').terminos.join('|'));
+    const datos = await (await fetch(base + '/api/buscar?q=Andamios&t=' + t)).json();
+    assert.ok(datos.resultados.some((d) => d.id === 'norma-g050'));
   });
 
   test('entrega las novedades de la semana (vacías si no hay internet)', async () => {

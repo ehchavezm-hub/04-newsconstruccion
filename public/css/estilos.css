@@ -337,3 +337,6 @@ header :focus-visible { outline-color: var(--oro); }
   .pestana, .boton, .pastilla > span, .tarjeta { border: 2px solid CanvasText; }
   .pastilla input:checked + span { outline: 3px solid Highlight; }
 }
+
+/* Etiqueta «Tema: …» de cada resultado */
+.etiqueta-extra[data-clase="tema"] { color: var(--marca); border-color: var(--marca); }

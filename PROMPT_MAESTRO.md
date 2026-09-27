@@ -584,3 +584,37 @@ nota y una línea «Siglas: …» con el significado de las siglas.
 Los términos de cada tema (14–25, en español e inglés) están en `public/js/temas.js`. Las siglas
 cortas llevan espacio final para exigir palabra exacta («BIM » no encuentra «bimestre») y se
 evitan siglas ambiguas en inglés (por ejemplo, «ICE»).
+
+---
+
+## 15. Actualización 2: solo resultados vigentes y relacionados con los temas
+
+### Regla para las 4 ventanas (Buscar, Últimas Noticias, Papers Académicos, Libros Destacados)
+Todo resultado debe estar **vigente a la fecha** y **relacionado, directa o indirectamente**, con
+los 22 temas de la sección 14:
+- Vigencia (`VIGENCIA_DIAS` en `motor-busqueda.js`): noticias 90 días (7 en Últimas Noticias);
+  papers y libros 12 meses (si solo hay año, el año del límite o posterior); normas solo con
+  `vigente: true`; el contenido de ejemplo nunca. Los clásicos del catálogo no se muestran.
+  Crossref usa la fecha más temprana (impresa o en línea), así no se cuelan artículos publicados en
+  línea años antes.
+- Relación (`Motor.temasDe`, `Motor.esDeLosTemas`, `Motor.aptos`): directa si el título, resumen o
+  etiquetas contienen un término del tema; indirecta si contienen uno de sus `relacionados`
+  (`RELACIONADOS` en `temas.js`). La fuente no cuenta, ni los resúmenes genéricos («Publicado por…»).
+  Cada tarjeta muestra «Tema: …».
+- Se aplica en el navegador, en el servidor y al generar los datos (semana, archivo de 90 días,
+  papers y libros recientes). Si Últimas Noticias queda vacía, se explica con un mensaje (ya no se
+  muestran noticias de ejemplo).
+
+### Búsqueda abierta a más fuentes de prestigio
+- **Crossref por editorial:** con un tema o texto, busca en todas las revistas y congresos de
+  Elsevier (10.1016), ASCE (10.1061), Taylor & Francis (10.1080), Emerald (10.1108), SAGE (10.1177),
+  Wiley (10.1002, 10.1111), Springer (10.1007), ICE Publishing (10.1680), Canadian Science Publishing
+  (10.1139), IEEE (10.1109), ACM (10.1145), Cambridge (10.1017), Oxford (10.1093), IGLC (10.24928) e
+  ISARC (10.22260); tipos artículo y ponencia; `from-pub-date` de hace 12 meses. Cada tema tiene una
+  `academica` (consulta en inglés) para Crossref y Open Library.
+- **`papers-recientes.json`** (nuevo): papers de los últimos 12 meses de cada uno de los 22 temas.
+  `libros-recientes.json` también se genera tema por tema (12 meses).
+- **Institutos, asociaciones y empresas** (Google Noticias por sitio): CII, Lean Construction
+  Institute, Project Production Institute, PMI, IPMA, PeopleCert, buildingSMART, ASCE, ICE, RICS,
+  AACE, Dodge Construction Network, Arup, Autodesk, BCG, KPMG, EY, Foro Económico Mundial, SENCICO y
+  Plan BIM Perú.

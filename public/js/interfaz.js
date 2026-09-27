@@ -100,6 +100,14 @@
     if (cuando) cabecera.appendChild(crear('span', 'etiqueta-extra', 'Publicado ' + cuando)).setAttribute('data-clase', 'nuevo');
     if (doc.idioma === 'en') cabecera.appendChild(crear('span', 'etiqueta-extra', 'En inglés'));
     if (doc.descarga) cabecera.appendChild(crear('span', 'etiqueta-extra', 'Acceso libre ✓')).setAttribute('data-clase', 'libre');
+    if (doc.tipo === 'norma' && doc.vigente) cabecera.appendChild(crear('span', 'etiqueta-extra', 'Norma vigente')).setAttribute('data-clase', 'libre');
+    // Con qué tema se relaciona (el primero de relación directa, si lo hay).
+    var temas = window.MotorBusqueda.temasDe(doc);
+    if (temas.length) {
+      var tema = crear('span', 'etiqueta-extra', 'Tema: ' + temas[0].etiqueta);
+      tema.setAttribute('data-clase', 'tema');
+      cabecera.appendChild(tema);
+    }
     tarjeta.appendChild(cabecera);
 
     // Título

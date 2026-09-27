@@ -2,7 +2,10 @@
  * ACTUALIZAR LOS DATOS DE LA WEB PUBLICADA
  * Consulta las fuentes de prestigio y guarda:
  *   - public/datos/ultima-semana.json     novedades de los últimos 7 días (nacional e internacional)
- *   - public/datos/libros-recientes.json  libros publicados en los últimos años por editoriales de prestigio
+ *   - public/datos/papers-recientes.json  papers de los últimos 12 meses de cada tema, en todas las
+ *                                        revistas y congresos de las editoriales académicas de prestigio
+ *   - public/datos/libros-recientes.json  libros de los últimos 12 meses de cada tema, de editoriales de prestigio
+ * Todo se limita a lo relacionado, directa o indirectamente, con los temas de public/js/temas.js.
  *   - public/datos/noticias-archivo.json  todas las noticias de los últimos 90 días (para el buscador).
  *     Se construye sumando las noticias nuevas al archivo ya publicado en la web.
  *
@@ -18,16 +21,17 @@ const fs = require('fs');
 const path = require('path');
 const { obtenerSemana } = require('../servidor/semana');
 const { obtenerRecientes } = require('../servidor/fuentes/libros-recientes');
+const crossref = require('../servidor/fuentes/crossref');
 const archivo = require('../servidor/archivo');
 
 const CARPETA = path.join(__dirname, '..', 'public', 'datos');
 const SEMANA = path.join(CARPETA, 'ultima-semana.json');
 const LIBROS = path.join(CARPETA, 'libros-recientes.json');
+const PAPERS = path.join(CARPETA, 'papers-recientes.json');
 const ARCHIVO = path.join(CARPETA, 'noticias-archivo.json');
 // Archivo ya publicado, al que se suman las noticias nuevas.
 const ARCHIVO_PUBLICADO = process.env.ARCHIVO_PUBLICADO ||
   'https://ehchavezm-hub.github.io/04-newsconstruccion/datos/noticias-archivo.json';
-const ANIOS_LIBROS = 3; // libros publicados desde hace 3 años
 
 function informar(fuentes) {
   for (const f of fuentes) {
@@ -63,10 +67,21 @@ async function archivoAnterior() {
 }
 
 (async () => {
+  let papers = [];
   try {
-    const semana = await obtenerSemana({ esperaMs: 20000 });
+    const r = await crossref.obtenerRecientes({ esperaMs: 20000 });
+    papers = r.papers;
+    console.log(`Papers de los últimos 12 meses sobre los temas: ${papers.length}.`);
+    informar(r.informe);
+    guardar(PAPERS, { generado: new Date().toISOString(), meses: 12, fuentes: r.informe, resultados: papers }, papers.length);
+  } catch (e) {
+    console.error('No se pudieron actualizar los papers recientes:', e.message);
+  }
+
+  try {
+    const semana = await obtenerSemana({ esperaMs: 20000, papersExtra: papers });
     const anteriores = await archivoAnterior();
-    const unidas = archivo.unir(anteriores, semana.resultados);
+    const unidas = archivo.unir(anteriores, semana.resultados.filter((d) => d.tipo === 'noticia'));
     console.log(`Archivo de noticias (${archivo.DIAS_ARCHIVO} días): ${anteriores.length} anteriores + nuevas = ${unidas.length}.`);
     guardar(ARCHIVO, { generado: new Date().toISOString(), dias: archivo.DIAS_ARCHIVO, resultados: unidas }, unidas.length);
 
@@ -80,11 +95,10 @@ async function archivoAnterior() {
   }
 
   try {
-    const desdeAnio = new Date().getFullYear() - ANIOS_LIBROS;
-    const { libros, informe } = await obtenerRecientes({ desdeAnio, esperaMs: 20000 });
-    console.log(`Libros recientes (desde ${desdeAnio}) de editoriales de prestigio: ${libros.length}.`);
+    const { libros, informe } = await obtenerRecientes({ esperaMs: 20000 });
+    console.log(`Libros de los últimos 12 meses sobre los temas, de editoriales de prestigio: ${libros.length}.`);
     informar(informe);
-    guardar(LIBROS, { generado: new Date().toISOString(), desdeAnio, fuentes: informe, resultados: libros }, libros.length);
+    guardar(LIBROS, { generado: new Date().toISOString(), meses: 12, fuentes: informe, resultados: libros }, libros.length);
   } catch (e) {
     console.error('No se pudieron actualizar los libros recientes:', e.message);
   }

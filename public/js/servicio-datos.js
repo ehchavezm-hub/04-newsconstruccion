@@ -4,15 +4,19 @@
  *
  *   'servidor'  Con "npm start" (http://localhost:3000). Pregunta a /api/buscar y /api/semana.
  *   'web'       Publicada en internet como página estática (GitHub Pages). Usa:
- *                 - el catálogo local,
- *                 - datos/ultima-semana.json, datos/libros-recientes.json y
- *                   datos/noticias-archivo.json (noticias de los últimos 90 días, solo se
- *                   descarga al buscar un tema); los actualiza GitHub Actions cada 4 horas,
+ *                 - las normas vigentes del catálogo local,
+ *                 - datos/ultima-semana.json, datos/papers-recientes.json,
+ *                   datos/libros-recientes.json y datos/noticias-archivo.json (noticias de los
+ *                   últimos 90 días, solo se descarga al buscar un tema); los actualiza
+ *                   GitHub Actions cada 4 horas,
  *                 - y, al buscar un tema, consulta directamente desde el navegador:
  *                     GDELT (noticias de los últimos 3 meses en medios de prestigio),
- *                     Crossref (revistas académicas) y Open Library (editoriales de prestigio).
- *   'archivo'   Abriendo index.html con doble clic. Solo el catálogo local.
+ *                     Crossref (revistas y congresos de editoriales académicas de prestigio,
+ *                     últimos 12 meses) y Open Library (editoriales de prestigio).
+ *   'archivo'   Abriendo index.html con doble clic. Solo las normas vigentes del catálogo.
  *
+ * Todo resultado debe estar VIGENTE (noticias de 90 días, papers y libros de 12 meses, normas
+ * en vigor) y RELACIONADO, directa o indirectamente, con los temas de js/temas.js.
  * Cada resultado queda marcado como 'nacional' (Perú) o 'internacional'.
  * La persona usuaria nunca ve estos detalles técnicos.
  */
@@ -26,6 +30,7 @@
   var modoPromesa = null;
   var semanaPromesa = null;
   var librosPromesa = null;
+  var papersPromesa = null;
   var archivoPromesa = null;
 
   /** Conexión con tiempo máximo de espera. Devuelve el texto de la respuesta. */
@@ -73,23 +78,33 @@
         return traer(m === 'servidor' ? 'api/semana' : conVersion('datos/ultima-semana.json'), 20000);
       }).catch(function () { return null; }).then(function (d) {
         d = d || { generado: null, dias: 7, fuentes: [], resultados: [] };
-        conAmbito(d.resultados);
+        // Solo lo relacionado con los temas definidos (también si el archivo es de antes).
+        d.resultados = conAmbito(d.resultados.filter(window.MotorBusqueda.esDeLosTemas));
         return d;
       });
     }
     return semanaPromesa;
   }
 
-  /** Libros recientes de editoriales de prestigio (datos/libros-recientes.json). */
+  /** Lista guardada en public/datos/, solo con lo vigente y relacionado con los temas. */
+  function datosGuardados(archivo) {
+    return modo().then(function (m) {
+      return m === 'archivo' ? null : traer(conVersion('datos/' + archivo), 15000);
+    }).catch(function () { return null; }).then(function (d) {
+      return conAmbito(window.MotorBusqueda.aptos((d && d.resultados) || []));
+    });
+  }
+
+  /** Libros de los últimos 12 meses sobre los temas (datos/libros-recientes.json). */
   function librosRecientes() {
-    if (!librosPromesa) {
-      librosPromesa = modo().then(function (m) {
-        return m === 'archivo' ? null : traer(conVersion('datos/libros-recientes.json'), 15000);
-      }).catch(function () { return null; }).then(function (d) {
-        return conAmbito((d && d.resultados) || []);
-      });
-    }
+    if (!librosPromesa) librosPromesa = datosGuardados('libros-recientes.json');
     return librosPromesa;
+  }
+
+  /** Papers de los últimos 12 meses sobre los temas (datos/papers-recientes.json). */
+  function papersRecientes() {
+    if (!papersPromesa) papersPromesa = datosGuardados('papers-recientes.json');
+    return papersPromesa;
   }
 
   /** Noticias de los últimos 90 días (se descarga solo la primera vez que se busca un tema). */
@@ -98,7 +113,7 @@
       archivoPromesa = modo().then(function (m) {
         return m === 'archivo' ? null : traer(conVersion('datos/noticias-archivo.json'), 20000);
       }).catch(function () { return null; }).then(function (d) {
-        return conAmbito((d && d.resultados) || []);
+        return conAmbito(window.MotorBusqueda.aptos((d && d.resultados) || []));
       });
     }
     return archivoPromesa;
@@ -125,9 +140,14 @@
 
   /* ------------------------------ Búsqueda ------------------------------ */
 
-  /** Para servicios que no entienden listas: los primeros términos del tema, sin espacios extra. */
-  function textoDeTerminos(consulta, terminos) {
-    return terminos ? terminos.slice(0, 4).map(function (t) { return t.trim(); }).join(' ') : consulta;
+  /** Para Crossref y Open Library: la consulta académica del tema, o lo que escribió la persona. */
+  function consultaAcademica(consulta, terminos) {
+    if (!terminos) return consulta;
+    var tema = null;
+    window.Temas.grupos.forEach(function (g) {
+      g.temas.forEach(function (t) { if (t.terminos === terminos) tema = t; });
+    });
+    return tema ? tema.academica : terminos.slice(0, 4).map(function (t) { return t.trim(); }).join(' ');
   }
 
   function buscarNoticias(consulta, terminos) {
@@ -138,7 +158,8 @@
   }
 
   function buscarPapers(consulta) {
-    return traer(window.Crossref.construirUrl({ consulta: consulta, filas: 20 }), 10000)
+    // Todas las revistas y congresos de las editoriales de prestigio, últimos 12 meses.
+    return traer(window.Crossref.construirUrl({ consulta: consulta, filas: 40 }), 15000)
       .then(window.Crossref.interpretar)
       .catch(function () { return []; });
   }
@@ -164,8 +185,9 @@
 
   /**
    * Búsqueda en dos pasos, para no hacer esperar:
-   *   1) Enseguida: lo guardado (semana, archivo de 90 días, libros recientes y catálogo).
+   *   1) Enseguida: lo guardado (semana, archivo de 90 días, papers y libros recientes y normas vigentes).
    *   2) Después: lo que llega de internet (GDELT, Crossref, Open Library), en `masResultados`.
+   * Todo pasa por el mismo filtro: vigente a la fecha y relacionado con los temas definidos.
    */
   function buscarSinServidor(opciones, m) {
     var tipo = opciones.tipo || 'todos';
@@ -174,25 +196,25 @@
     var enVivo = consulta && m === 'web';
     var quiere = function (t) { return tipo === 'todos' || tipo === t; };
 
+    var Motor = window.MotorBusqueda;
     return Promise.all([
       datosSemana(),
       librosRecientes(),
-      consulta && quiere('noticia') ? archivoNoticias() : []
+      consulta && quiere('noticia') ? archivoNoticias() : [],
+      quiere('paper') ? papersRecientes() : []
     ]).then(function (r) {
-      var recientes = r[0].resultados.concat(r[2]);
-      var hayNoticiasReales = recientes.some(function (d) { return d.tipo === 'noticia'; });
-      // Con noticias reales disponibles, las noticias de ejemplo del catálogo se ocultan.
-      var catalogo = window.CATALOGO_CONSTRUCCION.filter(function (d) { return !(hayNoticiasReales && d.ejemplo); });
-      var guardados = unirResultados([window.MotorBusqueda.buscar(recientes.concat(r[1], catalogo), opciones)]);
+      // Del catálogo local solo quedan las normas vigentes (los clásicos no están al día).
+      var catalogo = Motor.aptos(window.CATALOGO_CONSTRUCCION);
+      var guardados = unirResultados([Motor.buscar(Motor.aptos(r[0].resultados.concat(r[2], r[3], r[1], catalogo)), opciones)]);
 
       var masResultados = null;
       if (enVivo) {
         masResultados = Promise.resolve().then(function () { return Promise.all([
           quiere('noticia') ? buscarNoticias(consulta, terminos) : [],
-          quiere('paper') ? buscarPapers(textoDeTerminos(consulta, terminos)) : [],
-          quiere('libro') ? buscarLibros(terminos ? terminos[0].trim() : consulta) : []
+          quiere('paper') ? buscarPapers(consultaAcademica(consulta, terminos)) : [],
+          quiere('libro') ? buscarLibros(consultaAcademica(consulta, terminos)) : []
         ]); }).then(function (v) {
-          var enLinea = v[0].concat(v[1], v[2]).filter(function (d) { return quiere(d.tipo); });
+          var enLinea = Motor.aptos(v[0].concat(v[1], v[2])).filter(function (d) { return Motor.coincideTipo(d.tipo, tipo); });
           return unirResultados([guardados, enLinea]);
         }).catch(function () { return guardados; });
       }
@@ -230,6 +252,7 @@
     buscar: buscar,
     semana: semana,
     librosRecientes: librosRecientes,
+    papersRecientes: papersRecientes,
     urlDescarga: urlDescarga,
     hayServidor: function () { return modoActual === 'servidor'; }
   };

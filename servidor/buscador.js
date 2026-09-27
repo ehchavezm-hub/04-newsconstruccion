@@ -47,14 +47,15 @@ async function buscar({ consulta = '', tipo = 'todos', terminos = null, limite =
   const avisos = [];
   const quiere = (t) => tipo === 'todos' || tipo === t;
 
-  // 1) Catálogo local: siempre.
-  const locales = Motor.buscar(await catalogoLocal.buscar(), { consulta, tipo, terminos });
+  // 1) Lo guardado: normas vigentes del catálogo, papers y libros recientes. Como en todas las
+  //    fuentes, solo lo vigente a la fecha y relacionado con los temas definidos.
+  const locales = Motor.buscar(Motor.aptos(await catalogoLocal.buscar()), { consulta, tipo, terminos });
 
   // 2) Biblioteca personal: solo si hay texto que buscar.
   let biblioteca = [];
   if (consulta && quiere('libro')) {
     try {
-      biblioteca = await bibliotecaPersonal.buscar(consulta);
+      biblioteca = Motor.aptos(await bibliotecaPersonal.buscar(consulta));
     } catch (e) {
       avisos.push('No se pudo leer la biblioteca personal.');
     }
@@ -69,7 +70,7 @@ async function buscar({ consulta = '', tipo = 'todos', terminos = null, limite =
       if (r.status === 'fulfilled') {
         // Las noticias RSS llegan todas; se filtran aquí por la consulta.
         const docs = activas[i] === noticiasRss ? Motor.buscar(r.value, { consulta, terminos }) : r.value;
-        externos.push(...docs);
+        externos.push(...Motor.aptos(docs));
       } else {
         avisos.push(`${activas[i].nombre} no respondió; se muestran datos de respaldo.`);
       }
@@ -78,14 +79,11 @@ async function buscar({ consulta = '', tipo = 'todos', terminos = null, limite =
 
   externos.forEach((d) => vistos.set(d.id, d));
 
-  // Orden: noticias reales más recientes primero; luego fragmentos de su biblioteca;
-  // luego el catálogo; por último papers externos.
+  // Orden de preferencia ante títulos repetidos: noticias reales, fragmentos de su biblioteca,
+  // lo guardado y, por último, papers y libros externos.
   const noticiasReales = externos.filter((d) => d.tipo === 'noticia');
   const papersExternos = externos.filter((d) => d.tipo !== 'noticia');
-  // Si hay noticias reales, las noticias de ejemplo se ocultan.
-  const localesFiltrados = noticiasReales.length ? locales.filter((d) => !d.ejemplo) : locales;
-
-  const todos = [...noticiasReales, ...biblioteca, ...localesFiltrados, ...papersExternos];
+  const todos = [...noticiasReales, ...biblioteca, ...locales, ...papersExternos].filter((d) => Motor.coincideTipo(d.tipo, tipo));
   const unicos = [];
   const titulos = new Set();
   for (const d of todos) {

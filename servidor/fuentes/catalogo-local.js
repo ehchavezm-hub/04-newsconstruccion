@@ -1,7 +1,7 @@
 /*
  * FUENTE: CATÁLOGO LOCAL
- * Los mismos datos de demostración que usa el navegador (public/datos/catalogo.js).
- * Siempre está disponible y sirve de respaldo cuando internet falla.
+ * El catálogo del navegador (public/datos/catalogo.js) más los papers y libros recientes
+ * guardados por "npm run actualizar". El buscador deja solo lo vigente y relacionado con los temas.
  */
 'use strict';
 
@@ -9,12 +9,12 @@ const fs = require('fs');
 const path = require('path');
 const catalogo = require('../../public/datos/catalogo.js');
 
-const LIBROS_RECIENTES = path.join(__dirname, '..', '..', 'public', 'datos', 'libros-recientes.json');
+const DATOS = path.join(__dirname, '..', '..', 'public', 'datos');
 
-/** Libros recientes guardados por "npm run actualizar" (si existen). */
-function librosRecientes() {
+/** Papers o libros recientes guardados por "npm run actualizar" (si existen). */
+function guardados(archivo) {
   try {
-    return JSON.parse(fs.readFileSync(LIBROS_RECIENTES, 'utf8')).resultados || [];
+    return JSON.parse(fs.readFileSync(path.join(DATOS, archivo), 'utf8')).resultados || [];
   } catch {
     return [];
   }
@@ -25,7 +25,7 @@ module.exports = {
   tipos: ['noticia', 'paper', 'libro', 'norma'],
 
   async buscar() {
-    return [...catalogo, ...librosRecientes()];
+    return [...catalogo, ...guardados('papers-recientes.json'), ...guardados('libros-recientes.json')];
   },
 
   obtenerPorId(id) {

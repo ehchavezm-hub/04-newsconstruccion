@@ -13,25 +13,7 @@
   var Fuentes = enNode ? require('./fuentes-prestigio.js') : raiz.FuentesPrestigio;
   var Crossref = enNode ? require('./crossref.js') : raiz.Crossref;
 
-  // Temas con los que se buscan los libros recientes en Google Books (español e inglés).
-  var TEMAS = [
-    { q: 'subject:"project management"', idioma: 'en' },
-    { q: 'subject:"construction industry"', idioma: 'en' },
-    { q: 'subject:"building information modeling"', idioma: 'en' },
-    { q: 'subject:"civil engineering"', idioma: 'en' },
-    { q: '"construction contracts"', idioma: 'en' },
-    { q: '"commissioning" engineering', idioma: 'en' },
-    { q: '"maintenance management"', idioma: 'en' },
-    { q: '"gestión de proyectos"', idioma: 'es' },
-    { q: '"construcción" ingeniería', idioma: 'es' }
-  ];
-
-  // Temas para Open Library (se usa al generar los datos y como respaldo).
-  var TEMAS_OPEN_LIBRARY = [
-    'subject:"project management"', 'subject:"construction industry"', 'subject:"building information modeling"',
-    'subject:"civil engineering"', 'subject:"construction contracts"', 'subject:"plant maintenance"',
-    'subject:"engineering management"', 'gestión de proyectos', 'construcción'
-  ];
+  // Los temas de búsqueda de libros salen de public/js/temas.js (consulta académica de cada tema).
 
   /** @param {{q: string, idioma?: string, maximo?: number, recientes?: boolean}} op */
   function urlGoogle(op) {
@@ -50,7 +32,7 @@
       q: tema,
       sort: 'new',
       limit: '60',
-      fields: 'key,title,subtitle,author_name,publisher,first_publish_year,language'
+      fields: 'key,title,subtitle,author_name,publisher,first_publish_year,language,subject'
     });
     return 'https://openlibrary.org/search.json?' + params.toString();
   }
@@ -99,7 +81,8 @@
       fecha: libro.first_publish_year ? String(libro.first_publish_year) : '',
       enlace: 'https://openlibrary.org' + libro.key,
       descarga: null,
-      etiquetas: [],
+      // Las materias del libro ayudan a relacionarlo con los temas.
+      etiquetas: (libro.subject || []).slice(0, 15),
       origen: 'Open Library'
     };
     doc.ambito = Fuentes.ambitoDe(doc);
@@ -131,8 +114,6 @@
   }
 
   var Libros = {
-    TEMAS: TEMAS,
-    TEMAS_OPEN_LIBRARY: TEMAS_OPEN_LIBRARY,
     urlGoogle: urlGoogle,
     urlOpenLibrary: urlOpenLibrary,
     convertirGoogle: convertirGoogle,

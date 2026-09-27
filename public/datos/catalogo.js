@@ -16,6 +16,10 @@
  *   etiquetas     Palabras clave (en español e inglés) que ayudan a encontrarlo.
  *   destacado     true si debe aparecer en la portada de su sección.
  *   ejemplo       true si es contenido de DEMOSTRACIÓN (no es una noticia real).
+ *   vigente       (solo normas) true si la norma está en vigor. Solo se muestran las normas vigentes.
+ *
+ * Los libros y papers clásicos de este catálogo NO se muestran en las ventanas (solo se muestra lo
+ * publicado en los últimos 12 meses); se conservan como referencia y para las pruebas.
  *
  * Todos los enlaces se comprobaron durante el desarrollo (herramientas/comprobar-fuentes.js).
  * Para agregar un documento nuevo, copie un bloque { ... }, cambie los datos y guarde.
@@ -336,7 +340,8 @@
       enlace: 'https://www.gob.pe/institucion/oece/colecciones/45029-ley-n-32069-ley-general-de-contrataciones-publicas-y-su-reglamento',
       descarga: { url: 'https://leyes.congreso.gob.pe/Documentos/2021_2026/ADLP/Texto_Consolidado/32069-TXM.pdf', formato: 'PDF', nombreArchivo: 'Ley-32069-Contrataciones-Publicas.pdf' },
       etiquetas: ['ley 32069', 'contrataciones publicas', 'public procurement', 'oece', 'osce', 'licitacion', 'contrato', 'peru', 'procura'],
-      destacado: true
+      destacado: true,
+      vigente: true
     },
     {
       id: 'norma-g050',
@@ -351,7 +356,8 @@
       enlace: 'https://www.gob.pe/institucion/sencico/informes-publicaciones/887225-normas-del-reglamento-nacional-de-edificaciones-rne',
       descarga: { url: 'https://www.onpsctr.gob.pe/DocumentosComunes/G.050%20Seg.%20durante%20la%20Construcci%C3%B3n.pdf', formato: 'PDF', nombreArchivo: 'Norma-G050-Seguridad-durante-la-construccion.pdf' },
       etiquetas: ['g 050', 'g050', 'seguridad en obra', 'construction safety', 'seguridad y salud', 'ssoma', 'reglamento nacional de edificaciones', 'rne', 'peru', 'trabajos en altura'],
-      destacado: true
+      destacado: true,
+      vigente: true
     },
     {
       id: 'norma-guia-app-banco-mundial',

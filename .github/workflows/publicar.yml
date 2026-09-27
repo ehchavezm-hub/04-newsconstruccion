@@ -39,7 +39,7 @@ jobs:
       - name: Actualizar novedades de la última semana
         # Si alguna fuente de noticias falla, se omite; nunca detiene la publicación.
         continue-on-error: true
-        timeout-minutes: 5
+        timeout-minutes: 12
         run: npm run actualizar
 
       - name: Marcar la versión publicada (evita que el navegador mezcle archivos viejos y nuevos)

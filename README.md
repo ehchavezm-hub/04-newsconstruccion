@@ -34,7 +34,8 @@ En cada actualización se generan tres archivos en `public/datos/`:
 |---|---|
 | `ultima-semana.json` | Noticias y papers de los últimos 7 días |
 | `noticias-archivo.json` | Todas las noticias de los últimos 90 días (se van sumando) |
-| `libros-recientes.json` | Libros de editoriales de prestigio publicados en los últimos 3 años |
+| `papers-recientes.json` | Papers de los últimos 12 meses de cada uno de los 22 temas |
+| `libros-recientes.json` | Libros de los últimos 12 meses de cada tema, de editoriales de prestigio |
 
 ### Configuración única (solo la primera vez)
 
@@ -43,6 +44,25 @@ En GitHub, dentro de `ehchavezm-hub/04-newsconstruccion`:
 
 ---
 
+## Qué se muestra: solo lo vigente y relacionado con los temas
+
+En las cuatro pestañas (Buscar, Últimas Noticias, Papers Académicos y Libros Destacados) cada
+resultado debe cumplir dos condiciones:
+
+1. **Estar vigente a la fecha:**
+   - noticias de los últimos 7 días (pestaña Últimas Noticias) o 3 meses (Buscar);
+   - papers y libros publicados en los **últimos 12 meses** (para Crossref se usa la fecha más
+     temprana, impresa o en línea: un artículo publicado en línea en 2024 no aparece aunque salga
+     impreso ahora);
+   - normas solo si están en vigor (Ley 32069 y Norma G.050). Los libros y papers clásicos del
+     catálogo ya no se muestran.
+2. **Relacionarse, directa o indirectamente, con los 22 temas sugeridos:** directa si menciona el
+   tema (por ejemplo «Last Planner»); indirecta si trata de algo ligado a él (una obra que «entra
+   en operación» se relaciona con la Puesta en marcha). Cada tarjeta muestra su **«Tema: …»**.
+   Los términos están en `public/js/temas.js` (`terminos` y `RELACIONADOS`).
+
+Los plazos se cambian en `VIGENCIA_DIAS` de `public/js/motor-busqueda.js`.
+
 ## Cómo busca
 
 1. **Escriba un tema** (por ejemplo, «Puerto de Chancay», «BIM» o «puesta en marcha») y pulse
@@ -50,8 +70,10 @@ En GitHub, dentro de `ehchavezm-hub/04-newsconstruccion`:
 2. Enseguida aparecen los resultados guardados (novedades, archivo de 90 días, libros y catálogo).
 3. Unos segundos después se suman los que llegan de internet:
    - **GDELT**: noticias de los últimos 3 meses, solo en los sitios de prestigio de la lista.
-   - **Crossref**: artículos de las revistas académicas de la lista.
-   - **Open Library**: libros de editoriales de prestigio.
+   - **Crossref**: artículos de **todas las revistas y congresos** de las editoriales académicas
+     de prestigio (Elsevier, ASCE, Taylor & Francis, Emerald, SAGE, Wiley, Springer, ICE
+     Publishing, IEEE, ACM, Cambridge, Oxford, IGLC e ISARC), de los últimos 12 meses.
+   - **Open Library**: libros de editoriales de prestigio de los últimos 12 meses.
 4. Todo se muestra **de lo más reciente a lo más antiguo** («de hoy hacia atrás»), en dos
    secciones: **Nacional (Perú)** (en rojo) e **Internacional** (en azul), de 10 en 10.
 
@@ -116,7 +138,14 @@ Todas están en un solo archivo: **`public/js/fuentes-prestigio.js`**.
   Power Engineering.
 - **Organismos multilaterales:** Banco Mundial, BID, CAF, Global Infrastructure Hub, OCDE.
 - **Agencias:** Reuters, AP, EFE, Europa Press, Bloomberg.
-- **Consultoras:** McKinsey, Deloitte, PwC.
+- **Consultoras:** McKinsey, Deloitte, PwC, BCG, KPMG, EY.
+- **Institutos, asociaciones y empresas (academia e industria):** Construction Industry Institute
+  (CII), Lean Construction Institute, Project Production Institute, PMI, IPMA, PeopleCert
+  (PRINCE2), buildingSMART, ASCE, ICE, RICS, AACE, Dodge Construction Network, Arup, Autodesk,
+  Foro Económico Mundial; en el Perú, SENCICO y Plan BIM Perú.
+- **Editoriales y congresos académicos (Crossref, por prefijo de DOI):** Elsevier, ASCE, Taylor &
+  Francis, Emerald, SAGE, Wiley, Springer, ICE Publishing, Canadian Science Publishing, IEEE, ACM,
+  Cambridge, Oxford, IGLC (Lean Construction) e ISARC (robótica en construcción).
 - **Medios generales:** BBC Mundo, El País — Economía, DW Español, The Guardian, Financial
   Times, The Economist.
 - **Revistas académicas (15, por ISSN en Crossref):** Journal of Construction Engineering and

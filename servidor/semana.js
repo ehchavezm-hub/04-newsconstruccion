@@ -1,6 +1,6 @@
 /*
  * NOVEDADES DE LA ÚLTIMA SEMANA
- * Reúne lo publicado en los últimos 7 días por las fuentes de prestigio
+ * Reúne lo publicado en los últimos 7 días por las fuentes de prestigio, solo si se relaciona con los temas
  * (public/js/fuentes-prestigio.js): noticias de medios del sector, gremios, entidades públicas y organismos,
  * y artículos de las revistas académicas más importantes de construcción y gestión de proyectos.
  *
@@ -25,7 +25,7 @@ function haceDias(dias, ahora = new Date()) {
  * @param {{ahora?: Date, esperaMs?: number}} op
  * @returns {Promise<{generado: string, desde: string, dias: number, fuentes: Array, resultados: Array}>}
  */
-async function obtenerSemana({ ahora = new Date(), esperaMs } = {}) {
+async function obtenerSemana({ ahora = new Date(), esperaMs, papersExtra = [] } = {}) {
   const desde = haceDias(DIAS, ahora);
   const informe = [];
 
@@ -40,9 +40,12 @@ async function obtenerSemana({ ahora = new Date(), esperaMs } = {}) {
     informe.push({ fuente: 'Revistas académicas (Crossref)', ok: false, cantidad: 0 });
   }
 
-  const recientes = [...noticias, ...papers].filter((d) => {
-    const t = Date.parse(d.fecha);
-    return !isNaN(t) && t >= desde.getTime() && t <= ahora.getTime() + 86400000;
+  // Solo lo publicado en estos 7 días (la fecha de Crossref es la más temprana, impresa o
+  // en línea: un artículo publicado en línea en 2024 no pasa aunque salga impreso ahora) y
+  // relacionado, directa o indirectamente, con los temas definidos.
+  const recientes = [...noticias, ...papers, ...papersExtra].filter((d) => {
+    const t = Motor.valorFecha(d.fecha);
+    return t >= desde.getTime() && t <= ahora.getTime() + 86400000 && Motor.esDeLosTemas(d);
   });
 
   // Sin duplicados (el mismo titular en dos medios) y de lo más nuevo a lo más antiguo.
