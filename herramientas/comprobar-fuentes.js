@@ -21,18 +21,11 @@ const NAVEGADOR = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
 
 // Canales RSS propios que se prueban antes de decidir usar Google Noticias.
 const CANDIDATOS = [
-  { id: 'andina', url: 'https://andina.pe/agencia/rss/1.aspx' },
-  { id: 'andina', url: 'https://andina.pe/agencia/rss/2.aspx' },
   { id: 'andina', url: 'https://andina.pe/agencia/rss/3.aspx' },
-  { id: 'andina', url: 'https://andina.pe/agencia/rss/4.aspx' },
-  { id: 'andina', url: 'https://andina.pe/agencia/rss/5.aspx' },
-  { id: 'enr', url: 'https://www.enr.com/rss/articles' },
-  { id: 'nce', url: 'https://www.newcivilengineer.com/feed' },
-  { id: 'construction-news', url: 'https://www.constructionnews.co.uk/feed' },
   { id: 'power-eng', url: 'https://www.power-eng.com/feed/' },
   { id: 'semana-economica', url: 'https://semanaeconomica.com/feed' },
-  { id: 'rumbo-minero', url: 'https://www.rumbominero.com/feed/' },
-  { id: 'energiminas', url: 'https://energiminas.com/feed/' }
+  { id: 'gihub', url: 'https://www.gihub.org/feed/' },
+  { id: 'proinversion', url: 'https://news.google.com/rss/search?q=site%3Aproinversion.gob.pe+when%3A7d&hl=es-419&gl=PE&ceid=PE%3Aes-419' }
 ];
 
 async function traer(url, opciones = {}) {
@@ -82,6 +75,7 @@ async function comprobarMedios() {
 async function comprobarRevistas() {
   console.log('\n== Revistas académicas (Crossref, por ISSN) ==');
   for (const rev of Fuentes.revistas) {
+    await new Promise((ok) => setTimeout(ok, 1500)); // Crossref limita las consultas seguidas
     try {
       const r = await traer(`https://api.crossref.org/journals/${rev.issn}`);
       if (!r.ok) { linea(false, `${rev.issn} ${rev.nombre}: HTTP ${r.status}`); continue; }

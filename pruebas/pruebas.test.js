@@ -260,17 +260,23 @@ describe('Fuente RSS', () => {
   });
 
   test('Google Noticias por sitio: titular limpio y edición según el idioma', () => {
-    const enr = Fuentes.medios.find((m) => m.id === 'enr');
+    const power = Fuentes.medios.find((m) => m.id === 'power-eng');
     const capeco = Fuentes.medios.find((m) => m.id === 'capeco');
-    assert.match(rss.urlDe(enr), /news\.google\.com\/rss\/search\?q=site%3Aenr\.com\+when%3A7d&hl=en-US&gl=US&ceid=US%3Aen/);
+    assert.match(rss.urlDe(power), /news\.google\.com\/rss\/search\?q=site%3Apower-eng\.com\+when%3A7d&hl=en-US&gl=US&ceid=US%3Aen/);
     assert.match(rss.urlDe(capeco), /q=site%3Acapeco\.org\+when%3A7d&hl=es-419&gl=PE&ceid=PE%3Aes-419/);
-    const xml = `<rss><item><title>Contractor wins $2B airport job - ENR</title>
+    const xml = `<rss><item><title>New gas turbine plant enters commercial operation - Power Engineering</title>
       <link>https://news.google.com/rss/articles/abc</link><pubDate>Fri, 25 Sep 2026 10:00:00 GMT</pubDate>
-      <description>&lt;a href="x"&gt;Contractor wins&lt;/a&gt; ENR</description></item></rss>`;
-    const [n] = rss.interpretarRss(xml, enr);
-    assert.equal(n.titulo, 'Contractor wins $2B airport job');
-    assert.equal(n.fuente, 'Engineering News-Record (ENR)');
-    assert.match(n.resumen, /^Publicado por Engineering News-Record \(ENR\)\. Pulse «Visitar enlace»/);
+      <description>&lt;a href="x"&gt;New gas turbine&lt;/a&gt; Power Engineering</description></item></rss>`;
+    const [n] = rss.interpretarRss(xml, power);
+    assert.equal(n.titulo, 'New gas turbine plant enters commercial operation');
+    assert.equal(n.fuente, 'Power Engineering');
+    assert.match(n.resumen, /^Publicado por Power Engineering\. Pulse «Visitar enlace» para leerlo completo\.$/);
+  });
+
+  test('las entidades públicas se buscan en gob.pe por su nombre (Google Noticias no admite rutas)', () => {
+    const entidades = Fuentes.medios.filter((m) => m.tipoFuente === 'Entidad pública' && m.googleNoticias);
+    assert.ok(entidades.length >= 6);
+    entidades.forEach((m) => assert.doesNotMatch(m.googleNoticias, /site:[^ ]+\//, m.id));
   });
 });
 

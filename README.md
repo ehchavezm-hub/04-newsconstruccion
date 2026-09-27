@@ -132,23 +132,40 @@ APP…). Las siglas cuentan solo en MAYÚSCULAS, para que «app» (del teléfono
 
 ### Canales RSS sustituidos por Google Noticias
 
-Cada canal RSS se comprobó con `herramientas/comprobar-fuentes.js` (flujo «Comprobar fuentes» en
-la pestaña Actions). Cuando un medio no tiene canal propio, no responde o bloquea a los lectores
-automáticos, se lee a través de **Google Noticias limitado a ese sitio** (`site:…`), con el mismo
-nombre visible. Hoy se leen así:
+Cada canal se comprobó con `herramientas/comprobar-fuentes.js` (flujo «Comprobar fuentes» en la
+pestaña Actions, 27 de septiembre de 2026). Cuando un medio no tiene canal propio, no responde o
+bloquea a los lectores automáticos, se lee a través de **Google Noticias limitado a ese sitio**
+(`site:…`), con el mismo nombre visible.
 
-- **Sin canal RSS propio (entidades, gremios y agencias):** CAPECO, Colegio de Ingenieros del
-  Perú, ProInversión, MTC, Ministerio de Vivienda, OECE, ANIN, Contraloría, El Peruano, Banco
-  Mundial, BID, CAF, Global Infrastructure Hub, OCDE, Reuters, AP, EFE, Europa Press, Bloomberg,
-  McKinsey, Deloitte, PwC, Financial Times y The Economist.
-- **Canal RSS comprobado y sustituido:** ver la lista actualizada en
-  [Resultado de la comprobación](#resultado-de-la-comprobación-de-fuentes).
+**Canal RSS propio (comprobado ✔):** El Comercio — Economía, Gestión — Economía y Perú,
+La República — Economía, RPP — Economía, Rumbo Minero, Energiminas, Engineering News-Record
+(`enr.com/rss/articles`), Construction Dive, Global Construction Review, New Civil Engineer,
+Construction News, Mining.com, BBC Mundo, El País — Economía, DW Español y The Guardian.
 
-### Resultado de la comprobación de fuentes
+**Sustituidos por Google Noticias:**
 
-_Se completa con la última ejecución del flujo «Comprobar fuentes»._
+| Medio | Motivo |
+|---|---|
+| Power Engineering | Su canal RSS bloquea lectores automáticos (HTTP 403) |
+| Semana Económica | Su canal RSS bloquea lectores automáticos (HTTP 403) |
+| Andina — Economía | Sus canales RSS no separan la sección de economía; Google Noticias trae más notas del sector |
+| CAPECO, Colegio de Ingenieros del Perú | No publican canal RSS |
+| ProInversión, MTC, Ministerio de Vivienda, OECE, ANIN, Contraloría | gob.pe no publica canales RSS. Google Noticias no admite rutas en `site:` (`site:gob.pe/mtc` no trae nada), por eso se busca en `site:gob.pe` con el nombre de la entidad |
+| El Peruano | No publica canal RSS general |
+| Banco Mundial, BID, CAF, Global Infrastructure Hub, OCDE | Sin canal RSS de noticias utilizable |
+| Reuters, AP, EFE, Europa Press, Bloomberg | Sin canal RSS público |
+| McKinsey, Deloitte, PwC, Financial Times, The Economist | Sin canal RSS público o de pago |
 
----
+Notas de la comprobación:
+
+- **Global Infrastructure Hub** no trajo noticias (el organismo redujo su actividad); se mantiene
+  en la lista por si vuelve a publicar.
+- Los 15 **ISSN** de las revistas se confirmaron en Crossref.
+- **Catálogo:** la página del PMI, el DOI de dos revistas de pago (Taylor & Francis y SAGE), el
+  enlace de El Peruano de la Ley 32069 y un PDF del Ministerio de Vivienda no respondían a la
+  comprobación. Se reemplazaron por la ficha de Open Library (PMBOK), la versión libre del autor
+  en arXiv (los dos artículos de Flyvbjerg, que ahora también se pueden descargar), la página
+  oficial del OECE (Ley 32069) y el PDF oficial de la Norma G.050 publicado en gob.pe.
 
 ## Colores y tamaños
 

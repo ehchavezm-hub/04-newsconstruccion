@@ -37,7 +37,7 @@
       fuente: 'Project Management Institute',
       tipoFuente: 'Editorial',
       fecha: '2021',
-      enlace: 'https://www.pmi.org/standards/pmbok',
+      enlace: 'https://openlibrary.org/search?q=PMBOK+Guide+Project+Management+Institute',
       descarga: null,
       etiquetas: ['pmbok', 'gestion de proyectos', 'project management', 'direccion de proyectos', 'pmi', 'riesgos', 'cronograma', 'alcance', 'estandar'],
       destacado: true
@@ -269,8 +269,9 @@
       tipoFuente: 'Revista académica',
       idioma: 'en',
       fecha: '2002',
-      enlace: 'https://doi.org/10.1080/01944360208976273',
-      descarga: null,
+      // La revista (DOI 10.1080/01944360208976273) es de pago; se enlaza la versión del autor en arXiv.
+      enlace: 'https://arxiv.org/abs/1303.6604',
+      descarga: { url: 'https://arxiv.org/pdf/1303.6604', formato: 'PDF', nombreArchivo: 'Flyvbjerg-2002-Underestimating-Costs.pdf' },
       etiquetas: ['sobrecostos', 'cost overrun', 'obras publicas', 'public works', 'infraestructura', 'transporte', 'megaproyectos'],
       destacado: true
     },
@@ -284,8 +285,9 @@
       tipoFuente: 'Revista académica',
       idioma: 'en',
       fecha: '2014-04',
-      enlace: 'https://doi.org/10.1002/pmj.21409',
-      descarga: null,
+      // La revista (DOI 10.1002/pmj.21409) es de pago; se enlaza la versión del autor en arXiv.
+      enlace: 'https://arxiv.org/abs/1409.0003',
+      descarga: { url: 'https://arxiv.org/pdf/1409.0003', formato: 'PDF', nombreArchivo: 'Flyvbjerg-2014-Megaprojects-Overview.pdf' },
       etiquetas: ['megaproyectos', 'megaprojects', 'sobrecostos', 'gestion de proyectos', 'riesgo'],
       destacado: false
     },
@@ -327,11 +329,11 @@
       titulo: 'Ley N.º 32069, Ley General de Contrataciones Públicas',
       resumen: 'La ley peruana que regula cómo el Estado compra bienes y servicios y contrata obras. Creó el OECE (Organismo Especializado para las Contrataciones Públicas Eficientes), que reemplazó al OSCE.',
       autor: 'Congreso de la República del Perú',
-      fuente: 'El Peruano (diario oficial)',
+      fuente: 'OECE y Congreso de la República (texto oficial)',
       tipoFuente: 'Norma legal',
       idioma: 'es',
       fecha: '2024-06-24',
-      enlace: 'https://busquedas.elperuano.pe/dispositivo/NL/2300373-1',
+      enlace: 'https://www.gob.pe/institucion/oece/colecciones/45029-ley-n-32069-ley-general-de-contrataciones-publicas-y-su-reglamento',
       descarga: { url: 'https://leyes.congreso.gob.pe/Documentos/2021_2026/ADLP/Texto_Consolidado/32069-TXM.pdf', formato: 'PDF', nombreArchivo: 'Ley-32069-Contrataciones-Publicas.pdf' },
       etiquetas: ['ley 32069', 'contrataciones publicas', 'public procurement', 'oece', 'osce', 'licitacion', 'contrato', 'peru', 'procura'],
       destacado: true
@@ -347,7 +349,7 @@
       idioma: 'es',
       fecha: '2009-05-08',
       enlace: 'https://www.gob.pe/institucion/sencico/informes-publicaciones/887225-normas-del-reglamento-nacional-de-edificaciones-rne',
-      descarga: { url: 'https://www3.vivienda.gob.pe/dnc/archivos/difusion/eventos/chiclayo/Norma_G.050_Seguridad_Durante_la_Construccion.pdf', formato: 'PDF', nombreArchivo: 'Norma-G050-Seguridad-durante-la-construccion.pdf' },
+      descarga: { url: 'https://www.onpsctr.gob.pe/DocumentosComunes/G.050%20Seg.%20durante%20la%20Construcci%C3%B3n.pdf', formato: 'PDF', nombreArchivo: 'Norma-G050-Seguridad-durante-la-construccion.pdf' },
       etiquetas: ['g 050', 'g050', 'seguridad en obra', 'construction safety', 'seguridad y salud', 'ssoma', 'reglamento nacional de edificaciones', 'rne', 'peru', 'trabajos en altura'],
       destacado: true
     },
