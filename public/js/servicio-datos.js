@@ -165,10 +165,14 @@
   }
 
   function buscarLibros(consulta) {
-    // Open Library (Google Books rechaza consultas sin clave por límite de uso).
-    return traer(window.Libros.urlOpenLibrary(consulta), 12000)
-      .then(function (j) { return window.Libros.interpretarOpenLibrary(j); })
-      .catch(function () { return []; });
+    // Crossref (libros de editoriales académicas) y Open Library. Google Books no se usa en el
+    // navegador: rechaza consultas sin clave por límite de uso.
+    return Promise.all([
+      traer(window.Crossref.construirUrl({ consulta: consulta, libros: true, filas: 30 }), 15000)
+        .then(window.Crossref.interpretar).catch(function () { return []; }),
+      traer(window.Libros.urlOpenLibrary(consulta), 12000)
+        .then(function (j) { return window.Libros.interpretarOpenLibrary(j); }).catch(function () { return []; })
+    ]).then(function (r) { return r[0].concat(r[1]); });
   }
 
   /** Quita títulos repetidos y ordena de lo más reciente a lo más antiguo. */

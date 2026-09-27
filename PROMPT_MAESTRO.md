@@ -618,3 +618,7 @@ los 22 temas de la sección 14:
   Institute, Project Production Institute, PMI, IPMA, PeopleCert, buildingSMART, ASCE, ICE, RICS,
   AACE, Dodge Construction Network, Arup, Autodesk, BCG, KPMG, EY, Foro Económico Mundial, SENCICO y
   Plan BIM Perú.
+- **Libros por Crossref:** además de Open Library, los libros recientes (tipos book, monograph,
+  edited-book, reference-book) de las editoriales académicas y de libros de prestigio: Routledge
+  (10.4324), CRC Press (10.1201), McGraw-Hill (10.1036), De Gruyter (10.1515), Palgrave (10.1057)
+  y las de la lista de papers.

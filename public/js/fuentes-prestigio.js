@@ -267,6 +267,15 @@
     { prefijo: '10.22260', nombre: 'ISARC — Automation and Robotics in Construction' }
   ];
 
+  // Editoriales de libros académicos y técnicos de prestigio (prefijo de DOI), además de las de arriba.
+  var editorialesDeLibros = [
+    { prefijo: '10.4324', nombre: 'Routledge' },
+    { prefijo: '10.1201', nombre: 'CRC Press' },
+    { prefijo: '10.1036', nombre: 'McGraw-Hill' },
+    { prefijo: '10.1515', nombre: 'De Gruyter' },
+    { prefijo: '10.1057', nombre: 'Palgrave Macmillan' }
+  ];
+
   // Editoriales de prestigio (se compara sin tildes ni mayúsculas, por coincidencia parcial).
   var editoriales = [
     'wiley', 'routledge', 'taylor & francis', 'taylor and francis', 'crc press', 'elsevier',
@@ -355,6 +364,7 @@
     dominios: dominios,
     revistas: revistas,
     editorialesAcademicas: editorialesAcademicas,
+    editorialesDeLibros: editorialesDeLibros,
     editoriales: editoriales,
     PALABRAS_CLAVE: PALABRAS_CLAVE,
     esRelevante: esRelevante,

@@ -35,7 +35,7 @@ En cada actualización se generan tres archivos en `public/datos/`:
 | `ultima-semana.json` | Noticias y papers de los últimos 7 días |
 | `noticias-archivo.json` | Todas las noticias de los últimos 90 días (se van sumando) |
 | `papers-recientes.json` | Papers de los últimos 12 meses de cada uno de los 22 temas |
-| `libros-recientes.json` | Libros de los últimos 12 meses de cada tema, de editoriales de prestigio |
+| `libros-recientes.json` | Libros de los últimos 12 meses de cada tema (Crossref y Open Library), de editoriales de prestigio |
 
 ### Configuración única (solo la primera vez)
 
@@ -73,7 +73,8 @@ Los plazos se cambian en `VIGENCIA_DIAS` de `public/js/motor-busqueda.js`.
    - **Crossref**: artículos de **todas las revistas y congresos** de las editoriales académicas
      de prestigio (Elsevier, ASCE, Taylor & Francis, Emerald, SAGE, Wiley, Springer, ICE
      Publishing, IEEE, ACM, Cambridge, Oxford, IGLC e ISARC), de los últimos 12 meses.
-   - **Open Library**: libros de editoriales de prestigio de los últimos 12 meses.
+   - **Crossref y Open Library**: libros de editoriales de prestigio (Routledge, CRC Press, Springer,
+     Wiley, Elsevier, Emerald, ICE, ASCE…) de los últimos 12 meses.
 4. Todo se muestra **de lo más reciente a lo más antiguo** («de hoy hacia atrás»), en dos
    secciones: **Nacional (Perú)** (en rojo) e **Internacional** (en azul), de 10 en 10.
 

@@ -55,11 +55,18 @@
    *   - Con consulta (un tema o lo que escribió la persona): busca en TODAS las revistas y
    *     congresos de las editoriales académicas de prestigio (por prefijo de DOI). Si no se
    *     indica `desde`, solo lo de los últimos 12 meses (lo vigente).
+   *   - Con `libros: true`: libros de esas editoriales y de las editoriales de libros de
+   *     prestigio (Routledge, CRC Press…), también de los últimos 12 meses.
    *   - Sin consulta (novedades de la semana): las revistas núcleo, de lo más nuevo a lo más antiguo.
    */
   function construirUrl(op) {
     var filtros;
-    if (op.consulta) {
+    if (op.consulta && op.libros) {
+      filtros = TIPOS_LIBRO.map(function (t) { return 'type:' + t; }).concat(
+        Fuentes.editorialesAcademicas.concat(Fuentes.editorialesDeLibros).map(function (e) { return 'prefix:' + e.prefijo; })
+      );
+      filtros.push('from-pub-date:' + (op.desde || haceDias(365)));
+    } else if (op.consulta) {
       filtros = ['type:journal-article', 'type:proceedings-article'].concat(
         Fuentes.editorialesAcademicas.map(function (e) { return 'prefix:' + e.prefijo; })
       );
@@ -73,7 +80,7 @@
     var params = new URLSearchParams({
       rows: String(op.filas || 10),
       filter: filtros.join(','),
-      select: 'DOI,title,author,issued,container-title,abstract,link,license,URL'
+      select: 'DOI,title,author,issued,container-title,abstract,link,license,URL,type,publisher,subject'
     });
     if (op.consulta) params.set('query', op.consulta);
     if (op.desde && !op.consulta) { params.set('sort', 'published'); params.set('order', 'desc'); }
@@ -81,8 +88,11 @@
     return 'https://api.crossref.org/works?' + params.toString();
   }
 
-  /** Convierte un registro de Crossref al formato común de la aplicación. */
+  var TIPOS_LIBRO = ['book', 'monograph', 'edited-book', 'reference-book'];
+
+  /** Convierte un registro de Crossref al formato común de la aplicación (paper o libro). */
   function convertir(item) {
+    var esLibro = TIPOS_LIBRO.indexOf(item.type) > -1;
     var autores = (item.author || [])
       .map(function (a) { return [a.given, a.family].filter(Boolean).join(' ') || a.name; })
       .filter(Boolean);
@@ -95,21 +105,24 @@
     var pdf = (item.link || []).filter(function (l) { return /pdf/i.test(l['content-type'] || ''); })[0];
     var resumen = recortar(limpiarTexto(item.abstract || ''), 300);
 
+    var editorial = limpiarTexto(item.publisher || 'Editorial académica');
     return {
       id: idDesdeTexto('crossref', item.DOI),
-      tipo: 'paper',
+      tipo: esLibro ? 'libro' : 'paper',
       titulo: limpiarTexto((item.title || ['Sin título'])[0]),
-      resumen: resumen || 'Artículo académico. Pulse «Visitar enlace» para leer el resumen en la página de la revista.',
+      resumen: resumen || (esLibro
+        ? 'Libro publicado por ' + editorial + '. Pulse «Visitar enlace» para ver más detalles.'
+        : 'Artículo académico. Pulse «Visitar enlace» para leer el resumen en la página de la revista.'),
       autor: autores.length > 3 ? autores.slice(0, 3).join(', ') + ' y otros' : (autores.join(', ') || 'Autor no indicado'),
-      fuente: limpiarTexto((item['container-title'] || ['Revista académica'])[0]),
-      tipoFuente: 'Revista académica',
+      fuente: esLibro ? editorial : limpiarTexto((item['container-title'] || ['Revista académica'])[0]),
+      tipoFuente: esLibro ? 'Editorial' : (item.type === 'proceedings-article' ? 'Congreso académico' : 'Revista académica'),
       idioma: 'en',
       fecha: fecha,
       enlace: item.URL || 'https://doi.org/' + item.DOI,
       descarga: abierto && pdf
         ? { url: pdf.URL, formato: 'PDF', nombreArchivo: item.DOI.replace(/[^\w.-]+/g, '_') + '.pdf' }
         : null,
-      etiquetas: [],
+      etiquetas: (item.subject || []).slice(0, 10),
       origen: 'Crossref'
     };
   }

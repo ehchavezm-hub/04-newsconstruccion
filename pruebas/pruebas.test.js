@@ -390,6 +390,19 @@ describe('Libros recientes', () => {
     assert.equal(docs[0].tipo, 'libro');
   });
 
+  test('Crossref también entrega libros recientes de editoriales académicas', () => {
+    const url = new URL(Crossref.construirUrl({ consulta: 'building information modeling', libros: true }));
+    const filtro = url.searchParams.get('filter');
+    assert.match(filtro, /type:book/);
+    assert.match(filtro, /prefix:10\.4324/); // Routledge
+    assert.match(filtro, /from-pub-date:/);
+    const [libro] = Crossref.interpretar({ message: { items: [{ DOI: '10.4324/x', type: 'book', title: ['BIM for Owners'],
+      publisher: 'Routledge', issued: { 'date-parts': [[2026, 3]] }, author: [{ given: 'A.', family: 'Autor' }] }] } });
+    assert.equal(libro.tipo, 'libro');
+    assert.equal(libro.fuente, 'Routledge');
+    assert.match(libro.resumen, /^Libro publicado por Routledge/);
+  });
+
   test('Open Library como fuente efectiva', () => {
     const docs = Libros.interpretarOpenLibrary({ docs: [
       { key: '/works/OL1W', title: 'Gestión de obras en el Perú', publisher: ['Fondo Editorial PUCP'], first_publish_year: 2024 },
