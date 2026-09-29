@@ -362,10 +362,10 @@ h1[tabindex="-1"]:focus { outline: none; }
 /* Botón «Buscar hablando»: pequeño, entre la caja de búsqueda y el botón Buscar */
 .boton-voz { font-size: 0.75rem; font-weight: 400; gap: 0.35rem; padding: 0.3rem 0.65rem; white-space: nowrap; }
 
-/* Pantallas angostas: los botones pasan debajo de las etiquetas, en fila. */
+/* Pantallas angostas: siempre dos columnas (etiquetas sin relleno a la izquierda, botones con
+   color a la derecha); los botones se apilan uno debajo del otro para ocupar menos ancho. */
 @media (max-width: 760px) {
-  .tarjeta { grid-template-columns: minmax(0, 1fr); grid-template-areas: "etiquetas" "acciones" "cuerpo"; }
-  .acciones-tarjeta { justify-content: flex-start; }
+  .acciones-tarjeta { flex-direction: column; align-items: stretch; }
 }
 
 /* Pie «Fuentes de prestigio»: al 80 % de su tamaño anterior (notas 14 → 11,2 px; título 19 → 15,2 px). */

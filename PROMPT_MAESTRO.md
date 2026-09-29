@@ -745,3 +745,7 @@ El botón «Buscar hablando» va entre la caja de búsqueda y el botón **Buscar
 ## 26. Actualización 13: pie de página más pequeño
 
 El pie «Fuentes de prestigio que consultamos» se muestra al 80 % del tamaño anterior: texto 11,2 px (antes 14 px) y título 15,2 px (antes 19 px).
+
+## 27. Actualización 14: tarjeta en dos columnas en todas las pantallas
+
+Arriba de cada tarjeta hay siempre dos columnas: a la izquierda, las etiquetas sin relleno (Noticia, Publicado hoy, Tema…); a la derecha, los botones con color (Visitar enlace, Descargar PDF, WhatsApp). En pantallas anchas los botones van en fila; en las angostas (hasta 760 px), uno debajo del otro, siempre a la derecha.
