@@ -447,8 +447,8 @@ describe('Período y relación con los temas', () => {
     assert.equal(Motor.vigente({ tipo: 'libro', fecha: '2027' }, ahora), false);
   });
 
-  test('se puede elegir 2, 3, 4, 5 años o todo el tiempo', () => {
-    assert.deepEqual(Motor.PERIODOS.map((p) => p.anios), [1, 2, 3, 4, 5, 0]);
+  test('se puede elegir 2 o 5 años o todo el tiempo', () => {
+    assert.deepEqual(Motor.PERIODOS.map((p) => p.anios), [1, 2, 5, 0]);
     const paper2024 = { tipo: 'paper', fecha: '2024-11-03' };
     assert.equal(Motor.vigente(paper2024, ahora, 2), true);
     assert.equal(Motor.vigente({ tipo: 'paper', fecha: '2022-01-01' }, ahora, 3), false);

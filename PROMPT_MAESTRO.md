@@ -711,3 +711,7 @@ Se mantienen las líneas finas (1 px) y el diseño minimalista; interlineado 1,4
 | Resumen de la tarjeta | 16 px | Normal |
 | Datos de la tarjeta y sus rótulos («Fuente:», «Fecha:») | 14 px | Normal |
 | Botones de la tarjeta | 12 px | Negrita |
+
+## 21. Actualización 8: opciones de período
+
+«¿De qué fecha?» ofrece solo: **Último año** (por defecto), **Últimos 2 años**, **Últimos 5 años** y **Todo el tiempo**. Se eliminaron «Últimos 3 años» y «Últimos 4 años»; si alguien las tenía guardadas, la página vuelve al último año.

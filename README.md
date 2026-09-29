@@ -49,7 +49,7 @@ En GitHub, dentro de `ehchavezm-hub/04-newsconstruccion`:
 En las cuatro pestañas (Buscar, Últimas Noticias, Papers Académicos y Libros Destacados):
 
 1. **Período:** por defecto, solo lo publicado en el **último año (365 días)**. Arriba de cada
-   pestaña, «¿De qué fecha?» permite elegir **Últimos 2, 3, 4 o 5 años** o **Todo el tiempo**;
+   pestaña, «¿De qué fecha?» permite elegir **Últimos 2 años**, **Últimos 5 años** o **Todo el tiempo**;
    la página recuerda la elección. Las normas se muestran si están en vigor (Ley 32069 y Norma
    G.050). Los clásicos del catálogo aparecen solo si el período los abarca.
 2. **Relación con los 22 temas sugeridos**, directa (menciona el tema) o indirecta (trata de

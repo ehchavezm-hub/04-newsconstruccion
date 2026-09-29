@@ -77,7 +77,7 @@ async function manejarBusqueda(res, parametros) {
   const terminos = (parametros.get('t') || '').split('|').map((x) => x.slice(0, 60)).filter((x) => x.trim()).slice(0, 40);
   // p = período en años (1 a 5; 0 = todo el tiempo). Por defecto, el último año.
   const p = Number(parametros.get('p'));
-  const anios = [0, 1, 2, 3, 4, 5].includes(p) && parametros.has('p') ? p : 1;
+  const anios = [0, 1, 2, 5].includes(p) && parametros.has('p') ? p : 1;
   const datos = await buscador.buscar({ consulta, tipo, terminos: terminos.length ? terminos : null, anios });
   responderJson(res, 200, { consulta, tipo, anios, total: datos.resultados.length, ...datos });
 }

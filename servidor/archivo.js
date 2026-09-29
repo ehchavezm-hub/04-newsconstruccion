@@ -1,7 +1,7 @@
 /*
  * ARCHIVO HISTÓRICO (noticias, papers y libros)
  * Cada actualización suma lo nuevo a lo ya publicado en la web. Así el buscador encuentra
- * lo del último año y, si la persona lo pide, lo de 2, 3, 4, 5 años o todo el tiempo, sin
+ * lo del último año y, si la persona lo pide, lo de 2 o 5 años o todo el tiempo, sin
  * depender de ningún servicio externo en el momento de buscar.
  *
  * Se guarda en dos partes para que la página cargue rápido:

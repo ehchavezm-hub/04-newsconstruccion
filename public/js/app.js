@@ -267,7 +267,7 @@
   }
 
   /* ------------------------------ Período ------------------------------ */
-  /** Texto del período elegido, para los mensajes: «del último año», «de los últimos 3 años»… */
+  /** Texto del período elegido, para los mensajes: «del último año», «de los últimos 5 años»… */
   function textoPeriodo() {
     var anios = CG.Datos.periodo();
     if (anios === 0) return 'de todo el tiempo';

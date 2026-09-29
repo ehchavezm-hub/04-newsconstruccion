@@ -239,13 +239,11 @@
   /*
    * PERÍODO DE BÚSQUEDA
    * Por defecto, solo lo del ÚLTIMO AÑO (365 días) en las cuatro pestañas. La persona puede
-   * elegir 2, 3, 4 o 5 años, o «Todo el tiempo» (0).
+   * elegir 2 o 5 años, o «Todo el tiempo» (0).
    */
   var PERIODOS = [
     { anios: 1, etiqueta: 'Último año' },
     { anios: 2, etiqueta: 'Últimos 2 años' },
-    { anios: 3, etiqueta: 'Últimos 3 años' },
-    { anios: 4, etiqueta: 'Últimos 4 años' },
     { anios: 5, etiqueta: 'Últimos 5 años' },
     { anios: 0, etiqueta: 'Todo el tiempo' }
   ];
