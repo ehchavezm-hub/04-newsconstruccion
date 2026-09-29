@@ -741,3 +741,7 @@ El botón «Buscar hablando» va entre la caja de búsqueda y el botón **Buscar
 - Los tres botones (Visitar enlace · Descargar PDF · WhatsApp) van en fila horizontal, a la altura de las etiquetas («Paper Académico», «En inglés»…), a la derecha.
 - Título, resumen y datos ocupan todo el ancho de la tarjeta.
 - En pantallas angostas (hasta 760 px) los botones pasan debajo de las etiquetas, también en fila.
+
+## 26. Actualización 13: pie de página más pequeño
+
+El pie «Fuentes de prestigio que consultamos» se muestra al 80 % del tamaño anterior: texto 11,2 px (antes 14 px) y título 15,2 px (antes 19 px).

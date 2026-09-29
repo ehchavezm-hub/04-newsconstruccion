@@ -367,3 +367,7 @@ h1[tabindex="-1"]:focus { outline: none; }
   .tarjeta { grid-template-columns: minmax(0, 1fr); grid-template-areas: "etiquetas" "acciones" "cuerpo"; }
   .acciones-tarjeta { justify-content: flex-start; }
 }
+
+/* Pie «Fuentes de prestigio»: al 80 % de su tamaño anterior (notas 14 → 11,2 px; título 19 → 15,2 px). */
+.pie-fuentes { font-size: 0.7rem; line-height: 1.4; }
+.pie-fuentes .t-h2 { font-size: 0.95rem; }
