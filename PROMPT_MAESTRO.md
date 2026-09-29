@@ -749,3 +749,8 @@ El pie «Fuentes de prestigio que consultamos» se muestra al 80 % del tamaño a
 ## 27. Actualización 14: tarjeta en dos columnas en todas las pantallas
 
 Arriba de cada tarjeta hay siempre dos columnas: a la izquierda, las etiquetas sin relleno (Noticia, Publicado hoy, Tema…); a la derecha, los botones con color (Visitar enlace, Descargar PDF, WhatsApp). En pantallas anchas los botones van en fila; en las angostas (hasta 760 px), uno debajo del otro, siempre a la derecha.
+
+## 28. Actualización 15: caja «¿Qué pasó esta semana…?»
+
+- Texto abreviado: «Lo más importante de los **últimos 7 días**, solo de fuentes de gran prestigio.» (sin la lista de medios).
+- El botón «Ver novedades de la última semana» va en la parte superior de la caja, a la altura del título.

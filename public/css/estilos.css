@@ -170,11 +170,12 @@ header :focus-visible { outline-color: var(--oro); }
 
 /* ---------- Caja "Novedades de la semana" ---------- */
 .caja-semana {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem;
+  /* El botón va arriba a la derecha, a la altura del título. */
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.75rem 1.25rem;
   padding: 0.9rem 1rem; background: var(--suave);
   border-left: 3px solid var(--oro); border-radius: var(--radio);
 }
-@media (max-width: 640px) { .caja-semana .boton-semana { width: 100%; } }
+@media (max-width: 640px) { .caja-semana .boton-semana { width: 100%; order: -1; } }
 
 /* ---------- Filtros en forma de pastilla (radio accesible) ---------- */
 .pastilla { position: relative; cursor: pointer; }
