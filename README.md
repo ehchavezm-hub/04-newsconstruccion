@@ -324,7 +324,7 @@ Después ejecute `npm test` y lance el flujo «Comprobar fuentes».
   marcada, filtros como botones de opción reales, foco visible de 4 px.
 - Respeta «reducir movimiento» y el modo de alto contraste de Windows.
 - Sin desplazamiento horizontal en teléfonos de 390 px.
-- Las siglas técnicas se explican (en los temas y en la Ayuda).
+- Las siglas técnicas se explican en la Ayuda (glosario).
 
 ## Comandos de desarrollo
 

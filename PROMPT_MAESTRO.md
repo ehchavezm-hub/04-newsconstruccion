@@ -715,3 +715,8 @@ Se mantienen las líneas finas (1 px) y el diseño minimalista; interlineado 1,4
 ## 21. Actualización 8: opciones de período
 
 «¿De qué fecha?» ofrece solo: **Último año** (por defecto), **Últimos 2 años**, **Últimos 5 años** y **Todo el tiempo**. Se eliminaron «Últimos 3 años» y «Últimos 4 años»; si alguien las tenía guardadas, la página vuelve al último año.
+
+## 22. Actualización 9: temas sin siglas y más compactos
+
+- Se quitaron las líneas «Siglas: …» de los grupos de temas (el significado de las siglas sigue en la Ayuda).
+- Interlineado mínimo en el bloque de temas (1,15) y menos espacio entre temas y grupos.

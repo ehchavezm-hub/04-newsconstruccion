@@ -26,7 +26,6 @@
       id: 'planificacion',
       numero: 1,
       titulo: 'Planificación',
-      siglas: 'AWP (Empaquetamiento Avanzado del Trabajo) · LPS (Sistema del Último Planificador) · PPM (Gestión de la Producción de Proyectos)',
       temas: [
         { id: 'awp', etiqueta: 'AWP (Advanced Work Packaging)', terminos: [
           'advanced work packaging', 'AWP ', 'work packaging', 'paquetes de trabajo', 'workface planning',
@@ -85,7 +84,6 @@
       id: 'tecnologias',
       numero: 3,
       titulo: 'Tecnologías y Metodologías Integradas',
-      siglas: 'VDC (Diseño y Construcción Virtual) · BIM (Modelado de Información de la Construcción) · IA (Inteligencia Artificial)',
       temas: [
         { id: 'vdc', etiqueta: 'VDC (Virtual Design and Construction)', terminos: [
           'virtual design and construction', 'VDC ', 'diseño y construcción virtual', 'integrated concurrent engineering',
@@ -120,7 +118,6 @@
       numero: 4,
       titulo: 'Ciclo de Vida y Fases del Proyecto',
       nota: 'Las etapas de un proyecto, de la idea a la operación.',
-      siglas: 'FEED (ingeniería básica extendida, antes de construir) · O&M (Operación y Mantenimiento) · IPC o EPC (Ingeniería, Procura y Construcción)',
       temas: [
         { id: 'ingenieria', etiqueta: 'Ingeniería y Diseño (FEED)', terminos: [
           'ingeniería de detalle', 'detailed engineering', 'ingeniería básica', 'basic engineering', 'FEED ',
@@ -154,7 +151,6 @@
       id: 'marcos',
       numero: 5,
       titulo: 'Marcos de Gestión de Proyectos y Gobernanza',
-      siglas: 'PMI (Project Management Institute) · PRINCE2 (Proyectos en Entornos Controlados) · IPMA (Asociación Internacional de Dirección de Proyectos) · ICB4 (Línea Base de Competencias, 4.ª versión)',
       temas: [
         { id: 'pmbok', etiqueta: 'PMBOK y Estándares del PMI', terminos: [
           'PMBOK', 'Project Management Institute', 'guía del PMBOK', 'standard for project management',

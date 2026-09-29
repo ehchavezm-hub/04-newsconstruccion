@@ -69,13 +69,6 @@
         botones.appendChild(b);
       });
       grupo.appendChild(botones);
-      if (g.siglas) {
-        // Significado de las siglas que aparecen en los temas del grupo.
-        var siglas = document.createElement('p');
-        siglas.className = 't-nota siglas-grupo';
-        siglas.textContent = 'Siglas: ' + g.siglas + '.';
-        grupo.appendChild(siglas);
-      }
       contenedor.appendChild(grupo);
     });
   }
