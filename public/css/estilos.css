@@ -354,3 +354,6 @@ h1[tabindex="-1"]:focus { outline: none; }
 
 /* Caja de búsqueda: 16 px en teléfono (así el iPhone no amplía la pantalla al tocarla) */
 @media (max-width: 640px) { .caja-busqueda { font-size: 1rem; } }
+
+/* Botón «Buscar hablando»: pequeño, entre la caja de búsqueda y el botón Buscar */
+.boton-voz { font-size: 0.75rem; font-weight: 400; gap: 0.35rem; padding: 0.3rem 0.65rem; white-space: nowrap; }

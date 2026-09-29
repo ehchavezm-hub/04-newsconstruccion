@@ -720,3 +720,7 @@ Se mantienen las líneas finas (1 px) y el diseño minimalista; interlineado 1,4
 
 - Se quitaron las líneas «Siglas: …» de los grupos de temas (el significado de las siglas sigue en la Ayuda).
 - Interlineado mínimo en el bloque de temas (1,15) y menos espacio entre temas y grupos.
+
+## 23. Actualización 10: botón «Buscar hablando»
+
+El botón «Buscar hablando» va entre la caja de búsqueda y el botón **Buscar**, y es más pequeño (12 px, peso normal, icono chico). En teléfono queda debajo de la caja, a la izquierda del botón Buscar.
