@@ -230,10 +230,13 @@ header :focus-visible { outline-color: var(--oro); }
 .tarjeta {
   background: #fff; border: 1px solid var(--borde); border-left-width: 3px;
   border-radius: var(--radio); padding: 0.9rem 1rem;
-  /* Contenido a la izquierda; botones pequeños arriba a la derecha. */
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 1rem; align-items: start;
+  /* Arriba: etiquetas a la izquierda y botones en fila a la derecha.
+     Debajo: título, resumen y datos a todo el ancho. */
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.4rem 1rem; align-items: start;
+  grid-template-areas: "etiquetas acciones" "cuerpo cuerpo";
 }
-.contenido-tarjeta { min-width: 0; }
+.etiquetas-tarjeta { grid-area: etiquetas; min-width: 0; }
+.contenido-tarjeta { grid-area: cuerpo; min-width: 0; }
 .tarjeta[data-tipo="noticia"] { border-left-color: var(--acento); }
 .tarjeta[data-tipo="paper"] { border-left-color: var(--ciencia); }
 .tarjeta[data-tipo="libro"] { border-left-color: var(--marca); }
@@ -258,7 +261,7 @@ header :focus-visible { outline-color: var(--oro); }
 }
 
 .titulo-tarjeta {
-  font-size: 1rem; font-weight: 700; line-height: 1.3; color: var(--tinta); margin: 0.45rem 0 0.3rem;
+  font-size: 1rem; font-weight: 700; line-height: 1.3; color: var(--tinta); margin: 0.1rem 0 0.3rem;
 }
 .resumen-tarjeta { font-size: 1rem; line-height: 1.45; margin-bottom: 0.5rem; }
 .fragmento {
@@ -269,16 +272,17 @@ header :focus-visible { outline-color: var(--oro); }
 .datos-tarjeta dt { display: inline; font-weight: 400; color: var(--tinta); }
 .datos-tarjeta dd { display: inline; margin: 0; }
 
-.acciones-tarjeta { display: flex; flex-direction: column; gap: 0.3rem; width: 9.75rem; }
+.acciones-tarjeta {
+  grid-area: acciones; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.3rem;
+}
 .acciones-tarjeta .boton {
-  justify-content: flex-start; width: 100%; min-height: 1.5rem; padding: 0.2rem 0.45rem;
+  white-space: nowrap; min-height: 1.5rem; padding: 0.2rem 0.55rem;
   font-size: 0.75rem; font-weight: 700; gap: 0.3rem;
 }
 .acciones-tarjeta .icono { width: 1.3em; height: 1.3em; }
 @media (max-width: 480px) {
-  .tarjeta { padding: 0.75rem; gap: 0 0.5rem; }
-  .acciones-tarjeta { width: 8.75rem; }
-  .acciones-tarjeta .boton { padding: 0.2rem 0.35rem; }
+  .tarjeta { padding: 0.75rem; }
+  .acciones-tarjeta .boton { padding: 0.2rem 0.4rem; }
 }
 
 /* ---------- Secciones Nacional / Internacional ---------- */
@@ -357,3 +361,9 @@ h1[tabindex="-1"]:focus { outline: none; }
 
 /* Botón «Buscar hablando»: pequeño, entre la caja de búsqueda y el botón Buscar */
 .boton-voz { font-size: 0.75rem; font-weight: 400; gap: 0.35rem; padding: 0.3rem 0.65rem; white-space: nowrap; }
+
+/* Pantallas angostas: los botones pasan debajo de las etiquetas, en fila. */
+@media (max-width: 760px) {
+  .tarjeta { grid-template-columns: minmax(0, 1fr); grid-template-areas: "etiquetas" "acciones" "cuerpo"; }
+  .acciones-tarjeta { justify-content: flex-start; }
+}

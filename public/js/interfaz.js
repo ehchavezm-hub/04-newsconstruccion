@@ -89,7 +89,7 @@
     tarjeta.setAttribute('aria-labelledby', idTitulo);
 
     // Etiquetas superiores
-    var cabecera = crear('div', 'flex flex-wrap gap-2');
+    var cabecera = crear('div', 'etiquetas-tarjeta flex flex-wrap gap-2');
     var etiqueta = crear('span', 'etiqueta-tipo');
     etiqueta.setAttribute('data-tipo', doc.tipo);
     etiqueta.appendChild(crear('span', null, tipo.icono)).setAttribute('aria-hidden', 'true');
@@ -171,9 +171,10 @@
     compartir.addEventListener('click', function () { acciones.alCompartir(doc); });
     botones.appendChild(compartir);
 
-    // Contenido a la izquierda y botones pequeños arriba a la derecha, uno debajo del otro.
+    // Arriba: etiquetas a la izquierda y botones en fila a la derecha. Debajo, el título, el
+    // resumen y los datos usan todo el ancho de la tarjeta (lo ordena la cuadrícula del CSS).
     var contenido = crear('div', 'contenido-tarjeta');
-    while (tarjeta.firstChild) contenido.appendChild(tarjeta.firstChild);
+    while (cabecera.nextSibling) contenido.appendChild(cabecera.nextSibling);
     tarjeta.appendChild(contenido);
     tarjeta.appendChild(botones);
     item.appendChild(tarjeta);

@@ -735,3 +735,9 @@ El botón «Buscar hablando» va entre la caja de búsqueda y el botón **Buscar
   - Publicaciones de canales RSS que son directamente un PDF.
   - Documentos del catálogo con descarga libre.
 - Las noticias de páginas web no tienen archivo descargable: solo «Visitar enlace» y «WhatsApp».
+
+## 25. Actualización 12: botones de la tarjeta en fila
+
+- Los tres botones (Visitar enlace · Descargar PDF · WhatsApp) van en fila horizontal, a la altura de las etiquetas («Paper Académico», «En inglés»…), a la derecha.
+- Título, resumen y datos ocupan todo el ancho de la tarjeta.
+- En pantallas angostas (hasta 760 px) los botones pasan debajo de las etiquetas, también en fila.
