@@ -18,7 +18,7 @@
   var Crossref = enNode ? require('./crossref.js') : raiz.Crossref;
 
   var API = 'https://api.openalex.org/works';
-  var CAMPOS = 'id,doi,title,publication_date,authorships,primary_location,best_oa_location,abstract_inverted_index,type,language';
+  var CAMPOS = 'id,doi,title,publication_date,authorships,primary_location,best_oa_location,open_access,locations,abstract_inverted_index,type,language';
 
   /**
    * @param {{consulta: string, desde?: string, hasta?: string, pais?: string, filas?: number, correo?: string}} op
@@ -75,6 +75,11 @@
     (work.authorships || []).forEach(function (a) { (a.countries || []).forEach(function (p) { paises.push(p); }); });
     var resumen = Crossref.recortar(Crossref.limpiarTexto(resumenDe(work.abstract_inverted_index)), 300);
     var oa = work.best_oa_location || {};
+    // PDF de acceso libre: el de la mejor ubicación abierta, el de cualquier otra ubicación
+    // (repositorio, arXiv…) o el enlace de acceso abierto si apunta a un PDF.
+    var otra = (work.locations || []).filter(function (l) { return l && l.pdf_url; })[0];
+    var oaUrl = (work.open_access && work.open_access.oa_url) || '';
+    var pdf = oa.pdf_url || (otra && otra.pdf_url) || (/\.pdf($|[?#])/i.test(oaUrl) ? oaUrl : '');
     var enlace = work.doi || (work.primary_location && work.primary_location.landing_page_url) || work.id;
     var doc = {
       id: Crossref.idDesdeTexto('oalex', work.doi || work.id),
@@ -87,7 +92,7 @@
       idioma: work.language === 'es' ? 'es' : (work.language === 'en' ? 'en' : ''),
       fecha: work.publication_date || '',
       enlace: enlace,
-      descarga: oa.pdf_url ? { url: oa.pdf_url, formato: 'PDF', nombreArchivo: String(work.doi || work.id).replace(/^https?:\/\/(doi\.org\/)?/, '').replace(/[^\w.-]+/g, '_') + '.pdf' } : null,
+      descarga: pdf ? { url: pdf, formato: 'PDF', nombreArchivo: String(work.doi || work.id).replace(/^https?:\/\/(doi\.org\/)?/, '').replace(/[^\w.-]+/g, '_') + '.pdf' } : null,
       etiquetas: [],
       origen: 'OpenAlex'
     };

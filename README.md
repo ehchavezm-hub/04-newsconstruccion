@@ -226,8 +226,8 @@ verificado según WCAG 2.1 AA:
 | Cabecera, títulos, botón Buscar, enlaces, sección Internacional | NASA Blue `#0B3D91` | 10,0 : 1 |
 | Sección Nacional (Perú) | Mission Red `#C91B1B` | 5,7 : 1 |
 | Acento (pestaña activa, franja de noticias) | NASA Red `#FC3D21` (solo gráfico: 3,6 : 1 no alcanza para texto) | — |
-| Botón de novedades | Solar Gold `#FDB515` con texto Space Black | 9,8 : 1 |
-| Descargas, normas, «Acceso libre» | Earth Green `#0A7C3E` | 5,3 : 1 |
+| Botón de novedades y botón «Descargar» | Solar Gold `#FDB515` con texto Space Black | 9,8 : 1 |
+| Normas, «Acceso libre» | Earth Green `#0A7C3E` | 5,3 : 1 |
 | Franja de los papers | Science Blue `#1B81A8` (solo gráfico) | — |
 | Bordes | Sky Gray `#9BB4C8` (solo decorativo) | — |
 | WhatsApp | `#075E54` (se mantiene porque la gente lo reconoce) | 7,7 : 1 |

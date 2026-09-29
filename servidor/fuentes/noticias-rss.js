@@ -73,7 +73,10 @@ function interpretarRss(xml, medio) {
       idioma: medio.idioma || 'es',
       fecha: aFecha(etiqueta(b, 'pubDate') || etiqueta(b, 'dc:date') || etiqueta(b, 'published') || etiqueta(b, 'updated')),
       enlace,
-      descarga: null,
+      // Si la publicación es directamente un PDF (informes, normas…), se puede descargar.
+      descarga: /\.pdf($|[?#])/i.test(enlace || '')
+        ? { url: enlace, formato: 'PDF', nombreArchivo: (titulo || 'documento').replace(/[^\w.-]+/g, '_').slice(0, 80) + '.pdf' }
+        : null,
       etiquetas: [],
       origen: 'RSS'
     };

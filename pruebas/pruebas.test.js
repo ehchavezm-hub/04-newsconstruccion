@@ -754,3 +754,43 @@ describe('Servidor', () => {
     assert.equal(r.status, 404);
   });
 });
+
+describe('Botón de descarga cuando el documento es de acceso libre', () => {
+  const OpenAlex = require('../public/js/openalex.js');
+
+  test('OpenAlex: usa el PDF de otra ubicación abierta si la mejor no lo tiene', () => {
+    const d = OpenAlex.convertir({
+      id: 'https://openalex.org/W1', doi: 'https://doi.org/10.1/x', title: 'BIM in construction',
+      best_oa_location: { landing_page_url: 'https://x.org' },
+      locations: [{ pdf_url: null }, { pdf_url: 'https://arxiv.org/pdf/1.pdf' }],
+      authorships: [], primary_location: { source: {} }
+    });
+    assert.equal(d.descarga.url, 'https://arxiv.org/pdf/1.pdf');
+  });
+
+  test('OpenAlex: sin PDF abierto no hay descarga', () => {
+    const d = OpenAlex.convertir({ id: 'W2', title: 'T', authorships: [], primary_location: { source: {} }, open_access: { oa_url: 'https://x.org/page' } });
+    assert.equal(d.descarga, null);
+  });
+
+  test('Open Library: libro de dominio público se descarga de Internet Archive', () => {
+    const editorial = 'Routledge';
+    const libre = Libros.convertirOpenLibrary({ key: '/works/OL1W', title: 'Libro', publisher: [editorial], ebook_access: 'public', ia: ['libro00'] });
+    assert.equal(libre.descarga.url, 'https://archive.org/download/libro00/libro00.pdf');
+    const prestado = Libros.convertirOpenLibrary({ key: '/works/OL2W', title: 'Otro', publisher: [editorial], ebook_access: 'borrowable', ia: ['otro00'] });
+    assert.equal(prestado.descarga, null);
+  });
+
+  test('RSS: una publicación que es un PDF se puede descargar', () => {
+    const xml = '<rss><channel><item><title>Informe de obras 2026</title><link>https://www.gob.pe/informe.pdf</link><pubDate>Mon, 28 Sep 2026 10:00:00 GMT</pubDate></item>' +
+      '<item><title>Nota sobre obras</title><link>https://www.gob.pe/nota</link><pubDate>Mon, 28 Sep 2026 10:00:00 GMT</pubDate></item></channel></rss>';
+    const [pdf, nota] = rss.interpretarRss(xml, { nombre: 'Gobierno', especializado: true, idioma: 'es' });
+    assert.equal(pdf.descarga.url, 'https://www.gob.pe/informe.pdf');
+    assert.equal(nota.descarga, null);
+  });
+
+  test('el botón de descarga tiene un color propio (Solar Gold)', () => {
+    const css = require('fs').readFileSync(require('path').join(__dirname, '..', 'public', 'css', 'estilos.css'), 'utf8');
+    assert.match(css, /\.boton-descarga \{ background: var\(--oro\)/);
+  });
+});

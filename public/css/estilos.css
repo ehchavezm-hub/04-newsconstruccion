@@ -147,8 +147,8 @@ header :focus-visible { outline-color: var(--oro); }
 }
 .boton-semana:hover { border-color: var(--tinta); }
 
-.boton-descarga { background: var(--verde); color: #fff; }
-.boton-descarga:hover { background: var(--tinta); }
+.boton-descarga { background: var(--oro); color: var(--tinta); }
+.boton-descarga:hover { background: var(--tinta); color: #fff; }
 
 .boton-whatsapp { background: #075e54; color: #fff; }
 .boton-whatsapp:hover { background: var(--tinta); }

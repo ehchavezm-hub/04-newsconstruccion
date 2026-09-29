@@ -32,7 +32,7 @@
       q: tema,
       sort: 'new',
       limit: '60',
-      fields: 'key,title,subtitle,author_name,publisher,first_publish_year,language,subject'
+      fields: 'key,title,subtitle,author_name,publisher,first_publish_year,language,subject,ebook_access,ia'
     });
     return 'https://openlibrary.org/search.json?' + params.toString();
   }
@@ -80,7 +80,10 @@
       idioma: (libro.language || []).indexOf('spa') > -1 ? 'es' : ((libro.language || []).indexOf('eng') > -1 ? 'en' : ''),
       fecha: libro.first_publish_year ? String(libro.first_publish_year) : '',
       enlace: 'https://openlibrary.org' + libro.key,
-      descarga: null,
+      // Libro de dominio público en Internet Archive: se puede descargar en PDF.
+      descarga: libro.ebook_access === 'public' && (libro.ia || [])[0]
+        ? { url: 'https://archive.org/download/' + libro.ia[0] + '/' + libro.ia[0] + '.pdf', formato: 'PDF', nombreArchivo: libro.ia[0] + '.pdf' }
+        : null,
       // Las materias del libro ayudan a relacionarlo con los temas.
       etiquetas: (libro.subject || []).slice(0, 15),
       origen: 'Open Library'

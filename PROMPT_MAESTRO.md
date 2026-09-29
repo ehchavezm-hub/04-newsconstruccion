@@ -724,3 +724,14 @@ Se mantienen las líneas finas (1 px) y el diseño minimalista; interlineado 1,4
 ## 23. Actualización 10: botón «Buscar hablando»
 
 El botón «Buscar hablando» va entre la caja de búsqueda y el botón **Buscar**, y es más pequeño (12 px, peso normal, icono chico). En teléfono queda debajo de la caja, a la izquierda del botón Buscar.
+
+## 24. Actualización 11: botón «Descargar»
+
+- En cada tarjeta, cuando el documento se puede descargar gratis, aparece **Descargar PDF** entre «Visitar enlace» y «WhatsApp», en color propio: Solar Gold `#FDB515` con texto Space Black.
+- Se ofrece descarga en más casos:
+  - Papers de OpenAlex: el PDF abierto de cualquier ubicación (revista, repositorio, arXiv).
+  - Papers de Crossref con licencia Creative Commons y enlace PDF.
+  - Libros de dominio público en Internet Archive (vía Open Library).
+  - Publicaciones de canales RSS que son directamente un PDF.
+  - Documentos del catálogo con descarga libre.
+- Las noticias de páginas web no tienen archivo descargable: solo «Visitar enlace» y «WhatsApp».
