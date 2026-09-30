@@ -244,6 +244,46 @@
   };
 
   /*
+   * TÉRMINOS AMPLIOS: también se usan fuera de la construcción («variabilidad de frecuencia
+   * cardiaca», «inteligencia artificial en toxicología», «plan de contingencia sanitaria»).
+   * Solo cuentan si el resultado habla además de construcción, obras, infraestructura o
+   * ingeniería (ver CONTEXTO_CONSTRUCCION en motor-busqueda.js), en su texto o en su fuente.
+   */
+  var AMPLIOS = {
+    'ppm': ['variabilidad', 'variability', 'throughput', 'tiempo de ciclo', 'cycle time', 'work in process',
+      'trabajo en proceso', 'production system', 'sistema de producción', 'production flow', 'flujo de producción'],
+    'lineas-balance': ['scheduling'],
+    'metodos-constructivos': ['foundation'],
+    'procesos-constructivos': ['mano de obra', 'workforce'],
+    'vdc': ['modelo digital', 'digital model', 'realidad virtual', 'virtual reality'],
+    'ia-automatizacion': ['inteligencia artificial', 'artificial intelligence', 'automatización', 'automation',
+      'machine learning', 'computer vision', 'robótica', 'ia ', 'automatización de procesos', 'process automation',
+      'RPA ', 'visión artificial', 'analítica predictiva', 'predictive analytics', 'internet de las cosas', 'IoT ',
+      'sensores', 'robot', 'dron', 'drone', 'algoritmo', 'algorithm', 'deep learning'],
+    'gestion-informacion': ['gestión de la información', 'information management', 'gestión documental',
+      'document management', 'document control', 'control documentario', 'interoperabilidad', 'interoperability',
+      'trazabilidad', 'traceability', 'plataforma digital', 'digital platform'],
+    'industrializacion': ['gemelo digital', 'digital twin', 'impresión 3D', '3D printing', 'prefabricación',
+      'prefabrication', 'modular', 'prefabric', 'industrializ', 'transformación digital', 'digital transformation'],
+    'ingenieria': ['ingeniería', 'engineering', 'diseño estructural', 'structural design'],
+    'procura': ['cadena de suministro', 'supply chain', 'adquisiciones', 'contract management', 'contract administration',
+      'gestión de contratos', 'price adjustment', 'price escalation', 'valorizaciones', 'deductivo', 'reclamos', 'claims',
+      'contrato', 'contract', 'proveedor', 'supplier', 'adjudica', 'awarded', 'award ', 'partnering'],
+    'construccion': ['productividad', 'control de calidad', 'quality control', 'control de costos', 'cost control',
+      'montaje', 'impacto en la calidad', 'quality impact', 'cost impact', 'time overrun'],
+    'puesta-marcha': ['arranque', 'start-up', 'handover', 'turnover', 'inaugura'],
+    'operacion': ['confiabilidad', 'reliability', 'disponibilidad', 'availability', 'shutdown', 'vida útil',
+      'mantenimiento', 'maintenance', 'gestión de activos', 'asset management'],
+    'pmbok': ['gestión de riesgos', 'gestión del riesgo', 'análisis de riesgos', 'análisis de riesgo', 'matriz de riesgos',
+      'registro de riesgos', 'plan de riesgos', 'contingencia', 'reserva de contingencia', 'reserva de gestión',
+      'risk management plan', 'risk register', 'contingency reserve', 'management reserve', 'Monte Carlo',
+      'quantitative risk analysis', 'análisis cuantitativo de riesgos', 'cost risk', 'schedule risk', 'risk allocation',
+      'asignación de riesgos'],
+    'prince2': ['gobernanza', 'governance'],
+    'ipma': ['competencias profesionales', 'professional competence', 'certificación profesional']
+  };
+
+  /*
    * Consulta académica de cada tema (en inglés, el idioma de casi todas las revistas).
    * La usan Crossref y Open Library para traer los papers y libros recientes de cada tema.
    */
@@ -379,6 +419,7 @@
     g.temas.forEach(function (t) {
       t.grupo = g.id;
       t.relacionados = RELACIONADOS[t.id] || [];
+      t.amplios = AMPLIOS[t.id] || [];
       t.academica = ACADEMICA[t.id] || t.etiqueta;
       t.noticias = NOTICIAS[t.id] || { es: t.etiqueta, en: t.academica };
       t.openalex = OPENALEX[t.id] || t.academica;

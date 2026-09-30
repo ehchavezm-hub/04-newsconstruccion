@@ -841,3 +841,34 @@ describe('Gestión contractual, impactos, reajustes y riesgos', () => {
     }
   });
 });
+
+describe('Términos amplios y sinónimos de impactos', () => {
+  const tema = (doc) => Motor.temasDe({ resumen: '', etiquetas: [], ...doc }).map((t) => t.id);
+
+  test('un término amplio solo cuenta si el resultado habla de construcción', () => {
+    assert.deepEqual(tema({ titulo: 'Impacto a largo plazo del tratamiento sobre la variabilidad de frecuencia cardiaca', fuente: 'Archivos de Bronconeumología' }), []);
+    assert.deepEqual(tema({ titulo: 'Artificial intelligence for PFAS toxicology and risk assessment', fuente: 'Discover Artificial Intelligence' }), []);
+    assert.deepEqual(tema({ titulo: 'Plan de contingencia ante lluvias en colegios', fuente: 'Andina' }), []);
+    assert.ok(tema({ titulo: 'Reducing variability in construction production flow', fuente: 'Journal of Construction Engineering and Management' }).includes('ppm'));
+    assert.ok(tema({ titulo: 'Artificial intelligence on the jobsite', fuente: 'Construction Dive' }).includes('ia-automatizacion'));
+    assert.ok(tema({ titulo: 'La inteligencia artificial llega a las obras públicas', fuente: 'Gestión' }).includes('ia-automatizacion'));
+  });
+
+  test('los términos propios del sector no necesitan contexto', () => {
+    assert.ok(tema({ titulo: 'Nueva versión del PMBOK', fuente: 'PMI' }).includes('pmbok'));
+    assert.ok(tema({ titulo: 'BIM obligatorio desde 2026', fuente: 'Andina' }).includes('bim'));
+  });
+
+  test('«impacto en plazo» encuentra ampliaciones de plazo, atrasos y obras paralizadas', () => {
+    const docs = [
+      { id: 'a', tipo: 'noticia', titulo: 'Contratista pide ampliación de plazo de 120 días en hospital de Piura', fecha: '2026-09-01' },
+      { id: 'b', tipo: 'noticia', titulo: 'Contraloría alerta atraso en obra de saneamiento', fecha: '2026-08-01' },
+      { id: 'c', tipo: 'noticia', titulo: 'Obra paralizada por falta de expediente', fecha: '2026-07-01' },
+      { id: 'd', tipo: 'noticia', titulo: 'Inauguran colegio en Cusco', fecha: '2026-06-01' }
+    ];
+    assert.deepEqual(Motor.buscar(docs, { consulta: 'impacto en plazo' }).map((d) => d.id), ['a', 'b', 'c']);
+    assert.deepEqual(Motor.buscar(docs, { consulta: 'impacto en el cronograma' }).map((d) => d.id), ['a', 'b', 'c']);
+    const costos = [{ id: 'e', tipo: 'noticia', titulo: 'Aprueban adicional de obra por S/ 5 millones', fecha: '2026-09-01' }];
+    assert.equal(Motor.buscar(costos, { consulta: 'impacto en costo' }).length, 1);
+  });
+});

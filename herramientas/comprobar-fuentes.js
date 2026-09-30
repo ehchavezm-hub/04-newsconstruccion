@@ -134,6 +134,19 @@ async function resumirPublicado() {
   const bim = Motor.buscar(Motor.aptos(docs, new Date(), 1), { consulta: 'BIM' }).filter((d) => d.ambito === 'nacional');
   console.log(`\n  Búsqueda «BIM», nacional, último año: ${bim.length}`);
   bim.slice(0, 8).forEach((d) => console.log(`    - [${d.tipo}] ${d.fecha} · ${d.fuente} · ${d.titulo}`));
+
+  // Búsquedas de gestión contractual (todo el tiempo), con ejemplos nacionales.
+  for (const consulta of ['impacto en plazo', 'impacto en costo', 'adicional de obra', 'fórmula polinómica', 'FIDIC', 'APP', 'EPCM']) {
+    const r = Motor.buscar(Motor.aptos(docs, new Date(), 0), { consulta });
+    const nac = r.filter((d) => d.ambito === 'nacional');
+    console.log(`\n  Búsqueda «${consulta}», todo el tiempo: ${nac.length} nac + ${r.length - nac.length} int`);
+    nac.slice(0, 4).forEach((d) => console.log(`    - [${d.tipo}] ${d.fecha} · ${d.fuente} · ${d.titulo}`));
+  }
+
+  // Lo publicado que el filtro de temas actual ya no acepta (p. ej., términos amplios sin contexto).
+  const fuera = docs.filter((d) => d.tipo !== 'norma' && !Motor.esDeLosTemas(d));
+  console.log(`\n  Publicados que el filtro actual descarta: ${fuera.length} de ${docs.length}`);
+  fuera.slice(0, 25).forEach((d) => console.log(`    - [${d.tipo}] ${d.fuente} · ${d.titulo.slice(0, 120)}`));
 }
 
 (async () => {

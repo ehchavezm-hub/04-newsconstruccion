@@ -39,6 +39,17 @@
     ['reclamo', 'claim'],
     ['arbitraje', 'arbitration'],
     ['cronograma', 'schedule'],
+    // Impactos: en el Perú se habla de «ampliación de plazo», «atraso», «obra paralizada»…
+    ['impacto en plazo', 'impacto en el plazo', 'impactos en el plazo', 'impactos en plazo', 'impacto en los plazos',
+     'impacto en el cronograma', 'impacto en cronograma', 'impactos en el cronograma', 'ampliacion de plazo',
+     'ampliaciones de plazo', 'ampliacion del plazo', 'mayor plazo', 'prorroga de plazo', 'retraso', 'atraso',
+     'demora', 'paralizacion', 'paralizada', 'paralizadas', 'afectacion de la ruta critica', 'extension of time',
+     'delay', 'schedule impact', 'time overrun'],
+    ['impacto en costo', 'impacto en el costo', 'impacto en costos', 'impacto en los costos', 'impactos en el costo',
+     'sobrecosto', 'mayores costos', 'mayor costo', 'mayores gastos generales', 'adicional de obra', 'adicionales de obra',
+     'presupuesto adicional', 'cost overrun', 'cost impact', 'cost increase'],
+    ['impacto en la calidad', 'impacto en calidad', 'impactos en la calidad', 'defectos constructivos', 'deficiencias',
+     'fallas constructivas', 'vicios ocultos', 'retrabajo', 'rework', 'construction defects', 'quality impact'],
     ['ruta critica', 'critical path'],
     ['valor ganado', 'earned value'],
     ['seguridad y salud', 'hse ', 'ssoma'],
@@ -202,7 +213,17 @@
     indiceTemas = [];
     Temas.grupos.forEach(function (g) {
       g.temas.forEach(function (t) {
-        indiceTemas.push({ id: t.id, etiqueta: t.etiqueta, directos: aVariantes(t.terminos), indirectos: aVariantes(t.relacionados) });
+        var amplios = aVariantes(t.amplios);
+        var concretos = function (lista) { return lista.filter(function (v) { return amplios.indexOf(v) === -1; }); };
+        var directos = aVariantes(t.terminos);
+        var indirectos = aVariantes(t.relacionados);
+        indiceTemas.push({
+          id: t.id, etiqueta: t.etiqueta,
+          directos: concretos(directos), indirectos: concretos(indirectos),
+          // Términos amplios: solo cuentan si el resultado también habla de construcción.
+          directosAmplios: directos.filter(function (v) { return amplios.indexOf(v) > -1; }),
+          indirectosAmplios: indirectos.filter(function (v) { return amplios.indexOf(v) > -1; })
+        });
       });
     });
     return indiceTemas;
@@ -218,15 +239,41 @@
   // Construcción. Pulse…»): nombran la fuente, no el contenido, así que no cuentan.
   var RESUMEN_GENERICO = /(^|\. )(Publicado por|Noticia de|Libro publicado por) .*Pulse «Visitar enlace»|^Artículo académico\. Pulse/;
 
+  /*
+   * Palabras que muestran que un resultado trata de construcción, obras, infraestructura o
+   * ingeniería. Hacen falta cuando el tema solo se reconoce por un término amplio.
+   */
+  var CONTEXTO_CONSTRUCCION = [
+    'construc', 'obra ', 'obras ', 'contratist', 'contractor', 'infraestructur', 'infrastructur', 'ingenier',
+    'engineer', 'edific', 'building', 'vivienda', 'carretera', 'highway', 'puente', 'bridge', 'tunel', 'tunnel',
+    'puerto', 'aeropuerto', 'airport', 'ferrocarril', 'railway', 'metro ', 'mineri', 'minero', 'minera', 'mining',
+    'hidroelectric', 'saneamiento', 'megaproyecto', 'megaproject', 'proyecto de inversion', 'capital project',
+    'epc ', 'epcm ', 'bim ', 'aec ', 'jobsite', 'job site', 'site work', 'civil works', 'obra publica',
+    'contrataciones del estado', 'contratacion publica', 'public works', 'concesion', 'app ', 'ppp ',
+    'fidic', 'nec4', 'project management', 'gestion de proyectos', 'direccion de proyectos', 'pmbok', 'pmi ',
+    'planta industrial', 'industrial plant', 'refineri', 'refinery', 'power plant', 'central electrica'
+  ];
+
+  function tieneContexto(doc, textoPrincipal) {
+    var texto = textoPrincipal + ' ' + normalizar([doc.fuente, doc.tipoFuente].join(' '));
+    return CONTEXTO_CONSTRUCCION.some(function (v) { return contiene(texto, v); });
+  }
+
   function temasDe(doc) {
     var resumen = RESUMEN_GENERICO.test(doc.resumen || '') ? '' : doc.resumen;
     var texto = normalizar([doc.titulo, resumen, (doc.etiquetas || []).join(' '), doc.capitulo].join(' '));
     var coincide = function (v) { return contiene(texto, v); };
+    var contexto = null; // se calcula solo si hace falta
+    var conContexto = function (lista) {
+      if (!lista.some(coincide)) return false;
+      if (contexto === null) contexto = tieneContexto(doc, texto);
+      return contexto;
+    };
     var directos = [];
     var indirectos = [];
     temasNormalizados().forEach(function (t) {
-      if (t.directos.some(coincide)) directos.push({ id: t.id, etiqueta: t.etiqueta, directo: true });
-      else if (t.indirectos.some(coincide)) indirectos.push({ id: t.id, etiqueta: t.etiqueta, directo: false });
+      if (t.directos.some(coincide) || conContexto(t.directosAmplios)) directos.push({ id: t.id, etiqueta: t.etiqueta, directo: true });
+      else if (t.indirectos.some(coincide) || conContexto(t.indirectosAmplios)) indirectos.push({ id: t.id, etiqueta: t.etiqueta, directo: false });
     });
     return directos.concat(indirectos);
   }

@@ -795,3 +795,14 @@ Se incluyen fuentes y búsquedas sobre **gestión contractual, administración d
   - OSITRAN y AFIN.
   - Sitios selectos IJGlobal, P3 Bulletin e Infralatam.
   - Revista Public Works Management & Policy.
+
+## 31. Actualización 18: «impacto en plazo» y resultados ajenos a la construcción
+
+- **Sinónimos de impactos.** En el Perú se habla de «ampliación de plazo», «atraso», «obra paralizada», «mayores gastos generales» o «adicional de obra». La búsqueda los reconoce como equivalentes:
+  - **impacto en plazo o cronograma:** ampliación de plazo, prórroga, retraso, atraso, demora, paralización, afectación de la ruta crítica, extension of time, delay…
+  - **impacto en costo:** sobrecosto, mayores costos, mayores gastos generales, adicional de obra, presupuesto adicional, cost overrun…
+  - **impacto en la calidad:** defectos constructivos, deficiencias, fallas constructivas, vicios ocultos, retrabajo, rework…
+- **Términos amplios con contexto.** Algunos términos también se usan fuera del sector, por ejemplo «variabilidad», «inteligencia artificial», «contingencia», «reliability» o «governance». Estos términos (`AMPLIOS` en `temas.js`) solo relacionan un resultado con un tema si el texto o la fuente habla también de construcción, obras, infraestructura, ingeniería o gestión de proyectos (`CONTEXTO_CONSTRUCCION` en `motor-busqueda.js`). Así se evitan papers médicos o de toxicología.
+- «Comprobar fuentes» informa ahora:
+  - cuántos resultados dan estas búsquedas;
+  - qué publicados descarta el filtro actual.
