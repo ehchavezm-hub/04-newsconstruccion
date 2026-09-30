@@ -754,3 +754,16 @@ Arriba de cada tarjeta hay siempre dos columnas: a la izquierda, las etiquetas s
 
 - Texto abreviado: «Lo más importante de los **últimos 7 días**, solo de fuentes de gran prestigio.» (sin la lista de medios).
 - El botón «Ver novedades de la última semana» va en la parte superior de la caja, a la altura del título.
+
+## 29. Actualización 16: gestión contractual, impactos, reajustes y riesgos
+
+Se incluyen fuentes y búsquedas sobre **gestión contractual, administración de contratos, impacto en plazo, cronograma, costo y calidad, presupuestos adicionales, deductivos, fórmulas de reajuste (fórmula polinómica, índices unificados), gestión y análisis de riesgos y contingencias**, y temas relacionados (ampliaciones de plazo, valorizaciones, reclamos, disputas y arbitraje, obras paralizadas, análisis de retrasos, Monte Carlo…).
+
+- **Relación con los temas** (sin cambiar los 22 temas):
+  - Contratos, adicionales, deductivos y reajustes → «Procura y Contratos».
+  - Impactos en plazo, costo y calidad → «Construcción y Montaje».
+  - Riesgos y contingencias → «PMBOK y Estándares del PMI».
+- **Búsquedas adicionales** al generar los datos (noticias, papers y libros): gestión contractual, reajustes, impactos, riesgos (`Temas.busquedasAdicionales`).
+- **Nuevas fuentes nacionales:** INEI (índices unificados), MEF – Invierte.pe, Tribunal de Contrataciones del Estado, centros de arbitraje PUCP y CCL, LP Derecho, Revista Costos.
+- **Nuevas fuentes internacionales:** FIDIC, NEC Contracts, Society of Construction Law, HKA, Secretariat, Diales, Arcadis, ICC, Global Arbitration Review, Institute of Risk Management, Lexology, Hill International.
+- **Nuevas revistas:** International Journal of Construction Management; Journal of Financial Management of Property and Construction; Built Environment Project and Asset Management; Risk Analysis (solo artículos de construcción).

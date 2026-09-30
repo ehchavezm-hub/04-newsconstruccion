@@ -154,13 +154,13 @@ describe('Temas sugeridos', () => {
     assert.equal(ciclo.nota, 'Las etapas de un proyecto, de la idea a la operación.');
   });
 
-  test('cada tema tiene id único, grupo y entre 14 y 25 términos', () => {
+  test('cada tema tiene id único, grupo y entre 14 y 60 términos', () => {
     const temas = Temas.grupos.flatMap((g) => g.temas);
     assert.equal(temas.length, 22);
     assert.equal(new Set(temas.map((t) => t.id)).size, 22);
     const ids = Temas.grupos.map((g) => g.id);
     temas.forEach((t) => {
-      assert.ok(t.terminos.length >= 14 && t.terminos.length <= 25, `${t.id}: ${t.terminos.length}`);
+      assert.ok(t.terminos.length >= 14 && t.terminos.length <= 60, `${t.id}: ${t.terminos.length}`);
       assert.ok(ids.includes(t.grupo), t.id);
       // Los 8 primeros términos (los que van a GDELT) deben dejar al menos uno de 4 letras o más.
       assert.ok(Gdelt.terminosDeTema(t.terminos).length > 0, t.id);
@@ -322,7 +322,7 @@ describe('Fuentes de prestigio', () => {
     }
     assert.equal(new Set(Fuentes.medios.map((m) => m.id)).size, Fuentes.medios.length);
     assert.ok(Fuentes.revistas.every((r) => /^\d{4}-\d{3}[\dX]$/.test(r.issn)));
-    assert.equal(Fuentes.revistas.length, 15);
+    assert.equal(Fuentes.revistas.length, 19);
   });
 
   test('la relevancia reconoce el sector y las siglas en mayúsculas', () => {
@@ -792,5 +792,38 @@ describe('Botón de descarga cuando el documento es de acceso libre', () => {
   test('el botón de descarga tiene un color propio (Solar Gold)', () => {
     const css = require('fs').readFileSync(require('path').join(__dirname, '..', 'public', 'css', 'estilos.css'), 'utf8');
     assert.match(css, /\.boton-descarga \{ background: var\(--oro\)/);
+  });
+});
+
+describe('Gestión contractual, impactos, reajustes y riesgos', () => {
+  const tema = (titulo) => Motor.temasDe({ titulo, resumen: '', etiquetas: [] }).map((t) => t.id);
+
+  test('se relacionan con los temas', () => {
+    assert.ok(tema('Aprueban adicional de obra y deductivo en hospital de Piura').includes('procura'));
+    assert.ok(tema('INEI publica los índices unificados para la fórmula polinómica de reajuste').includes('procura'));
+    assert.ok(tema('Contratista pide ampliación de plazo por lluvias').includes('procura'));
+    assert.ok(tema('Delay analysis and schedule impact in highway projects').includes('construccion'));
+    assert.ok(tema('Obra paralizada: impacto en el costo y en la calidad').includes('construccion'));
+    assert.ok(tema('Gestión de riesgos y reserva de contingencia en proyectos mineros').includes('pmbok'));
+    assert.ok(tema('Monte Carlo simulation for cost contingency in construction').includes('pmbok'));
+  });
+
+  test('hay búsquedas adicionales para cada aspecto, ligadas a un tema existente', () => {
+    const ids = Temas.busquedasAdicionales.map((b) => b.id);
+    assert.deepEqual(ids, ['gestion-contractual', 'reajustes', 'impactos', 'riesgos']);
+    for (const b of Temas.busquedasAdicionales) {
+      assert.ok(Temas.porId(b.tema), b.id);
+      assert.ok(b.academica && b.noticias.es && b.noticias.en && b.openalex, b.id);
+    }
+    assert.equal(Temas.consultas.length, 22 + 4);
+  });
+
+  test('las nuevas entidades están entre las fuentes selectas', () => {
+    for (const id of ['inei-indices', 'tribunal-contrataciones', 'arbitraje-pucp', 'fidic', 'nec', 'scl', 'hka']) {
+      assert.ok(Fuentes.medios.some((m) => m.id === id), id);
+    }
+    for (const host of ['fidic.org', 'scl.org.uk', 'globalarbitrationreview.com', 'theirm.org']) {
+      assert.ok(Fuentes.esFuenteSelecta('https://www.' + host + '/noticia'), host);
+    }
   });
 });

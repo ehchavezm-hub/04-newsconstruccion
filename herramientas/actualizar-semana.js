@@ -37,7 +37,8 @@ const ANTIGUOS = { noticias: 'noticias-archivo.json', papers: 'papers-recientes.
 const TIPO = { noticias: 'noticia', papers: 'paper', libros: 'libro' };
 const ESPERA_MS = 20000;
 const esperar = (ms) => new Promise((ok) => setTimeout(ok, ms));
-const temas = Temas.grupos.flatMap((g) => g.temas);
+// Temas y búsquedas adicionales (gestión contractual, reajustes, impactos, riesgos…).
+const temas = Temas.consultas;
 
 function informar(fuentes) {
   for (const f of fuentes) {

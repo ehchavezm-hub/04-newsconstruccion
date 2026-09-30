@@ -28,7 +28,7 @@ const esperar = (ms) => new Promise((ok) => setTimeout(ok, ms));
  * @returns {Promise<{libros: Array, informe: Array}>}
  */
 async function obtenerPorVentanas(ventanas, { esperaMs = config.tiempoEsperaMs, maximoMs = Infinity } = {}) {
-  const temas = Temas.grupos.flatMap((g) => g.temas);
+  const temas = Temas.consultas; // temas y búsquedas adicionales
   const deCrossref = [];
   const inicio = Date.now();
   let respondieron = 0;

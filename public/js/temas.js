@@ -128,13 +128,28 @@
           'procura', 'procurement', 'contrato EPC', 'EPC contract', 'licitación', 'tender ', 'bidding',
           'adquisiciones', 'cadena de suministro', 'supply chain', 'contrataciones públicas',
           'public procurement', 'OECE ', 'Ley 32069', 'FIDIC', 'NEC4', 'expediting',
-          'inspección en fábrica', 'arbitraje de construcción', 'construction arbitration', 'reclamos', 'claims'] },
+          'inspección en fábrica', 'arbitraje de construcción', 'construction arbitration', 'reclamos', 'claims',
+          // Gestión y administración contractual, adicionales, deductivos y reajustes
+          'gestión contractual', 'gestión de contratos', 'administración de contratos', 'contract management',
+          'contract administration', 'adicional de obra', 'adicionales de obra', 'prestación adicional',
+          'presupuesto adicional', 'deductivo', 'reducción de prestaciones', 'change order', 'variation order',
+          'ampliación de plazo', 'ampliaciones de plazo', 'extension of time', 'mayores gastos generales',
+          'fórmula polinómica', 'fórmulas polinómicas', 'fórmula de reajuste', 'fórmulas de reajuste',
+          'reajuste de precios', 'índices unificados', 'price adjustment', 'price escalation', 'escalation clause',
+          'valorización de obra', 'valorizaciones', 'junta de resolución de disputas', 'dispute board',
+          'construction dispute', 'disputas en construcción', 'controversias contractuales', 'NEC contract'] },
         { id: 'construccion', etiqueta: 'Construcción y Montaje', terminos: [
           'ejecución de obra', 'montaje electromecánico', 'construction project', 'montaje de estructuras',
           'steel erection', 'mechanical erection', 'construction management', 'gestión de obra', 'montaje',
           'supervisión de obra', 'control de calidad', 'quality control', 'control de costos', 'cost control',
           'valor ganado', 'earned value', 'sobrecostos', 'cost overrun', 'productividad',
-          'construction productivity'] },
+          'construction productivity',
+          // Impacto en plazo, cronograma, costo y calidad
+          'impacto en el plazo', 'impacto en plazo', 'impacto en el cronograma', 'impacto en costo',
+          'impacto en el costo', 'impacto en la calidad', 'retraso de obra', 'retrasos en obra', 'atraso de obra',
+          'paralización de obra', 'obra paralizada', 'obras paralizadas', 'penalidad por mora', 'delay analysis',
+          'análisis de retrasos', 'construction delay', 'schedule delay', 'schedule impact', 'cost impact',
+          'quality impact', 'time overrun', 'forensic schedule', 'liquidated damages', 'disruption claim'] },
         { id: 'puesta-marcha', etiqueta: 'Puesta en Marcha (Commissioning)', terminos: [
           'puesta en marcha', 'commissioning', 'comisionamiento', 'precomisionamiento', 'pre-commissioning',
           'arranque', 'start-up', 'completamiento mecánico', 'mechanical completion', 'pruebas de desempeño',
@@ -157,7 +172,13 @@
           'Project Management Professional', 'dirección de proyectos', 'gestión de proyectos', 'project management',
           'PMI ', 'PMP ', 'estándar para la dirección de proyectos', 'gestión de portafolios',
           'portfolio management', 'gestión de programas', 'program management',
-          'extensión para la construcción', 'construction extension', 'metodologías ágiles', 'agile project management'] },
+          'extensión para la construcción', 'construction extension', 'metodologías ágiles', 'agile project management',
+          // Gestión y análisis de riesgos, contingencias
+          'gestión de riesgos', 'gestión del riesgo', 'análisis de riesgos', 'análisis de riesgo', 'matriz de riesgos',
+          'registro de riesgos', 'plan de riesgos', 'contingencia', 'reserva de contingencia', 'reserva de gestión',
+          'project risk', 'construction risk', 'risk management plan', 'risk register', 'schedule risk', 'cost risk',
+          'risk allocation', 'asignación de riesgos', 'contingency reserve', 'cost contingency', 'management reserve',
+          'Monte Carlo', 'quantitative risk analysis', 'análisis cuantitativo de riesgos'] },
         { id: 'prince2', etiqueta: 'PRINCE2 (Gobernanza y Control)', terminos: [
           'PRINCE2', 'PeopleCert', 'AXELOS', 'gobernanza de proyectos', 'project governance', 'project board',
           'business case', 'management by exception', 'junta del proyecto', 'caso de negocio',
@@ -297,6 +318,38 @@
     'ipma': 'IPMA OR "Individual Competence Baseline" OR "project management competence"'
   };
 
+  /*
+   * BÚSQUEDAS ADICIONALES de un tema: aspectos que la consulta principal no alcanza a cubrir.
+   * Al generar los datos se buscan igual que los temas (noticias, papers y libros); lo que
+   * encuentran se muestra bajo el tema indicado en «tema».
+   */
+  var BUSQUEDAS_ADICIONALES = [
+    { id: 'gestion-contractual', tema: 'procura',
+      academica: 'construction contract administration change orders claims',
+      noticias: {
+        es: '"gestión contractual" OR "administración de contratos" OR "adicional de obra" OR "adicionales de obra" OR "deductivo" OR "ampliación de plazo"',
+        en: '"contract administration" construction OR "change order" OR "variation order" OR "extension of time" OR "construction dispute"' },
+      openalex: '"contract administration" OR "contract management" OR "change orders" OR "variation orders" OR "construction claims" OR "extension of time" OR "construction disputes"' },
+    { id: 'reajustes', tema: 'procura',
+      academica: 'construction price escalation adjustment formula',
+      noticias: {
+        es: '"fórmula polinómica" OR "fórmulas polinómicas" OR "reajuste de precios" OR "índices unificados" OR "fórmula de reajuste"',
+        en: '"price adjustment" OR "escalation clause" OR "price escalation" construction contract' },
+      openalex: '"price adjustment" OR "price escalation" OR "escalation clause" OR "polynomial formula" construction' },
+    { id: 'impactos', tema: 'construccion',
+      academica: 'construction delay analysis schedule cost impact',
+      noticias: {
+        es: '"retraso de obra" OR "atraso de obra" OR "obra paralizada" OR "paralización de obra" OR "sobrecosto" obra OR "ampliación de plazo"',
+        en: '"construction delay" OR "cost overrun" OR "schedule delay" OR "delay analysis" OR "liquidated damages"' },
+      openalex: '"construction delay" OR "delay analysis" OR "schedule impact" OR "cost overrun" OR "time overrun" OR "quality impact" construction' },
+    { id: 'riesgos', tema: 'pmbok',
+      academica: 'construction project risk management contingency',
+      noticias: {
+        es: '"gestión de riesgos" obra OR "análisis de riesgos" proyecto OR "reserva de contingencia" OR "matriz de riesgos" obra',
+        en: '"construction risk" OR "project risk management" OR "cost contingency" OR "risk allocation" construction' },
+      openalex: '"construction risk" OR "project risk management" OR "risk allocation" OR "cost contingency" OR "schedule risk" OR "Monte Carlo" construction' }
+  ];
+
   // Cada tema recuerda a qué grupo pertenece, sus palabras de relación indirecta y sus consultas.
   grupos.forEach(function (g) {
     g.temas.forEach(function (t) {
@@ -318,7 +371,11 @@
     return null;
   }
 
-  var Temas = { grupos: grupos, porId: porId };
+  /** Todas las búsquedas que se hacen al generar los datos: una por tema y las adicionales. */
+  var consultas = grupos.reduce(function (lista, g) { return lista.concat(g.temas); }, [])
+    .concat(BUSQUEDAS_ADICIONALES);
+
+  var Temas = { grupos: grupos, porId: porId, consultas: consultas, busquedasAdicionales: BUSQUEDAS_ADICIONALES };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = Temas;

@@ -69,6 +69,21 @@
       googleNoticias: 'site:gob.pe "Plan BIM"' },
     { id: 'contraloria', nombre: 'Contraloría — Obras', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: false,
       googleNoticias: 'site:gob.pe Contraloría' },
+    // Gestión contractual, reajustes (índices unificados), inversión pública y arbitraje.
+    { id: 'inei-indices', nombre: 'INEI — Índices Unificados de Precios', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: true,
+      googleNoticias: 'site:gob.pe INEI "índices unificados"' },
+    { id: 'invierte-pe', nombre: 'MEF — Invierte.pe', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: true,
+      googleNoticias: 'site:gob.pe "Invierte.pe"' },
+    { id: 'tribunal-contrataciones', nombre: 'Tribunal de Contrataciones del Estado', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: true,
+      googleNoticias: 'site:gob.pe "Tribunal de Contrataciones"' },
+    { id: 'arbitraje-pucp', nombre: 'Centro de Análisis y Resolución de Conflictos PUCP', tipoFuente: 'Centro de arbitraje', idioma: 'es', ambito: 'nacional', especializado: false,
+      googleNoticias: 'site:pucp.edu.pe arbitraje' },
+    { id: 'arbitraje-ccl', nombre: 'Centro de Arbitraje de la Cámara de Comercio de Lima', tipoFuente: 'Centro de arbitraje', idioma: 'es', ambito: 'nacional', especializado: false,
+      googleNoticias: 'site:lacamara.pe arbitraje' },
+    { id: 'lp-derecho', nombre: 'LP Derecho — Contrataciones del Estado', tipoFuente: 'Medio jurídico especializado', idioma: 'es', ambito: 'nacional', especializado: false,
+      googleNoticias: 'site:lpderecho.pe contrataciones' },
+    { id: 'revista-costos', nombre: 'Revista Costos', tipoFuente: 'Medio especializado', idioma: 'es', ambito: 'nacional', especializado: true,
+      googleNoticias: 'site:costosperu.com' },
     { id: 'el-peruano', nombre: 'El Peruano (diario oficial)', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: false,
       googleNoticias: 'site:elperuano.pe' },
 
@@ -148,6 +163,27 @@
       googleNoticias: 'site:rics.org' },
     { id: 'aace', nombre: 'AACE International', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
       googleNoticias: 'site:aacei.org' },
+    // Contratos, reclamos, disputas y riesgos en construcción.
+    { id: 'fidic', nombre: 'FIDIC — Federación Internacional de Ingenieros Consultores', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:fidic.org' },
+    { id: 'nec', nombre: 'NEC Contracts', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:neccontract.com' },
+    { id: 'scl', nombre: 'Society of Construction Law', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:scl.org.uk' },
+    { id: 'hka', nombre: 'HKA — Reclamos y disputas en construcción', tipoFuente: 'Consultora especializada', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:hka.com' },
+    { id: 'secretariat', nombre: 'Secretariat — Construction Disputes', tipoFuente: 'Consultora especializada', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:secretariat-intl.com' },
+    { id: 'diales', nombre: 'Diales (Driver Group)', tipoFuente: 'Consultora especializada', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:diales.com' },
+    { id: 'arcadis', nombre: 'Arcadis — Global Construction Disputes', tipoFuente: 'Empresa de ingeniería', idioma: 'en', ambito: 'internacional', especializado: false,
+      googleNoticias: 'site:arcadis.com' },
+    { id: 'icc', nombre: 'ICC — Cámara de Comercio Internacional (arbitraje)', tipoFuente: 'Organismo internacional', idioma: 'en', ambito: 'internacional', especializado: false,
+      googleNoticias: 'site:iccwbo.org' },
+    { id: 'gar', nombre: 'Global Arbitration Review', tipoFuente: 'Medio jurídico especializado', idioma: 'en', ambito: 'internacional', especializado: false,
+      googleNoticias: 'site:globalarbitrationreview.com' },
+    { id: 'irm', nombre: 'Institute of Risk Management', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: false,
+      googleNoticias: 'site:theirm.org' },
     { id: 'dodge', nombre: 'Dodge Construction Network', tipoFuente: 'Análisis del sector', idioma: 'en', ambito: 'internacional', especializado: true,
       googleNoticias: 'site:construction.com' },
     { id: 'arup', nombre: 'Arup', tipoFuente: 'Empresa de ingeniería', idioma: 'en', ambito: 'internacional', especializado: true,
@@ -284,6 +320,19 @@
     { dominio: 'rics.org', nombre: 'RICS', ambito: 'internacional' },
     { dominio: 'aacei.org', nombre: 'AACE International', ambito: 'internacional' },
     { dominio: 'construction.com', nombre: 'Dodge Construction Network', ambito: 'internacional' },
+    // Contratos, reclamos, disputas, reajustes y riesgos
+    { dominio: 'fidic.org', nombre: 'FIDIC', ambito: 'internacional' },
+    { dominio: 'neccontract.com', nombre: 'NEC Contracts', ambito: 'internacional' },
+    { dominio: 'scl.org.uk', nombre: 'Society of Construction Law', ambito: 'internacional' },
+    { dominio: 'hka.com', nombre: 'HKA', ambito: 'internacional' },
+    { dominio: 'secretariat-intl.com', nombre: 'Secretariat', ambito: 'internacional' },
+    { dominio: 'diales.com', nombre: 'Diales', ambito: 'internacional' },
+    { dominio: 'arcadis.com', nombre: 'Arcadis', ambito: 'internacional' },
+    { dominio: 'iccwbo.org', nombre: 'ICC', ambito: 'internacional' },
+    { dominio: 'globalarbitrationreview.com', nombre: 'Global Arbitration Review', ambito: 'internacional' },
+    { dominio: 'theirm.org', nombre: 'Institute of Risk Management', ambito: 'internacional' },
+    { dominio: 'lexology.com', nombre: 'Lexology', ambito: 'internacional' },
+    { dominio: 'hillintl.com', nombre: 'Hill International', ambito: 'internacional' },
     { dominio: 'arup.com', nombre: 'Arup', ambito: 'internacional' },
     { dominio: 'autodesk.com', nombre: 'Autodesk', ambito: 'internacional' },
     { dominio: 'bentley.com', nombre: 'Bentley Systems', ambito: 'internacional' },
@@ -335,6 +384,11 @@
     { nombre: 'Tunnelling and Underground Space Technology', issn: '0886-7798' },
     { nombre: 'Safety Science', issn: '0925-7535' },
     { nombre: 'Reliability Engineering & System Safety', issn: '0951-8320' },
+    // Contratos, costos, reclamos y riesgos
+    { nombre: 'International Journal of Construction Management', issn: '1562-3599' },
+    { nombre: 'Journal of Financial Management of Property and Construction', issn: '1366-4387' },
+    { nombre: 'Built Environment Project and Asset Management', issn: '2044-124X' },
+    { nombre: 'Risk Analysis', issn: '0272-4332', filtrado: true },
     // Revista amplia: solo se aceptan los artículos que tratan de construcción.
     { nombre: 'Journal of Cleaner Production', issn: '0959-6526', filtrado: true }
   ];
@@ -396,7 +450,10 @@
     'refineria', 'refinery', 'proyecto minero', 'mining project', 'saneamiento', 'agua potable',
     'vivienda', 'edificacion', 'building', 'cemento', 'cement', 'acero estructural',
     'obras por impuestos', 'reconstruccion', 'proinversion', 'capeco', 'oece ', 'anin ',
-    'megaproyecto', 'megaproject', 'puesta en marcha', 'commissioning', 'mantenimiento', 'maintenance'
+    'megaproyecto', 'megaproject', 'puesta en marcha', 'commissioning', 'mantenimiento', 'maintenance',
+    'adicional de obra', 'adicionales de obra', 'ampliacion de plazo', 'formula polinomica', 'reajuste',
+    'indices unificados', 'arbitraje', 'paralizada', 'paralizacion', 'contrataciones del estado',
+    'change order', 'cost overrun', 'construction dispute', 'construction risk'
   ];
   // Siglas que solo cuentan escritas en MAYÚSCULAS ("APP" sí; la "app" del teléfono, no).
   var SIGLAS_CLAVE = /(^|[^A-Za-z])(EPC|BIM|APP|PPP)([^A-Za-z]|$)/;
