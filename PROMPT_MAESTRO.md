@@ -767,3 +767,31 @@ Se incluyen fuentes y búsquedas sobre **gestión contractual, administración d
 - **Nuevas fuentes nacionales:** INEI (índices unificados), MEF – Invierte.pe, Tribunal de Contrataciones del Estado, centros de arbitraje PUCP y CCL, LP Derecho, Revista Costos.
 - **Nuevas fuentes internacionales:** FIDIC, NEC Contracts, Society of Construction Law, HKA, Secretariat, Diales, Arcadis, ICC, Global Arbitration Review, Institute of Risk Management, Lexology, Hill International.
 - **Nuevas revistas:** International Journal of Construction Management; Journal of Financial Management of Property and Construction; Built Environment Project and Asset Management; Risk Analysis (solo artículos de construcción).
+
+## 30. Actualización 17: estándares contractuales y modelos de entrega
+
+**1. Estándares contractuales internacionales.**
+- FIDIC:
+  - Libro Rojo: diseño del cliente.
+  - Libro Amarillo: diseño y construcción.
+  - Libro Plateado: EPC / llave en mano.
+  - Libro Verde: obras menores.
+  - Libro Oro: DBO.
+  - Libro Esmeralda: túneles, con Geotechnical Baseline Report.
+- NEC (NEC3/NEC4, alertas tempranas, programa actualizado).
+- JCT (Joint Contracts Tribunal, edificación en el Reino Unido).
+
+**2. Modelos de contratación por mecanismo de entrega.**
+- APP/PPP: asociaciones público-privadas, pagos por disponibilidad y concesiones.
+- Alianzas contractuales y partnering: pain/gain share, contratación colaborativa.
+- EPC y EPCm.
+- Diseño y construcción (design-build) e Integrated Project Delivery.
+
+**Cómo se aplica en la aplicación:**
+- Se relaciona con el tema «Procura y Contratos»: se agregaron términos directos (Red/Yellow/Silver/Emerald Book, NEC3/NEC4, JCT, GBR, APP/PPP, alianzas, pain/gain, EPCm, llave en mano, design-build, IPD…).
+- Dos búsquedas adicionales: `estandares-contractuales` y `modelos-entrega`.
+- Nuevas fuentes:
+  - JCT, PPP Knowledge Lab (Banco Mundial), APMG PPP Certification, Institute for Collaborative Working.
+  - OSITRAN y AFIN.
+  - Sitios selectos IJGlobal, P3 Bulletin e Infralatam.
+  - Revista Public Works Management & Policy.

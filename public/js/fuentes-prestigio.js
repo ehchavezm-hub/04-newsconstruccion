@@ -82,6 +82,10 @@
       googleNoticias: 'site:lacamara.pe arbitraje' },
     { id: 'lp-derecho', nombre: 'LP Derecho — Contrataciones del Estado', tipoFuente: 'Medio jurídico especializado', idioma: 'es', ambito: 'nacional', especializado: false,
       googleNoticias: 'site:lpderecho.pe contrataciones' },
+    { id: 'ositran', nombre: 'OSITRAN — Concesiones de infraestructura de transporte', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: true,
+      googleNoticias: 'site:gob.pe OSITRAN' },
+    { id: 'afin', nombre: 'AFIN — Asociación para el Fomento de la Infraestructura Nacional', tipoFuente: 'Gremio del sector', idioma: 'es', ambito: 'nacional', especializado: true,
+      googleNoticias: 'AFIN infraestructura Perú' },
     { id: 'revista-costos', nombre: 'Revista Costos', tipoFuente: 'Medio especializado', idioma: 'es', ambito: 'nacional', especializado: true,
       googleNoticias: 'site:costosperu.com' },
     { id: 'el-peruano', nombre: 'El Peruano (diario oficial)', tipoFuente: 'Entidad pública', idioma: 'es', ambito: 'nacional', especializado: false,
@@ -170,6 +174,14 @@
       googleNoticias: 'site:neccontract.com' },
     { id: 'scl', nombre: 'Society of Construction Law', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
       googleNoticias: 'site:scl.org.uk' },
+    { id: 'jct', nombre: 'JCT — Joint Contracts Tribunal', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:jctltd.co.uk' },
+    { id: 'ppp-knowledge-lab', nombre: 'PPP Knowledge Lab (Banco Mundial)', tipoFuente: 'Organismo multilateral', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: '"PPP Knowledge Lab" OR site:ppp.worldbank.org' },
+    { id: 'apmg-ppp', nombre: 'APMG — Certificación en APP (CP3P)', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:ppp-certification.com' },
+    { id: 'icw', nombre: 'Institute for Collaborative Working (alianzas y partnering)', tipoFuente: 'Asociación profesional', idioma: 'en', ambito: 'internacional', especializado: true,
+      googleNoticias: 'site:instituteforcollaborativeworking.org' },
     { id: 'hka', nombre: 'HKA — Reclamos y disputas en construcción', tipoFuente: 'Consultora especializada', idioma: 'en', ambito: 'internacional', especializado: true,
       googleNoticias: 'site:hka.com' },
     { id: 'secretariat', nombre: 'Secretariat — Construction Disputes', tipoFuente: 'Consultora especializada', idioma: 'en', ambito: 'internacional', especializado: true,
@@ -325,6 +337,13 @@
     { dominio: 'neccontract.com', nombre: 'NEC Contracts', ambito: 'internacional' },
     { dominio: 'scl.org.uk', nombre: 'Society of Construction Law', ambito: 'internacional' },
     { dominio: 'hka.com', nombre: 'HKA', ambito: 'internacional' },
+    { dominio: 'jctltd.co.uk', nombre: 'JCT', ambito: 'internacional' },
+    { dominio: 'ppp-certification.com', nombre: 'APMG PPP Certification', ambito: 'internacional' },
+    { dominio: 'instituteforcollaborativeworking.org', nombre: 'Institute for Collaborative Working', ambito: 'internacional' },
+    { dominio: 'afin.org.pe', nombre: 'AFIN', ambito: 'nacional' },
+    { dominio: 'p3bulletin.com', nombre: 'P3 Bulletin', ambito: 'internacional' },
+    { dominio: 'ijglobal.com', nombre: 'IJGlobal (financiamiento de infraestructura y APP)', ambito: 'internacional' },
+    { dominio: 'infralatam.info', nombre: 'Infralatam', ambito: 'internacional' },
     { dominio: 'secretariat-intl.com', nombre: 'Secretariat', ambito: 'internacional' },
     { dominio: 'diales.com', nombre: 'Diales', ambito: 'internacional' },
     { dominio: 'arcadis.com', nombre: 'Arcadis', ambito: 'internacional' },
@@ -389,6 +408,8 @@
     { nombre: 'Journal of Financial Management of Property and Construction', issn: '1366-4387' },
     { nombre: 'Built Environment Project and Asset Management', issn: '2044-124X' },
     { nombre: 'Risk Analysis', issn: '0272-4332', filtrado: true },
+    // Modelos de contratación (APP, alianzas, contratos estándar)
+    { nombre: 'Public Works Management & Policy', issn: '1087-724X' },
     // Revista amplia: solo se aceptan los artículos que tratan de construcción.
     { nombre: 'Journal of Cleaner Production', issn: '0959-6526', filtrado: true }
   ];
@@ -453,7 +474,9 @@
     'megaproyecto', 'megaproject', 'puesta en marcha', 'commissioning', 'mantenimiento', 'maintenance',
     'adicional de obra', 'adicionales de obra', 'ampliacion de plazo', 'formula polinomica', 'reajuste',
     'indices unificados', 'arbitraje', 'paralizada', 'paralizacion', 'contrataciones del estado',
-    'change order', 'cost overrun', 'construction dispute', 'construction risk'
+    'change order', 'cost overrun', 'construction dispute', 'construction risk',
+    'fidic', 'nec4', 'asociacion publico privada', 'asociaciones publico privadas',
+    'public-private partnership', 'project alliance', 'epcm', 'llave en mano', 'turnkey'
   ];
   // Siglas que solo cuentan escritas en MAYÚSCULAS ("APP" sí; la "app" del teléfono, no).
   var SIGLAS_CLAVE = /(^|[^A-Za-z])(EPC|BIM|APP|PPP)([^A-Za-z]|$)/;

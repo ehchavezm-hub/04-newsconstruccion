@@ -154,13 +154,13 @@ describe('Temas sugeridos', () => {
     assert.equal(ciclo.nota, 'Las etapas de un proyecto, de la idea a la operación.');
   });
 
-  test('cada tema tiene id único, grupo y entre 14 y 60 términos', () => {
+  test('cada tema tiene id único, grupo y entre 14 y 110 términos', () => {
     const temas = Temas.grupos.flatMap((g) => g.temas);
     assert.equal(temas.length, 22);
     assert.equal(new Set(temas.map((t) => t.id)).size, 22);
     const ids = Temas.grupos.map((g) => g.id);
     temas.forEach((t) => {
-      assert.ok(t.terminos.length >= 14 && t.terminos.length <= 60, `${t.id}: ${t.terminos.length}`);
+      assert.ok(t.terminos.length >= 14 && t.terminos.length <= 110, `${t.id}: ${t.terminos.length}`);
       assert.ok(ids.includes(t.grupo), t.id);
       // Los 8 primeros términos (los que van a GDELT) deben dejar al menos uno de 4 letras o más.
       assert.ok(Gdelt.terminosDeTema(t.terminos).length > 0, t.id);
@@ -322,7 +322,7 @@ describe('Fuentes de prestigio', () => {
     }
     assert.equal(new Set(Fuentes.medios.map((m) => m.id)).size, Fuentes.medios.length);
     assert.ok(Fuentes.revistas.every((r) => /^\d{4}-\d{3}[\dX]$/.test(r.issn)));
-    assert.equal(Fuentes.revistas.length, 19);
+    assert.equal(Fuentes.revistas.length, 20);
   });
 
   test('la relevancia reconoce el sector y las siglas en mayúsculas', () => {
@@ -808,18 +808,32 @@ describe('Gestión contractual, impactos, reajustes y riesgos', () => {
     assert.ok(tema('Monte Carlo simulation for cost contingency in construction').includes('pmbok'));
   });
 
+  test('estándares contractuales y modelos de entrega se relacionan con «Procura y Contratos»', () => {
+    for (const titulo of [
+      'FIDIC publica la segunda edición del Emerald Book para túneles',
+      'NEC4 early warning notice and programme management',
+      'JCT contract update for residential building',
+      'Using the Geotechnical Baseline Report in tunnelling contracts',
+      'MTC firma adenda de la asociación público privada del puerto',
+      'Public-private partnership availability payment for hospitals',
+      'Project alliance with pain gain share and no-dispute clause',
+      'EPCM contract awarded for copper concentrator',
+      'Contrato llave en mano para planta desaladora'
+    ]) assert.ok(tema(titulo).includes('procura'), titulo);
+  });
+
   test('hay búsquedas adicionales para cada aspecto, ligadas a un tema existente', () => {
     const ids = Temas.busquedasAdicionales.map((b) => b.id);
-    assert.deepEqual(ids, ['gestion-contractual', 'reajustes', 'impactos', 'riesgos']);
+    assert.deepEqual(ids, ['gestion-contractual', 'reajustes', 'impactos', 'riesgos', 'estandares-contractuales', 'modelos-entrega']);
     for (const b of Temas.busquedasAdicionales) {
       assert.ok(Temas.porId(b.tema), b.id);
       assert.ok(b.academica && b.noticias.es && b.noticias.en && b.openalex, b.id);
     }
-    assert.equal(Temas.consultas.length, 22 + 4);
+    assert.equal(Temas.consultas.length, 22 + 6);
   });
 
   test('las nuevas entidades están entre las fuentes selectas', () => {
-    for (const id of ['inei-indices', 'tribunal-contrataciones', 'arbitraje-pucp', 'fidic', 'nec', 'scl', 'hka']) {
+    for (const id of ['inei-indices', 'tribunal-contrataciones', 'arbitraje-pucp', 'fidic', 'nec', 'scl', 'hka', 'jct', 'ppp-knowledge-lab', 'icw', 'ositran', 'afin']) {
       assert.ok(Fuentes.medios.some((m) => m.id === id), id);
     }
     for (const host of ['fidic.org', 'scl.org.uk', 'globalarbitrationreview.com', 'theirm.org']) {

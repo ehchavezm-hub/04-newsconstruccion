@@ -137,7 +137,19 @@
           'fórmula polinómica', 'fórmulas polinómicas', 'fórmula de reajuste', 'fórmulas de reajuste',
           'reajuste de precios', 'índices unificados', 'price adjustment', 'price escalation', 'escalation clause',
           'valorización de obra', 'valorizaciones', 'junta de resolución de disputas', 'dispute board',
-          'construction dispute', 'disputas en construcción', 'controversias contractuales', 'NEC contract'] },
+          'construction dispute', 'disputas en construcción', 'controversias contractuales', 'NEC contract',
+          // Estándares contractuales internacionales (FIDIC, NEC, JCT)
+          'Red Book', 'Yellow Book', 'Silver Book', 'Emerald Book', 'libro rojo de FIDIC', 'libro amarillo',
+          'libro plateado', 'NEC3', 'NEC ECC', 'Engineering and Construction Contract', 'early warning notice',
+          'JCT contract', 'JCT ', 'Joint Contracts Tribunal', 'Geotechnical Baseline Report', 'GBR ',
+          // Modelos de contratación por mecanismo de entrega
+          'asociación público privada', 'asociación público-privada', 'asociaciones público privadas',
+          'asociaciones público-privadas', 'public-private partnership', 'public private partnership', 'PPP ',
+          'pago por disponibilidad', 'availability payment', 'project alliance', 'alliance contract', 'alliancing',
+          'alianza contractual', 'partnering', 'contratación colaborativa', 'collaborative contracting',
+          'pain gain', 'painshare', 'gainshare', 'gain share', 'EPCM ', 'EPCm contract',
+          'design-build', 'diseño y construcción', 'design and build', 'llave en mano', 'turnkey',
+          'design-build-operate', 'integrated project delivery', 'entrega integrada de proyectos'] },
         { id: 'construccion', etiqueta: 'Construcción y Montaje', terminos: [
           'ejecución de obra', 'montaje electromecánico', 'construction project', 'montaje de estructuras',
           'steel erection', 'mechanical erection', 'construction management', 'gestión de obra', 'montaje',
@@ -347,7 +359,19 @@
       noticias: {
         es: '"gestión de riesgos" obra OR "análisis de riesgos" proyecto OR "reserva de contingencia" OR "matriz de riesgos" obra',
         en: '"construction risk" OR "project risk management" OR "cost contingency" OR "risk allocation" construction' },
-      openalex: '"construction risk" OR "project risk management" OR "risk allocation" OR "cost contingency" OR "schedule risk" OR "Monte Carlo" construction' }
+      openalex: '"construction risk" OR "project risk management" OR "risk allocation" OR "cost contingency" OR "schedule risk" OR "Monte Carlo" construction' },
+    { id: 'estandares-contractuales', tema: 'procura',
+      academica: 'FIDIC NEC JCT standard forms of construction contract',
+      noticias: {
+        es: 'FIDIC OR "Libro Rojo" FIDIC OR "Libro Amarillo" OR "Libro Plateado" OR "contrato NEC" OR "contratos NEC"',
+        en: 'FIDIC OR "NEC4" OR "NEC contract" OR "JCT contract" OR "Joint Contracts Tribunal" OR "Silver Book" OR "Emerald Book"' },
+      openalex: 'FIDIC OR "NEC contract" OR "NEC3" OR "NEC4" OR "JCT contract" OR "standard form of contract" construction OR "geotechnical baseline report"' },
+    { id: 'modelos-entrega', tema: 'procura',
+      academica: 'public-private partnership project alliance EPCM delivery model',
+      noticias: {
+        es: '"asociación público privada" OR "asociaciones público privadas" OR "APP" obra OR "alianza contractual" OR "contrato EPCM" OR "llave en mano" obra',
+        en: '"public-private partnership" infrastructure OR "project alliance" OR "alliance contract" OR "EPCM contract" OR "collaborative contracting" OR "design-build"' },
+      openalex: '"public-private partnership" OR "project alliance" OR "alliance contracting" OR "relational contracting" OR "EPCM" OR "integrated project delivery" OR "design-build" construction' }
   ];
 
   // Cada tema recuerda a qué grupo pertenece, sus palabras de relación indirecta y sus consultas.
