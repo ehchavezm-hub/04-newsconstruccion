@@ -872,3 +872,25 @@ describe('Términos amplios y sinónimos de impactos', () => {
     assert.equal(Motor.buscar(costos, { consulta: 'impacto en costo' }).length, 1);
   });
 });
+
+describe('Contexto por fuente y avisos de empleo', () => {
+  test('lo que publica una fuente especializada ya es del sector', () => {
+    const t = Motor.temasDe({ titulo: 'Does wrongful termination of a contract reduce liability under a performance bond?', resumen: '', fuente: 'RICS' });
+    assert.ok(t.some((x) => x.id === 'procura'));
+    const laudo = Motor.temasDe({ titulo: 'Rutas de Lima: laudo arbitral declararía ilegal terminación del contrato con la Municipalidad', resumen: '', fuente: 'Semana Económica' });
+    assert.ok(laudo.some((x) => x.id === 'procura'));
+  });
+
+  test('los contratos de alquiler no son de construcción', () => {
+    assert.deepEqual(Motor.temasDe({ titulo: 'El decreto de alquileres indefinidos obligará al propietario a indemnizar al inquilino si rompe el contrato', resumen: '', fuente: 'Europa Press' }), []);
+  });
+
+  test('los avisos que solo nombran un puesto de trabajo se descartan', () => {
+    for (const titulo of ['Senior Project Controls Manager', 'Project Scheduler - Modular Manufacturing', 'Principal Risk Specialist, Compliance Governance Analyst']) {
+      assert.ok(Fuentes.esDescartable({ tipo: 'noticia', titulo }), titulo);
+    }
+    for (const titulo of ['Project manager wins award for Lima metro', 'Meet the engineers building Chancay port', 'FIDIC publishes new Emerald Book']) {
+      assert.ok(!Fuentes.esDescartable({ tipo: 'noticia', titulo }), titulo);
+    }
+  });
+});

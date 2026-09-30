@@ -251,10 +251,26 @@
     'epc ', 'epcm ', 'bim ', 'aec ', 'jobsite', 'job site', 'site work', 'civil works', 'obra publica',
     'contrataciones del estado', 'contratacion publica', 'public works', 'concesion', 'app ', 'ppp ',
     'fidic', 'nec4', 'project management', 'gestion de proyectos', 'direccion de proyectos', 'pmbok', 'pmi ',
-    'planta industrial', 'industrial plant', 'refineri', 'refinery', 'power plant', 'central electrica'
+    'planta industrial', 'industrial plant', 'refineri', 'refinery', 'power plant', 'central electrica',
+    'arbitra', 'laudo', 'performance bond', 'seace', 'ejecucion contractual', 'riego', 'irrigacion', 'sifon',
+    'represa', 'dam ', 'pavimentacion', 'hospital de', 'colegio emblematico'
   ];
 
+  // Fuentes especializadas del sector (gremios, entidades de infraestructura, medios del
+  // sector): lo que publican ya es contexto de construcción.
+  var fuentesDelSector = null;
+  function esFuenteDelSector(nombre) {
+    if (!fuentesDelSector) {
+      var F = typeof module !== 'undefined' && module.exports ? require('./fuentes-prestigio.js') : raiz.FuentesPrestigio;
+      fuentesDelSector = (F && F.medios ? F.medios : [])
+        .filter(function (m) { return m.especializado; })
+        .map(function (m) { return m.nombre; });
+    }
+    return fuentesDelSector.indexOf(nombre) > -1;
+  }
+
   function tieneContexto(doc, textoPrincipal) {
+    if (esFuenteDelSector(doc.fuente)) return true;
     var texto = textoPrincipal + ' ' + normalizar([doc.fuente, doc.tipoFuente].join(' '));
     return CONTEXTO_CONSTRUCCION.some(function (v) { return contiene(texto, v); });
   }

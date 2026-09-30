@@ -387,6 +387,10 @@
   // Titulares que no son noticias del sector: avisos de empleo, cursos, ofertas.
   var TITULAR_DESCARTABLE = /\b(empleo|empleos|vacante|vacantes|se busca|se requiere|convocatoria cas|oferta laboral|trabaja con nosotros|job|jobs|hiring|vacancy|vacancies|career|careers|internship|diplomado|diplomados|webinar|matr[ií]cula|inscr[ií]bete|descuento|market size|market share|market worth|cagr)\b|\bin [A-Z][a-z]+, [A-Z][A-Za-z ]+, (United Kingdom|United States|Canada|Australia)\b/i;
 
+  // Avisos de empleo que solo tienen el nombre del puesto («Senior Project Controls Manager»,
+  // «Project Scheduler - Modular Manufacturing»).
+  var PUESTO_DE_TRABAJO = /^(?:[A-Z][\w&/.,'’-]*\s){0,6}(?:Manager|Specialist|Scheduler|Estimator|Analyst|Engineer|Coordinator|Director|Consultant|Planner|Superintendent|Technician)s?(?:\s[-–(].*)?$/;
+
   // Revistas académicas (ISSN impreso o electrónico registrado en Crossref).
   var revistas = [
     { nombre: 'Journal of Construction Engineering and Management', issn: '0733-9364' },
@@ -548,7 +552,7 @@
   /** ¿Es un aviso de empleo, un curso, publicidad o viene de un sitio excluido? */
   function esDescartable(doc) {
     if (doc.tipo !== 'noticia') return false;
-    if (TITULAR_DESCARTABLE.test(doc.titulo || '')) return true;
+    if (TITULAR_DESCARTABLE.test(doc.titulo || '') || PUESTO_DE_TRABAJO.test(doc.titulo || '')) return true;
     var sitio = doc.sitio || doc.enlace || '';
     return !!buscarDominio(dominiosExcluidos, hostDe(sitio));
   }

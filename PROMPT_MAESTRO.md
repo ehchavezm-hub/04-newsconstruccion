@@ -806,3 +806,5 @@ Se incluyen fuentes y búsquedas sobre **gestión contractual, administración d
 - «Comprobar fuentes» informa ahora:
   - cuántos resultados dan estas búsquedas;
   - qué publicados descarta el filtro actual.
+- Lo que publican las **fuentes especializadas** (gremios, entidades de infraestructura y contratación, medios del sector) ya cuenta como contexto de construcción. También cuentan palabras como arbitraje, laudo, SEACE, riego o represa.
+- Se descartan los **avisos de empleo** que solo nombran un puesto, por ejemplo «Senior Project Controls Manager».
